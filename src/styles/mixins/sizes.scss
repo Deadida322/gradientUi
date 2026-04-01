@@ -1,0 +1,20 @@
+@mixin size-s($prefix) { 
+    .#{$prefix}_s { 
+        padding: 4px 8px; 
+        font-size: 12px; 
+    } 
+}
+
+@mixin size-m($prefix) { 
+    .#{$prefix}_m { 
+        padding: 8px 12px; 
+        font-size: 14px; 
+    } 
+}
+
+@mixin size-l($prefix) { 
+    .#{$prefix}_l { 
+        padding: 12px 16px; 
+        font-size: 16px; 
+    }
+}

@@ -1,0 +1,58 @@
+@use 'assets/variables.scss' as variables;
+@use "@fontsource/manrope/200.css" as roboto200;
+@use "@fontsource/manrope/300.css" as roboto300;
+@use "@fontsource/manrope/400.css" as roboto400;
+@use "@fontsource/manrope/500.css" as roboto500;
+@use "@fontsource/manrope/700.css" as roboto700;
+@use "@fontsource/manrope/800.css" as roboto800;
+@use '@mdi/font/css/materialdesignicons.css' as mdi;
+
+@use 'variables'
+
+.styleling {
+    background-color: rgb(28 28 28);
+}
+
+body {
+    font-family: Manrope, sans-serif;
+}
+
+* {
+    font-family: Manrope, sans-serif;
+    font-weight: 400;
+}
+
+:root {
+    --g-gradient-main: linear-gradient(135deg, rgb(252 249 196 / 100%) 0%, rgb(239 126 92 / 100%) 17%, rgb(128 49 172 / 100%) 39%, rgb(95 75 200 / 100%) 52%, rgb(195 185 245 / 100%) 77%, rgb(3 9 33 / 100%) 100%);
+    --g-gradient-error: linear-gradient(135deg, rgb(92 107 192) 0%, rgb(21 101 192) 15%, rgb(0 64 135) 30%, rgb(198 40 40) 50%, rgb(255 138 128) 65%, rgb(198 40 40) 90%);
+    --g-gradient-warning: linear-gradient(135deg, rgb(98 34 160) 10%, rgb(118 0 231) 30%, rgb(210 190 24) 60%, rgb(255 243 139) 75%, rgb(190 149 40) 90%);
+    --g-gradient-success: linear-gradient(135deg, rgb(255 0 0) 0%, rgb(96 121 9) 35%, rgb(49 133 9) 58%, rgb(127 255 139) 80%, rgb(8 99 1) 100%);
+    --g-theme-primary: $primary-color;
+    --g-primary-color: rgb($primary-color);
+    --g-primary-color-hover: rgb($primary-color, .9);
+    --g-tonal: rgba($primary-color, 0.12);
+    --g-tonal-hover: rgba($primary-color, 0.2);
+    --g-on-tonal: rgb(29 25 43);
+    --g-secondary-color: rgb(247 246 249);
+    --g-text-primary: rgb(42 60 80);
+}
+
+.ripple-effect {
+    pointer-events: none;
+
+    position: absolute;
+    transform: scale(0); 
+
+    border-radius: 50%;
+
+    opacity: .1;
+
+    animation: ripple-animation 0.6s linear;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4); 
+        opacity: 0; 
+    }
+}

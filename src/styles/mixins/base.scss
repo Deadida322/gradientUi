@@ -1,0 +1,24 @@
+@mixin base-component($prefix) {
+    cursor: pointer;
+
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+
+    font-size: 14px;
+    line-height: 20px;
+    color: white;
+
+    background-color: var(--g-primary-color);
+
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: var(--g-primary-color-hover);
+    }
+}
