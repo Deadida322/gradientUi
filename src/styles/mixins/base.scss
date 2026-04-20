@@ -1,22 +1,29 @@
 @mixin base-component($prefix) {
+    --g-size-gap: var(--g-token-button-gap);
+    --g-size-padding-y-m: var(--g-token-button-padding-y-m);
+    --g-size-padding-x-m: var(--g-token-button-padding-x-m);
+    --g-size-font-size-m: var(--g-token-button-font-size-m);
+    --g-size-line-height: var(--g-token-line-height-md);
+    --g-size-line-height-m: var(--g-token-line-height-md);
+
     cursor: pointer;
 
     display: inline-flex;
-    gap: 3px;
+    gap: var(--g-size-gap);
     align-items: center;
     justify-content: center;
 
-    padding: 10px 16px;
+    padding: var(--g-size-padding-y-m) var(--g-size-padding-x-m);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--g-token-button-radius);
 
-    font-size: 14px;
-    line-height: 20px;
-    color: white;
+    font-size: var(--g-size-font-size-m);
+    line-height: var(--g-size-line-height-m);
+    color: var(--g-token-color-on-primary);
 
-    background-color: var(--g-primary-color);
+    background-color: var(--g-token-color-primary);
 
-    transition: all 0.2s ease-in-out;
+    transition: all var(--g-token-duration-base) var(--g-token-easing-standard);
 
     &:hover {
         background-color: var(--g-primary-color-hover);

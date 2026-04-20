@@ -1,0 +1,184 @@
+@mixin register-design-tokens() {
+	/* Theme fallbacks */
+	--g-theme-primary: 112, 74, 255;
+	--g-theme-on-primary: 255, 255, 255;
+	--g-theme-surface: 255, 255, 255;
+	--g-theme-on-surface: 29, 27, 32;
+	--g-theme-background: 255, 251, 254;
+	--g-theme-error: 186, 26, 26;
+	--g-theme-on-error: 255, 255, 255;
+	--g-theme-error-container: 255, 218, 214;
+	--g-theme-warning: 146, 76, 0;
+	--g-theme-on-warning: 255, 255, 255;
+	--g-theme-warning-container: 255, 223, 186;
+	--g-theme-success: 46, 125, 50;
+	--g-theme-on-success: 255, 255, 255;
+	--g-theme-success-container: 196, 255, 189;
+
+	/* Primitive tokens */
+	--g-token-font-family-base: manrope, sans-serif;
+	--g-token-font-weight-regular: 400;
+	--g-token-font-weight-medium: 500;
+	--g-token-font-weight-bold: 700;
+	--g-token-font-size-xs: 12px;
+	--g-token-font-size-sm: 13px;
+	--g-token-font-size-md: 14px;
+	--g-token-font-size-lg: 16px;
+	--g-token-font-size-xl: 18px;
+	--g-token-line-height-xs: 16px;
+	--g-token-line-height-sm: 18px;
+	--g-token-line-height-md: 20px;
+	--g-token-line-height-lg: 24px;
+	--g-token-line-height-xl: 28px;
+	--g-token-space-1: 4px;
+	--g-token-space-2: 8px;
+	--g-token-space-3: 12px;
+	--g-token-space-4: 16px;
+	--g-token-space-5: 20px;
+	--g-token-space-6: 24px;
+	--g-token-radius-xs: 4px;
+	--g-token-radius-sm: 6px;
+	--g-token-radius-md: 10px;
+	--g-token-radius-lg: 16px;
+	--g-token-radius-xl: 20px;
+	--g-token-radius-pill: 9999px;
+	--g-token-duration-fast: 0.16s;
+	--g-token-duration-base: 0.2s;
+	--g-token-duration-slow: 0.3s;
+	--g-token-easing-standard: ease;
+	--g-token-opacity-disabled: 0.55;
+	--g-token-opacity-muted: 0.65;
+	--g-token-opacity-soft: 0.75;
+	--g-token-opacity-subtle: 0.14;
+	--g-token-elevation-1: 0 1px 2px rgb(0 0 0 / 10%);
+	--g-token-elevation-2: 2px 5px 4px -2px rgb(0 0 0 / 20%);
+	--g-token-elevation-3: 0 8px 24px rgb(0 0 0 / 18%);
+
+	/* Semantic tokens */
+	--g-token-color-primary: rgb(var(--g-theme-primary));
+	--g-token-color-on-primary: rgb(var(--g-theme-on-primary));
+	--g-token-color-surface: rgb(var(--g-theme-surface));
+	--g-token-color-on-surface: rgb(var(--g-theme-on-surface));
+	--g-token-color-error: rgb(var(--g-theme-error));
+	--g-token-color-warning: rgb(var(--g-theme-warning));
+	--g-token-color-success: rgb(var(--g-theme-success));
+	--g-token-color-on-tonal: rgb(var(--g-theme-on-tonal, 29 25 43));
+	--g-token-surface-tonal: rgba(var(--g-theme-primary), 0.12);
+	--g-token-surface-tonal-hover: rgba(var(--g-theme-primary), 0.2);
+	--g-token-surface-selected: rgba(var(--g-theme-primary), 0.12);
+	--g-token-surface-selected-hover: rgba(var(--g-theme-primary), 0.2);
+	--g-token-border-subtle: rgba(var(--g-theme-on-surface), 0.14);
+	--g-token-border-strong: rgba(var(--g-theme-primary), 0.32);
+	--g-token-focus-ring: rgba(var(--g-theme-primary), 0.18);
+	--g-token-text-muted: rgba(var(--g-theme-on-surface), 0.65);
+	--g-token-text-soft: rgba(var(--g-theme-on-surface), 0.75);
+
+	/* Component tokens */
+	--g-token-button-radius: var(--g-token-radius-xs);
+	--g-token-button-gap: 3px;
+	--g-token-button-padding-y-s: var(--g-token-space-1);
+	--g-token-button-padding-x-s: var(--g-token-space-2);
+	--g-token-button-padding-y-m: var(--g-token-space-2);
+	--g-token-button-padding-x-m: var(--g-token-space-3);
+	--g-token-button-padding-y-l: var(--g-token-space-3);
+	--g-token-button-padding-x-l: var(--g-token-space-4);
+	--g-token-button-padding-y-xl: var(--g-token-space-4);
+	--g-token-button-padding-x-xl: var(--g-token-space-5);
+	--g-token-button-font-size-s: var(--g-token-font-size-xs);
+	--g-token-button-font-size-m: var(--g-token-font-size-md);
+	--g-token-button-font-size-l: var(--g-token-font-size-lg);
+	--g-token-button-font-size-xl: var(--g-token-font-size-xl);
+	--g-token-button-line-height: var(--g-token-line-height-md);
+
+	--g-token-chip-radius: var(--g-token-radius-lg);
+	--g-token-chip-gap: 6px;
+	--g-token-chip-padding-y-s: 2px;
+	--g-token-chip-padding-x-s: var(--g-token-space-2);
+	--g-token-chip-padding-y-m: var(--g-token-space-1);
+	--g-token-chip-padding-x-m: 10px;
+	--g-token-chip-padding-y-l: 6px;
+	--g-token-chip-padding-x-l: var(--g-token-space-3);
+	--g-token-chip-padding-y-xl: var(--g-token-space-2);
+	--g-token-chip-padding-x-xl: 14px;
+	--g-token-chip-font-size-s: var(--g-token-font-size-xs);
+	--g-token-chip-font-size-m: var(--g-token-font-size-sm);
+	--g-token-chip-font-size-l: var(--g-token-font-size-md);
+	--g-token-chip-font-size-xl: 15px;
+	--g-token-chip-line-height-s: var(--g-token-line-height-sm);
+	--g-token-chip-line-height-m: var(--g-token-line-height-sm);
+	--g-token-chip-line-height-l: var(--g-token-line-height-md);
+	--g-token-chip-line-height-xl: var(--g-token-line-height-md);
+
+	--g-token-toggle-radius: var(--g-token-radius-md);
+	--g-token-toggle-gap: var(--g-token-space-2);
+	--g-token-toggle-padding-y-s: var(--g-token-space-1);
+	--g-token-toggle-padding-x-s: 10px;
+	--g-token-toggle-padding-y-m: 6px;
+	--g-token-toggle-padding-x-m: var(--g-token-space-3);
+	--g-token-toggle-padding-y-l: var(--g-token-space-2);
+	--g-token-toggle-padding-x-l: 14px;
+	--g-token-toggle-padding-y-xl: 10px;
+	--g-token-toggle-padding-x-xl: var(--g-token-space-4);
+	--g-token-toggle-font-size-s: var(--g-token-font-size-xs);
+	--g-token-toggle-font-size-m: var(--g-token-font-size-md);
+	--g-token-toggle-font-size-l: 15px;
+	--g-token-toggle-font-size-xl: 16px;
+
+	--g-token-field-radius: var(--g-token-radius-sm);
+	--g-token-field-gap: 3px;
+	--g-token-field-inner-gap: var(--g-token-space-1);
+	--g-token-field-affix-width: 24px;
+	--g-token-field-label-margin-inline: 2px;
+	--g-token-field-helper-margin-left: 10px;
+	--g-token-field-helper-font-size: 10px;
+	--g-token-field-helper-offset: 4px;
+	--g-token-field-multiline-height: 80px;
+	--g-token-field-textarea-min-height: 64px;
+	--g-token-field-multiline-affix-padding-top: 10px;
+	--g-token-field-clear-padding-top: 6px;
+	--g-token-field-height-s: 32px;
+	--g-token-field-height-m: 40px;
+	--g-token-field-height-l: 48px;
+	--g-token-field-height-xl: 56px;
+	--g-token-field-padding-y-s: var(--g-token-space-1);
+	--g-token-field-padding-x-s: var(--g-token-space-2);
+	--g-token-field-padding-y-m: var(--g-token-space-2);
+	--g-token-field-padding-x-m: var(--g-token-space-3);
+	--g-token-field-padding-y-l: var(--g-token-space-3);
+	--g-token-field-padding-x-l: var(--g-token-space-4);
+	--g-token-field-padding-y-xl: 14px;
+	--g-token-field-padding-x-xl: 18px;
+	--g-token-field-label-font-size-s: 11px;
+	--g-token-field-label-font-size-m: var(--g-token-font-size-xs);
+	--g-token-field-label-font-size-l: var(--g-token-font-size-sm);
+	--g-token-field-label-font-size-xl: var(--g-token-font-size-md);
+	--g-token-field-input-font-size-s: var(--g-token-font-size-xs);
+	--g-token-field-input-font-size-m: var(--g-token-font-size-md);
+	--g-token-field-input-font-size-l: var(--g-token-font-size-lg);
+	--g-token-field-input-font-size-xl: var(--g-token-font-size-xl);
+
+	--g-token-check-gap: 10px;
+	--g-token-check-content-gap: 2px;
+	--g-token-check-indicator-size: 24px;
+	--g-token-check-label-color: rgba(var(--g-theme-on-surface), 0.92);
+	--g-token-check-label-font-size-s: var(--g-token-font-size-sm);
+	--g-token-check-label-font-size-m: var(--g-token-font-size-md);
+	--g-token-check-label-font-size-l: 15px;
+	--g-token-check-label-font-size-xl: var(--g-token-font-size-lg);
+
+	--g-token-select-control-min-height: 20px;
+	--g-token-select-placeholder-opacity: 0.5;
+
+	/* Gradient aliases */
+	--g-token-gradient-main: var(--g-gradient-main);
+	--g-token-gradient-error: var(--g-gradient-error);
+	--g-token-gradient-warning: var(--g-gradient-warning);
+	--g-token-gradient-success: var(--g-gradient-success);
+
+	/* Legacy aliases */
+	--g-primary-color: var(--g-token-color-primary);
+	--g-primary-color-hover: rgb(var(--g-theme-primary), 0.9);
+	--g-tonal: var(--g-token-surface-tonal);
+	--g-tonal-hover: var(--g-token-surface-tonal-hover);
+	--g-on-tonal: var(--g-token-color-on-tonal);
+}

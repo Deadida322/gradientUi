@@ -146,8 +146,8 @@
 		}
 
 		&__message {
-			font-size: 12px;
-			color: rgba(var(--g-theme-on-surface), 0.65);
+			font-size: var(--g-token-font-size-xs);
+			color: var(--g-token-text-muted);
 			text-align: left;
 		}
 
@@ -159,20 +159,42 @@
 	.g-toggle-button {
 		@include base.base-component('g-toggle-button');
 
-		gap: 8px;
+		--g-size-gap: var(--g-token-toggle-gap);
+		--g-size-padding-y-s: var(--g-token-toggle-padding-y-s);
+		--g-size-padding-x-s: var(--g-token-toggle-padding-x-s);
+		--g-size-padding-y-m: var(--g-token-toggle-padding-y-m);
+		--g-size-padding-x-m: var(--g-token-toggle-padding-x-m);
+		--g-size-padding-y-l: var(--g-token-toggle-padding-y-l);
+		--g-size-padding-x-l: var(--g-token-toggle-padding-x-l);
+		--g-size-padding-y-xl: var(--g-token-toggle-padding-y-xl);
+		--g-size-padding-x-xl: var(--g-token-toggle-padding-x-xl);
+		--g-size-font-size-s: var(--g-token-toggle-font-size-s);
+		--g-size-font-size-m: var(--g-token-toggle-font-size-m);
+		--g-size-font-size-l: var(--g-token-toggle-font-size-l);
+		--g-size-font-size-xl: var(--g-token-toggle-font-size-xl);
+		--g-size-line-height-s: var(--g-token-line-height-sm);
+		--g-size-line-height-m: var(--g-token-line-height-md);
+		--g-size-line-height-l: var(--g-token-line-height-md);
+		--g-size-line-height-xl: var(--g-token-line-height-md);
+
+		gap: var(--g-token-toggle-gap);
 
 		min-width: 0;
 		border: 1px solid transparent;
-		border-radius: 10px;
+		border-radius: var(--g-token-toggle-radius);
 
 		outline: none;
 
 		transition:
-			background-color 0.16s ease,
-			border-color 0.16s ease,
-			color 0.16s ease,
-			box-shadow 0.16s ease,
-			transform 0.12s ease;
+			background-color var(--g-token-duration-fast)
+				var(--g-token-easing-standard),
+			border-color var(--g-token-duration-fast)
+				var(--g-token-easing-standard),
+			color var(--g-token-duration-fast) var(--g-token-easing-standard),
+			box-shadow var(--g-token-duration-fast)
+				var(--g-token-easing-standard),
+			transform var(--g-token-duration-fast)
+				var(--g-token-easing-standard);
 
 		&:not(:disabled):active {
 			transform: translateY(1px);
@@ -190,12 +212,12 @@
 		}
 
 		&_focused {
-			box-shadow: 0 0 0 2px rgba(var(--g-theme-primary), 0.18);
+			box-shadow: 0 0 0 2px var(--g-token-focus-ring);
 		}
 
 		&_disabled {
 			cursor: not-allowed;
-			opacity: 0.55;
+			opacity: var(--g-token-opacity-disabled);
 		}
 	}
 

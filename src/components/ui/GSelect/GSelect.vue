@@ -204,14 +204,14 @@
 			align-items: center;
 
 			width: 100%;
-			min-height: 20px;
+			min-height: var(--g-token-select-control-min-height);
 
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
 
 		&__placeholder {
-			opacity: 0.5;
+			opacity: var(--g-token-select-placeholder-opacity);
 		}
 	}
 </style>

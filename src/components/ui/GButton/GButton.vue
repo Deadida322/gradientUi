@@ -74,11 +74,26 @@
 	.g-button {
 		@include base.base-component('g-button');
 
+		--g-size-gap: var(--g-token-button-gap);
+		--g-size-padding-y-s: var(--g-token-button-padding-y-s);
+		--g-size-padding-x-s: var(--g-token-button-padding-x-s);
+		--g-size-padding-y-m: var(--g-token-button-padding-y-m);
+		--g-size-padding-x-m: var(--g-token-button-padding-x-m);
+		--g-size-padding-y-l: var(--g-token-button-padding-y-l);
+		--g-size-padding-x-l: var(--g-token-button-padding-x-l);
+		--g-size-padding-y-xl: var(--g-token-button-padding-y-xl);
+		--g-size-padding-x-xl: var(--g-token-button-padding-x-xl);
+		--g-size-font-size-s: var(--g-token-button-font-size-s);
+		--g-size-font-size-m: var(--g-token-button-font-size-m);
+		--g-size-font-size-l: var(--g-token-button-font-size-l);
+		--g-size-font-size-xl: var(--g-token-button-font-size-xl);
+		--g-size-line-height: var(--g-token-button-line-height);
+
 		border-radius: v-bind('computedBorderRadius');
 
 		&_disabled {
 			cursor: not-allowed;
-			opacity: 0.56;
+			opacity: var(--g-token-opacity-disabled);
 		}
 
 		&_icon {
@@ -87,7 +102,7 @@
 		}
 
 		&__label {
-			line-height: 20px;
+			line-height: var(--g-token-line-height-md);
 		}
 	}
 

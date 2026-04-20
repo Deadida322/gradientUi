@@ -1,11 +1,11 @@
 @mixin rounded($prefix: null) {
     @if $prefix {
         .#{$prefix}_rounded {
-            border-radius: 9999px;
+            border-radius: var(--g-token-radius-pill);
         }
     }
 
     @else {
-        border-radius: 9999px;
+        border-radius: var(--g-token-radius-pill);
     }
 }

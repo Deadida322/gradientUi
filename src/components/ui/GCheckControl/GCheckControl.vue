@@ -105,7 +105,7 @@
 	.g-check-control {
 		display: inline-flex;
 		flex-direction: column;
-		gap: 6px;
+		gap: var(--g-token-space-2);
 		min-width: 0;
 
 		&__native {
@@ -118,7 +118,7 @@
 			cursor: pointer;
 
 			display: inline-flex;
-			gap: 10px;
+			gap: var(--g-token-check-gap);
 			align-items: center;
 
 			min-width: 0;
@@ -130,13 +130,13 @@
 			align-items: center;
 			justify-content: center;
 
-			min-height: 24px;
+			min-height: var(--g-token-check-indicator-size);
 		}
 
 		&__content {
 			display: inline-flex;
 			flex-direction: column;
-			gap: 2px;
+			gap: var(--g-token-check-content-gap);
 
 			min-width: 0;
 
@@ -144,12 +144,12 @@
 		}
 
 		&__label {
-			color: rgba(var(--g-theme-on-surface), 0.92);
+			color: var(--g-token-check-label-color);
 		}
 
 		&__message {
-			font-size: 12px;
-			color: rgba(var(--g-theme-on-surface), 0.65);
+			font-size: var(--g-token-font-size-xs);
+			color: var(--g-token-text-muted);
 		}
 
 		&_inline {
@@ -159,7 +159,7 @@
 		&_disabled {
 			.g-check-control__body {
 				cursor: not-allowed;
-				opacity: 0.6;
+				opacity: var(--g-token-opacity-soft);
 			}
 		}
 
@@ -192,25 +192,25 @@
 
 		&_s {
 			.g-check-control__label {
-				font-size: 13px;
+				font-size: var(--g-token-check-label-font-size-s);
 			}
 		}
 
 		&_m {
 			.g-check-control__label {
-				font-size: 14px;
+				font-size: var(--g-token-check-label-font-size-m);
 			}
 		}
 
 		&_l {
 			.g-check-control__label {
-				font-size: 15px;
+				font-size: var(--g-token-check-label-font-size-l);
 			}
 		}
 
 		&_xl {
 			.g-check-control__label {
-				font-size: 16px;
+				font-size: var(--g-token-check-label-font-size-xl);
 			}
 		}
 	}
