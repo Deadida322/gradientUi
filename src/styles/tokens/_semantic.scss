@@ -1,0 +1,19 @@
+@mixin register-semantic-tokens() {
+	--g-token-color-primary: rgb(var(--g-theme-primary));
+	--g-token-color-on-primary: rgb(var(--g-theme-on-primary));
+	--g-token-color-surface: rgb(var(--g-theme-surface));
+	--g-token-color-on-surface: rgb(var(--g-theme-on-surface));
+	--g-token-color-error: rgb(var(--g-theme-error));
+	--g-token-color-warning: rgb(var(--g-theme-warning));
+	--g-token-color-success: rgb(var(--g-theme-success));
+	--g-token-color-on-tonal: rgb(var(--g-theme-on-tonal, 29 25 43));
+	--g-token-surface-tonal: rgba(var(--g-theme-primary), 0.12);
+	--g-token-surface-tonal-hover: rgba(var(--g-theme-primary), 0.2);
+	--g-token-surface-selected: rgba(var(--g-theme-primary), 0.12);
+	--g-token-surface-selected-hover: rgba(var(--g-theme-primary), 0.2);
+	--g-token-border-subtle: rgba(var(--g-theme-on-surface), 0.14);
+	--g-token-border-strong: rgba(var(--g-theme-primary), 0.32);
+	--g-token-focus-ring: rgba(var(--g-theme-primary), 0.18);
+	--g-token-text-muted: rgba(var(--g-theme-on-surface), 0.65);
+	--g-token-text-soft: rgba(var(--g-theme-on-surface), 0.75);
+}

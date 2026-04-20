@@ -1,0 +1,59 @@
+@mixin register-check-component-tokens() {
+	--g-token-check-gap: 10px;
+	--g-token-check-content-gap: 2px;
+	--g-token-check-group-gap: var(--g-token-space-2);
+	--g-token-check-group-items-gap-y: var(--g-token-space-3);
+	--g-token-check-group-items-gap-x: var(--g-token-space-4);
+	--g-token-check-group-legend-gap: var(--g-token-space-2);
+	--g-token-check-group-label-font-size: var(--g-token-font-size-xs);
+	--g-token-check-group-message-font-size: var(--g-token-font-size-xs);
+	--g-token-check-group-label-color: rgba(var(--g-theme-on-surface), 0.76);
+	--g-token-check-group-message-color: var(--g-token-text-muted);
+	--g-token-check-group-disabled-opacity: 0.7;
+	--g-token-check-indicator-size: 24px;
+	--g-token-check-indicator-border-width: 1px;
+	--g-token-check-indicator-shape-size-s: 18px;
+	--g-token-check-indicator-shape-size-m: 22px;
+	--g-token-check-indicator-shape-size-l: 26px;
+	--g-token-check-indicator-shape-size-xl: 30px;
+	--g-token-check-indicator-shape-radius: 8px;
+	--g-token-check-indicator-track-width-s: 36px;
+	--g-token-check-indicator-track-width-m: 42px;
+	--g-token-check-indicator-track-width-l: 48px;
+	--g-token-check-indicator-track-width-xl: 54px;
+	--g-token-check-indicator-track-height-s: 20px;
+	--g-token-check-indicator-track-height-m: 24px;
+	--g-token-check-indicator-track-height-l: 28px;
+	--g-token-check-indicator-track-height-xl: 32px;
+	--g-token-check-indicator-track-padding: 2px;
+	--g-token-check-indicator-thumb-size-s: 14px;
+	--g-token-check-indicator-thumb-size-m: 18px;
+	--g-token-check-indicator-thumb-size-l: 22px;
+	--g-token-check-indicator-thumb-size-xl: 26px;
+	--g-token-check-indicator-thumb-translate-s: 16px;
+	--g-token-check-indicator-thumb-translate-m: 18px;
+	--g-token-check-indicator-thumb-translate-l: 18px;
+	--g-token-check-indicator-thumb-translate-xl: 20px;
+	--g-token-check-indicator-dot-size: 10px;
+	--g-token-check-indicator-icon-size: 14px;
+	--g-token-check-indicator-shape-border: rgba(
+		var(--g-theme-on-surface),
+		0.24
+	);
+	--g-token-check-indicator-shape-bg: rgba(var(--g-theme-surface), 0.92);
+	--g-token-check-indicator-track-border: rgba(
+		var(--g-theme-on-surface),
+		0.2
+	);
+	--g-token-check-indicator-track-bg: rgba(var(--g-theme-on-surface), 0.12);
+	--g-token-check-indicator-thumb-bg: rgb(var(--g-theme-surface));
+	--g-token-check-indicator-thumb-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+	--g-token-check-indicator-focus-ring: 0 0 0 4px
+		rgb(var(--g-theme-primary) / 12%);
+	--g-token-check-indicator-disabled-opacity: var(--g-token-opacity-muted);
+	--g-token-check-label-color: rgba(var(--g-theme-on-surface), 0.92);
+	--g-token-check-label-font-size-s: var(--g-token-font-size-sm);
+	--g-token-check-label-font-size-m: var(--g-token-font-size-md);
+	--g-token-check-label-font-size-l: 15px;
+	--g-token-check-label-font-size-xl: var(--g-token-font-size-lg);
+}

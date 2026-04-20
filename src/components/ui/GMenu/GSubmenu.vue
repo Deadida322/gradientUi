@@ -135,6 +135,6 @@
 
 <style scoped lang="scss">
 	.g-menu__arrow {
-		opacity: 0.6;
+		opacity: var(--g-token-opacity-muted);
 	}
 </style>

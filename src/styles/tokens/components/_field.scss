@@ -1,0 +1,59 @@
+@mixin register-field-component-tokens() {
+	--g-token-field-radius: var(--g-token-radius-sm);
+	--g-token-field-gap: 3px;
+	--g-token-field-inner-gap: var(--g-token-space-1);
+	--g-token-field-affix-width: 24px;
+	--g-token-field-label-margin-inline: 2px;
+	--g-token-field-label-focus-margin-inline: 12px;
+	--g-token-field-label-opacity: 0.8;
+	--g-token-field-label-opacity-disabled: 0.5;
+	--g-token-field-helper-margin-left: 10px;
+	--g-token-field-helper-margin-left-focused: 12px;
+	--g-token-field-helper-font-size: 10px;
+	--g-token-field-helper-offset: 4px;
+	--g-token-field-helper-visible-translate-y: -2px;
+	--g-token-field-helper-opacity: 0.8;
+	--g-token-field-multiline-height: 80px;
+	--g-token-field-textarea-min-height: 64px;
+	--g-token-field-multiline-affix-padding-top: 5px;
+	--g-token-field-clear-padding-top: 6px;
+	--g-token-field-clear-opacity: 0.5;
+	--g-token-field-clear-opacity-hover: 0.8;
+	--g-token-field-height-s: 32px;
+	--g-token-field-height-m: 40px;
+	--g-token-field-height-l: 48px;
+	--g-token-field-height-xl: 56px;
+	--g-token-field-surface: rgb(244 247 248);
+	--g-token-field-surface-disabled: rgba(var(--g-theme-surface), 0.55);
+	--g-token-field-text-disabled: rgba(var(--g-theme-on-surface), 0.55);
+	--g-token-field-placeholder-disabled: rgba(var(--g-theme-on-surface), 0.4);
+	--g-token-field-state-surface-error: rgba(
+		var(--g-theme-error-container),
+		0.35
+	);
+	--g-token-field-state-surface-warning: rgba(
+		var(--g-theme-warning-container),
+		0.35
+	);
+	--g-token-field-state-surface-success: rgba(
+		var(--g-theme-success-container),
+		0.3
+	);
+	--g-token-field-state-placeholder-opacity: 0.3;
+	--g-token-field-padding-y-s: var(--g-token-space-1);
+	--g-token-field-padding-x-s: var(--g-token-space-2);
+	--g-token-field-padding-y-m: var(--g-token-space-2);
+	--g-token-field-padding-x-m: var(--g-token-space-3);
+	--g-token-field-padding-y-l: var(--g-token-space-3);
+	--g-token-field-padding-x-l: var(--g-token-space-4);
+	--g-token-field-padding-y-xl: 14px;
+	--g-token-field-padding-x-xl: 18px;
+	--g-token-field-label-font-size-s: 11px;
+	--g-token-field-label-font-size-m: var(--g-token-font-size-xs);
+	--g-token-field-label-font-size-l: var(--g-token-font-size-sm);
+	--g-token-field-label-font-size-xl: var(--g-token-font-size-md);
+	--g-token-field-input-font-size-s: var(--g-token-font-size-xs);
+	--g-token-field-input-font-size-m: var(--g-token-font-size-md);
+	--g-token-field-input-font-size-l: var(--g-token-font-size-lg);
+	--g-token-field-input-font-size-xl: var(--g-token-font-size-xl);
+}

@@ -132,6 +132,8 @@
 	@use '@/styles/mixins/variants' as variants;
 	@use '@/styles/mixins/base' as base;
 	@use '@/styles/mixins/sizes' as size;
+	@use '@/styles/mixins/focus-ring' as focusRing;
+	@use '@/styles/mixins/truncate' as truncate;
 
 	.g-toggle-button-field {
 		display: inline-flex;
@@ -173,7 +175,7 @@
 		--g-size-font-size-l: var(--g-token-toggle-font-size-l);
 		--g-size-font-size-xl: var(--g-token-toggle-font-size-xl);
 		--g-size-line-height: var(--g-token-toggle-line-height);
-		--g-size-line-height-s: var(--g-token-toggle-line-height-compact);
+		--g-token-icon-size-m: var(--g-token-toggle-icon-size);
 
 		gap: var(--g-token-toggle-gap);
 
@@ -206,12 +208,11 @@
 		}
 
 		&__label {
-			white-space: nowrap;
+			@include truncate.truncate;
 		}
 
 		&_focused {
-			box-shadow: 0 0 0 var(--g-token-state-focus-ring-width)
-				var(--g-token-focus-ring);
+			@include focusRing.focus-ring;
 		}
 
 		&_disabled {

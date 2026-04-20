@@ -1,0 +1,31 @@
+@mixin register-overlay-component-tokens() {
+	--g-token-overlay-radius: var(--g-token-radius-sm);
+	--g-token-overlay-padding: var(--g-token-space-2);
+	--g-token-overlay-surface: rgb(var(--g-theme-surface));
+	--g-token-overlay-shadow: var(--g-token-elevation-3);
+	--g-token-overlay-border: 1px solid rgba(var(--g-theme-on-surface), 0.08);
+	--g-token-menu-gap: var(--g-token-space-1);
+	--g-token-menu-item-gap: var(--g-token-space-2);
+	--g-token-menu-item-padding-y: var(--g-token-space-2);
+	--g-token-menu-item-padding-x: var(--g-token-space-3);
+	--g-token-menu-item-radius: var(--g-token-radius-xs);
+	--g-token-menu-item-font-size: var(--g-token-font-size-sm);
+	--g-token-menu-item-bg: rgb(var(--g-theme-background) / 20%);
+	--g-token-menu-item-hover-bg: rgba(
+		var(--g-theme-on-surface),
+		var(--g-token-state-hover-opacity)
+	);
+	--g-token-menu-item-selected-opacity: 0.06;
+	--g-token-menu-item-disabled-opacity: 0.5;
+	--g-token-menu-item-icon-size: var(--g-token-icon-size-m);
+	--g-token-tooltip-padding-y: 6px;
+	--g-token-tooltip-padding-x: 10px;
+	--g-token-tooltip-radius: var(--g-token-radius-xs);
+	--g-token-tooltip-font-size: var(--g-token-font-size-xs);
+	--g-token-tooltip-backdrop-blur: 2px;
+	--g-token-tooltip-surface: var(--g-token-surface-tonal);
+	--g-token-tooltip-surface-underlay: rgba(var(--g-theme-surface), 0.7);
+	--g-token-tooltip-color: var(--g-token-color-on-tonal);
+	--g-token-select-control-min-height: 20px;
+	--g-token-select-placeholder-opacity: 0.5;
+}

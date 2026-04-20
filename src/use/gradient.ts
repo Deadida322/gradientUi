@@ -51,6 +51,7 @@ export function useGradient(props: GGradientProps) {
 			'g-gradient_shadow': props.shadow,
 			'g-gradient_active': props.active,
 			'g-gradient_glow': props.glow,
+			'g-gradient_animate-glow': props.animateGlow,
 			'g-gradient_inherit-width': props.inheritWidth,
 			[`g-gradient_${props.placement}`]: props.placement,
 			[`g-gradient_${props.state}`]: props.state,

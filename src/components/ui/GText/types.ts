@@ -4,6 +4,7 @@ export interface GTextProps extends PLAProps {
 	tagName?: string;
 	label?: string;
 	type?: TextType;
+	truncate?: boolean;
 }
 
 export type TextType =

@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-	import usePx from '@/use/px';
+	import { computed } from 'vue';
 	import { makeIconProps } from './types';
 	import { useIcon } from '@/use/icon';
 	const props = defineProps(makeIconProps());
 
-	const computedSize = usePx(props.size);
 	const resolvedIcon = useIcon(() => props.icon!);
+	const iconSize = computed(() =>
+		props.size == null
+			? 'var(--g-token-icon-size-m)'
+			: Number.isFinite(Number(props.size))
+				? `${props.size}px`
+				: String(props.size)
+	);
 </script>
 
 <template>
@@ -14,7 +20,7 @@
 		:icon="resolvedIcon.icon"
 		:tag="props.tag"
 		class="g-icon"
-		:style="{ fontSize: computedSize }"
+		:style="{ fontSize: iconSize }"
 		v-bind="$attrs" />
 </template>
 

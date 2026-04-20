@@ -1,0 +1,8 @@
+@mixin overlay-surface {
+	padding: var(--g-token-overlay-padding);
+	border: var(--g-token-overlay-border);
+	border-radius: var(--g-token-overlay-radius);
+
+	background: var(--g-token-overlay-surface);
+	box-shadow: var(--g-token-overlay-shadow);
+}

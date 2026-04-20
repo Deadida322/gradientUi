@@ -70,6 +70,7 @@
 	@use '@/styles/mixins/variants' as variants;
 	@use '@/styles/mixins/base' as base;
 	@use '@/styles/mixins/sizes' as size;
+	@use '@/styles/mixins/truncate' as truncate;
 
 	.g-button {
 		@include base.base-component('g-button');
@@ -88,6 +89,7 @@
 		--g-size-font-size-l: var(--g-token-button-font-size-l);
 		--g-size-font-size-xl: var(--g-token-button-font-size-xl);
 		--g-size-line-height: var(--g-token-button-line-height);
+		--g-token-icon-size-m: var(--g-token-button-icon-size);
 
 		border-radius: v-bind('computedBorderRadius');
 
@@ -103,6 +105,8 @@
 
 		&__label {
 			line-height: var(--g-token-line-height-md);
+
+			@include truncate.truncate;
 		}
 	}
 

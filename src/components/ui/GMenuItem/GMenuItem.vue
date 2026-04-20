@@ -36,9 +36,13 @@
 </template>
 
 <style lang="scss" scoped>
-	@mixin state($selector, $color) {
+	@mixin state($selector, $color, $container: null) {
 		#{$selector} {
-			background-color: rgba(var($color), 0.05);
+			background-color: if(
+				$container,
+				rgba(var($container), 0.35),
+				rgba(var($color), var(--g-token-menu-item-selected-opacity))
+			);
 
 			& > .g-menu-item__label {
 				color: rgb(var($color));
@@ -55,50 +59,34 @@
 	}
 
 	.g-menu-item {
+		--g-token-icon-size-m: var(--g-token-menu-item-icon-size);
+
 		position: relative;
 
 		display: flex;
-		gap: 8px;
+		gap: var(--g-token-menu-item-gap);
 		justify-content: space-between;
 
 		box-sizing: border-box;
 		width: 100%;
-		padding: 8px 12px;
-		border-radius: 4px;
+		padding: var(--g-token-menu-item-padding-y)
+			var(--g-token-menu-item-padding-x);
+		border-radius: var(--g-token-menu-item-radius);
 
-		color: rgb(var(--g-theme-on-surface));
+		font-size: var(--g-token-menu-item-font-size);
+		color: var(--g-token-color-on-surface);
 		list-style: none;
 
-		background: rgb(var(--g-theme-background), 0.2);
+		background: var(--g-token-menu-item-bg);
 
 		transition:
-			background-color 0.2s ease-in,
-			color 0.2s ease-in;
+			background-color var(--g-token-duration-hover)
+				var(--g-token-easing-standard),
+			color var(--g-token-duration-hover) var(--g-token-easing-standard);
 
 		&:hover {
 			cursor: pointer;
-			background-color: rgba(var(--g-theme-on-surface), 0.06);
-		}
-
-		&.g-menu-item_state_error {
-			--g-menu-item-accent-color: rgb(var(--g-theme-error));
-			--g-menu-item-accent-bg: rgba(var(--g-theme-error-container), 0.35);
-		}
-
-		&.g-menu-item_state_warning {
-			--g-menu-item-accent-color: rgb(var(--g-theme-warning));
-			--g-menu-item-accent-bg: rgba(
-				var(--g-theme-warning-container),
-				0.35
-			);
-		}
-
-		&.g-menu-item_state_success {
-			--g-menu-item-accent-color: rgb(var(--g-theme-success));
-			--g-menu-item-accent-bg: rgba(
-				var(--g-theme-success-container),
-				0.3
-			);
+			background-color: var(--g-token-menu-item-hover-bg);
 		}
 
 		&__label {
@@ -109,17 +97,31 @@
 
 		&_disabled {
 			pointer-events: none;
-			opacity: 0.5;
+			opacity: var(--g-token-menu-item-disabled-opacity);
 		}
 
 		&__prepend,
 		&__append {
 			display: flex;
 			align-items: center;
+			font-size: var(--g-token-menu-item-icon-size);
 		}
 
 		@include state('&_selected', --g-theme-primary);
-		@include state('&_success.g-menu-item_selected', --g-theme-success);
-		@include state('&_warning.g-menu-item_selected', --g-theme-warning);
+		@include state(
+			'&_error.g-menu-item_selected',
+			--g-theme-error,
+			--g-theme-error-container
+		);
+		@include state(
+			'&_warning.g-menu-item_selected',
+			--g-theme-warning,
+			--g-theme-warning-container
+		);
+		@include state(
+			'&_success.g-menu-item_selected',
+			--g-theme-success,
+			--g-theme-success-container
+		);
 	}
 </style>

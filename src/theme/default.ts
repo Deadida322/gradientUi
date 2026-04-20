@@ -14,14 +14,17 @@ export interface SeedTheme {
 	seedColor: ColorInput;
 }
 
+export type ThemeMode = 'light' | 'dark';
+
 const THEME_CLASS = 'g-theme--material';
+const MODE_CLASS_PREFIX = 'g-theme--';
 
 const maps = {
 	primaryContainer: 'tonal',
 	onPrimaryContainer: 'onTonal'
 };
 
-function createSemanticTokens() {
+function createSemanticTokens(mode: ThemeMode) {
 	const warningSeedArgb = normalizeColor('#FFC107');
 	const successSeedArgb = normalizeColor('#4CAF50');
 
@@ -29,10 +32,11 @@ function createSemanticTokens() {
 		throw new Error('Failed to normalize semantic seed color.');
 	}
 
+	const schemeKey = mode === 'dark' ? 'dark' : 'light';
 	const warningScheme =
-		themeFromSourceColor(warningSeedArgb).schemes.light.toJSON();
+		themeFromSourceColor(warningSeedArgb).schemes[schemeKey].toJSON();
 	const successScheme =
-		themeFromSourceColor(successSeedArgb).schemes.light.toJSON();
+		themeFromSourceColor(successSeedArgb).schemes[schemeKey].toJSON();
 
 	return {
 		warning: hexToRgbString(hexFromArgb(warningScheme.primary)),
@@ -54,14 +58,15 @@ function createSemanticTokens() {
 	};
 }
 
-function generateLightTheme(seedColor: string) {
+function generateTheme(seedColor: string, mode: ThemeMode) {
 	const normalizedSeed = normalizeSeedToHex(seedColor);
 	const seedArgb = normalizeColor(normalizedSeed);
 	if (seedArgb == null) {
 		throw new Error('Failed to normalize seed color.');
 	}
 	const theme = themeFromSourceColor(seedArgb);
-	const scheme = theme.schemes.light.toJSON();
+	const schemeKey = mode === 'dark' ? 'dark' : 'light';
+	const scheme = theme.schemes[schemeKey].toJSON();
 
 	const tokens: Record<string, string> = {};
 
@@ -73,7 +78,7 @@ function generateLightTheme(seedColor: string) {
 
 	return {
 		...tokens,
-		...createSemanticTokens()
+		...createSemanticTokens(mode)
 	};
 }
 
@@ -139,21 +144,36 @@ function applyTokensToCSS(tokens: Record<string, string>, prefix: string) {
 }
 
 export function createDefaultLightTheme(seed: ColorInput = DEFAULT_SEED) {
-	document.getElementsByTagName('html')[0].classList.add(THEME_CLASS);
+	return createDefaultTheme(seed, 'light');
+}
+
+export function createDefaultDarkTheme(seed: ColorInput = DEFAULT_SEED) {
+	return createDefaultTheme(seed, 'dark');
+}
+
+export function createDefaultTheme(
+	seed: ColorInput = DEFAULT_SEED,
+	mode: ThemeMode = 'light'
+) {
+	const root = document.documentElement;
+	root.classList.add(THEME_CLASS);
+	root.classList.remove(
+		`${MODE_CLASS_PREFIX}light`,
+		`${MODE_CLASS_PREFIX}dark`
+	);
+	root.classList.add(`${MODE_CLASS_PREFIX}${mode}`);
+
 	const normalizedSeed = normalizeSeedToHex(seed);
 	const tokens = {
-		theme: generateLightTheme(normalizedSeed),
+		theme: generateTheme(normalizedSeed, mode),
 		colors: generateMaterialColors(normalizedSeed),
 		gradient: generatePrimaryGradients(normalizedSeed)
 	};
 
-	console.log(
-		{
-			tokens,
-			themeCSS: applyTokensToCSS(tokens.theme, 'theme'),
-			colorsCSS: applyTokensToCSS(tokens.colors, 'color'),
-			gradient: applyTokensToCSS(tokens.gradient, 'gradient')
-		},
-		'tokens'
-	);
+	return {
+		tokens,
+		themeCSS: applyTokensToCSS(tokens.theme, 'theme'),
+		colorsCSS: applyTokensToCSS(tokens.colors, 'color'),
+		gradientCSS: applyTokensToCSS(tokens.gradient, 'gradient')
+	};
 }

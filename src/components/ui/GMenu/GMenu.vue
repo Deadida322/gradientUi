@@ -83,7 +83,7 @@
 	.g-menu {
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		gap: var(--g-token-menu-gap);
 
 		width: max-content;
 		min-width: 100%;

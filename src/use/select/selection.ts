@@ -1,5 +1,6 @@
-import { unref, type MaybeRef } from 'vue';
+import { type MaybeRef } from 'vue';
 import { useBooleanProp } from '@/use/booleanProp';
+import { useSelectionModel } from '@/use/selectionModel';
 import type {
 	InternalItem,
 	SelectionComparatorValue,
@@ -26,78 +27,39 @@ export function useSelection<
 		value: SelectionValue<T, V, Multiple, ReturnObject>
 	) => void
 ) {
-	const isMultiple = useBooleanProp(props.multiple ?? false);
-	const isReturnObject = useBooleanProp(props.returnObject ?? false);
-
 	type ModelValue = SelectionValue<T, V, Multiple, ReturnObject>;
 	type SingleValue = SelectionComparatorValue<ModelValue>;
-	type Comparator = SelectionValueComparator<ModelValue>;
-
-	const compare: Comparator =
-		props.comparator ??
-		((a: SingleValue, b: SingleValue) => Object.is(a, b));
-
-	function getModelAsArray(modelValue: ModelValue): SingleValue[] {
-		return Array.isArray(modelValue) ? modelValue : [];
-	}
-
-	function getModelAsSingle(modelValue: ModelValue): SingleValue | null {
-		return Array.isArray(modelValue) ? null : (modelValue as SingleValue);
-	}
+	const isReturnObject = useBooleanProp(props.returnObject ?? false);
 
 	function extract(item: InternalItem<T, V>): SingleValue {
-		return (isReturnObject.value ? item.raw : item.value) as SingleValue;
+		return isReturnObject.value
+			? (item.raw as SingleValue)
+			: (item.value as SingleValue);
 	}
+	const selection = useSelectionModel<ModelValue, SingleValue>(
+		{
+			modelValue: props.modelValue,
+			multiple: props.multiple,
+			comparator: props.comparator,
+			emptyValue: null as ModelValue
+		},
+		(value) => emit('update:modelValue', value)
+	);
 
 	function isSelected(item: InternalItem<T, V>): boolean {
-		const value = extract(item);
-		const modelValue = unref(props.modelValue);
-
-		if (isMultiple.value) {
-			const model = getModelAsArray(modelValue);
-			return model.some((v) => compare(v, value));
-		}
-
-		const model = getModelAsSingle(modelValue);
-		if (model === null) return false;
-		return compare(model, value);
+		return selection.isSelected(extract(item));
 	}
 
 	function getNextValue(
 		item: InternalItem<T, V>
 	): SelectionValue<T, V, Multiple, ReturnObject> | undefined {
 		if (item.disabled) return;
-
-		const value = extract(item);
-		const modelValue = unref(props.modelValue);
-
-		if (isMultiple.value) {
-			const model = getModelAsArray(modelValue);
-			const next = [...model];
-
-			const index = next.findIndex((v) => compare(v, value));
-
-			if (index > -1) {
-				next.splice(index, 1);
-			} else {
-				next.push(value);
-			}
-
-			return next as ModelValue;
-		}
-
-		if (compare(modelValue as SingleValue, value)) {
-			return null as ModelValue;
-		}
-
-		return value as ModelValue;
+		return selection.getNextValue(extract(item));
 	}
 
 	function select(item: InternalItem<T, V>) {
-		const nextValue = getNextValue(item);
-		if (nextValue === undefined) return;
-
-		emit('update:modelValue', nextValue);
+		if (item.disabled) return;
+		selection.toggle(extract(item));
 	}
 
 	return {

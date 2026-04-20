@@ -61,6 +61,7 @@
 	@use '@/styles/mixins/variants' as variants;
 	@use '@/styles/mixins/base' as base;
 	@use '@/styles/mixins/sizes' as size;
+	@use '@/styles/mixins/truncate' as truncate;
 
 	.g-chip {
 		@include base.base-component('g-chip');
@@ -79,6 +80,7 @@
 		--g-size-font-size-l: var(--g-token-chip-font-size-l);
 		--g-size-font-size-xl: var(--g-token-chip-font-size-xl);
 		--g-size-line-height: var(--g-token-chip-line-height);
+		--g-token-icon-size-m: var(--g-token-chip-icon-size);
 
 		user-select: none;
 
@@ -105,9 +107,7 @@
 		}
 
 		&__label {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+			@include truncate.truncate;
 		}
 
 		&__remove {

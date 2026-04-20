@@ -10,6 +10,7 @@ export { default as GProgress } from '@/components/ui/GProgress/GProgress.vue';
 export { default as GRadio } from '@/components/ui/GRadio/GRadio.vue';
 export { default as GAlert } from '@/components/ui/GAlert/GAlert.vue';
 export { default as GExpansion } from '@/components/ui/GExpansion/GExpansion.vue';
+export { default as GExpansionGroup } from '@/components/ui/GExpansionGroup/GExpansionGroup.vue';
 export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';

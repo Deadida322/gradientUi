@@ -41,9 +41,11 @@
 		box-shadow: none;
 
 		transition:
-			padding 0.3s ease,
-			transform 0.3s ease,
-			box-shadow 0.3s ease;
+			padding var(--g-token-duration-slow) var(--g-token-easing-standard),
+			transform var(--g-token-duration-slow)
+				var(--g-token-easing-standard),
+			box-shadow var(--g-token-duration-slow)
+				var(--g-token-easing-standard);
 
 		@for $i from 0 through 10 {
 			&_border_#{$i} {
@@ -66,22 +68,24 @@
 			background: var(--g-gradient-main);
 			filter: blur(5px);
 
-			transition: all 0.2s ease-in-out;
+			transition: all var(--g-token-duration-base)
+				var(--g-token-easing-emphasized);
 		}
 
 		&__slot {
 			overflow: hidden;
 			border-radius: v-bind('computedBR');
 			background-color: white;
-			transition: transform 2s ease-in-out;
+			transition: transform var(--g-token-duration-slow)
+				var(--g-token-easing-emphasized);
 		}
 
 		&_shadow {
-			box-shadow: 2px 5px 4px -2px rgb(0 0 0 / 20%);
+			box-shadow: var(--g-token-elevation-2);
 
 			&:hover {
 				transform: translateY(-2px);
-				box-shadow: 2px 5px 4px 0 rgb(0 0 0 / 20%);
+				box-shadow: var(--g-token-elevation-2);
 			}
 		}
 
@@ -100,14 +104,20 @@
 				opacity: 0.6;
 				filter: blur(2px);
 
-				transition: transform 0.2s ease-in-out;
+				transition: transform var(--g-token-duration-base)
+					var(--g-token-easing-emphasized);
 			}
+		}
+
+		&_animate-glow::before {
+			animation: g-gradient-glow-pulse 1.8s ease-in-out infinite;
 		}
 
 		&:not(.g-gradient_disabled):hover,
 		&:not(.g-gradient_disabled).g-gradient_active {
 			transform: translateY(-2px);
-			transition: transform 0.2s ease-in-out;
+			transition: transform var(--g-token-duration-base)
+				var(--g-token-easing-emphasized);
 
 			&::before {
 				transform: translateY(2px);
@@ -188,6 +198,19 @@
 
 				filter: saturate(0.8);
 			}
+		}
+	}
+
+	@keyframes g-gradient-glow-pulse {
+		0%,
+		100% {
+			opacity: 0.45;
+			filter: blur(2px);
+		}
+
+		50% {
+			opacity: 0.85;
+			filter: blur(7px);
 		}
 	}
 

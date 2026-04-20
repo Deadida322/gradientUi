@@ -18,7 +18,7 @@ export const makeIconProps = () => ({
 	},
 	size: {
 		type: [Number, String] as PropType<number | StringeredNumber>,
-		default: 20
+		default: undefined
 	},
 	tag: {
 		type: String,

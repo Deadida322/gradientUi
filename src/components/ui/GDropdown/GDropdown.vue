@@ -87,14 +87,12 @@
 </template>
 
 <style scoped lang="scss">
+	@use '@/styles/mixins/overlay-surface' as overlaySurface;
+
 	.g-dropdown {
 		pointer-events: auto;
-
 		min-width: fit-content;
-		padding: 8px;
-		border-radius: 8px;
 
-		background: rgb(var(--g-theme-surface));
-		box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+		@include overlaySurface.overlay-surface;
 	}
 </style>

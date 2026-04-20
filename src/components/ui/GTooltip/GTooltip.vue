@@ -54,20 +54,24 @@
 </template>
 
 <style lang="scss" scoped>
+	@use '@/styles/mixins/truncate' as truncate;
+
 	.g-tooltip {
 		pointer-events: none;
 
 		overflow: hidden;
 
-		padding: 6px 10px;
-		border-radius: 4px;
+		padding: var(--g-token-tooltip-padding-y)
+			var(--g-token-tooltip-padding-x);
+		border-radius: var(--g-token-tooltip-radius);
 
-		font-size: 12px;
-		color: var(--g-on-tonal);
-		white-space: nowrap;
+		font-size: var(--g-token-tooltip-font-size);
+		color: var(--g-token-tooltip-color);
 
-		background-color: var(--g-tonal);
-		backdrop-filter: blur(2px);
+		background-color: var(--g-token-tooltip-surface);
+		backdrop-filter: blur(var(--g-token-tooltip-backdrop-blur));
+
+		@include truncate.truncate;
 
 		&__underlay {
 			position: absolute;
@@ -78,7 +82,7 @@
 			width: 100%;
 			height: 100%;
 
-			background-color: rgba(var(--g-theme-surface), 70%);
+			background-color: var(--g-token-tooltip-surface-underlay);
 		}
 
 		&__trigger {

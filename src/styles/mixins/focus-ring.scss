@@ -1,0 +1,10 @@
+@mixin focus-ring($color: var(--g-token-focus-ring)) {
+	outline: none;
+	box-shadow: 0 0 0 var(--g-token-state-focus-ring-width) #{$color};
+}
+
+@mixin focus-ring-class($selector, $color: var(--g-token-focus-ring)) {
+	#{$selector} {
+		@include focus-ring($color);
+	}
+}

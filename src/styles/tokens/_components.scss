@@ -1,0 +1,15 @@
+@use './components/action' as action;
+@use './components/field' as field;
+@use './components/check' as check;
+@use './components/expansion' as expansion;
+@use './components/overlay' as overlay;
+@use './components/typography' as typography;
+
+@mixin register-component-tokens() {
+	@include action.register-action-component-tokens();
+	@include field.register-field-component-tokens();
+	@include check.register-check-component-tokens();
+	@include expansion.register-expansion-component-tokens();
+	@include overlay.register-overlay-component-tokens();
+	@include typography.register-typography-component-tokens();
+}

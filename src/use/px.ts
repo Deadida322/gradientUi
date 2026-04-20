@@ -1,9 +1,17 @@
-import type { StringeredNumber } from '@/types/CommonTypes';
+import type { PXtype } from '@/types/CommonTypes';
 import { computed, toValue, type ComputedRef, type MaybeRef } from 'vue';
-export default (value: MaybeRef<number | StringeredNumber>): ComputedRef =>
+
+export default (value: MaybeRef<PXtype>): ComputedRef<string> =>
 	computed((): string => {
-		if (+toValue(value)) {
-			return `${toValue(value)}px`;
+		const resolved = toValue(value);
+
+		if (resolved === '' || resolved === null || resolved === undefined) {
+			return '';
 		}
-		return String(toValue(value));
+
+		if (typeof resolved === 'number') {
+			return `${resolved}px`;
+		}
+
+		return /^\d+(\.\d+)?$/.test(resolved) ? `${resolved}px` : resolved;
 	});

@@ -2,10 +2,12 @@
 	@if $prefix {
 		.#{$prefix}_disabled {
 			pointer-events: none;
-			opacity: 0.7;
+			opacity: var(--g-token-opacity-soft);
 		}
-	} @else {
+	}
+
+ @else {
 		pointer-events: none;
-		opacity: 0.7;
+		opacity: var(--g-token-opacity-soft);
 	}
 }

@@ -4,9 +4,11 @@
 	import PlaygroundDropdown from './PlaygroundDropdown.vue';
 	import PlaygroundCheckControls from './PlaygroundCheckControls.vue';
 	import PlaygroundChip from './PlaygroundChip.vue';
+	import PlaygroundExpansion from './PlaygroundExpansion.vue';
 	import PlaygroundInput from './PlaygroundInput.vue';
 	import PlaygroundTextarea from './PlaygroundTextarea.vue';
 	import PlaygroundSelect from './PlaygroundSelect.vue';
+	import PlaygroundDesignSystem from './PlaygroundDesignSystem.vue';
 </script>
 
 <template>
@@ -15,10 +17,12 @@
 		<playground-tooltip></playground-tooltip>
 		<playground-dropdown></playground-dropdown>
 		<playground-chip></playground-chip>
+		<playground-expansion></playground-expansion>
 		<playground-input></playground-input>
 		<playground-textarea></playground-textarea>
 		<playground-select></playground-select>
 		<playground-check-controls></playground-check-controls>
+		<playground-design-system></playground-design-system>
 	</div>
 </template>
 
