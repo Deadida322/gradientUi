@@ -165,28 +165,28 @@
 
 		&_focused {
 			.g-check-control__label {
-				color: rgb(var(--g-theme-primary));
+				color: var(--g-token-color-primary);
 			}
 		}
 
 		&_error {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: rgb(var(--g-theme-error));
+				color: var(--g-token-color-error);
 			}
 		}
 
 		&_warning {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: rgb(var(--g-theme-warning));
+				color: var(--g-token-color-warning);
 			}
 		}
 
 		&_success {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: rgb(var(--g-theme-success));
+				color: var(--g-token-color-success);
 			}
 		}
 

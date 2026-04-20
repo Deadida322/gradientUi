@@ -52,20 +52,36 @@
 
 <style scoped lang="scss">
 	.g-check-indicator {
-		--g-check-indicator-accent: rgb(var(--g-theme-primary));
-		--g-check-indicator-shape-size: 22px;
-		--g-check-indicator-track-width: 42px;
-		--g-check-indicator-track-height: 24px;
-		--g-check-indicator-thumb-size: 18px;
-		--g-check-indicator-thumb-translate: 18px;
-		--g-check-indicator-shape-radius: 8px;
-		--g-check-indicator-shape-border: rgba(var(--g-theme-on-surface), 0.24);
-		--g-check-indicator-shape-bg: rgba(var(--g-theme-surface), 0.92);
-		--g-check-indicator-track-border: rgba(var(--g-theme-on-surface), 0.2);
-		--g-check-indicator-track-bg: rgba(var(--g-theme-on-surface), 0.12);
+		--g-check-indicator-accent: var(--g-token-color-primary);
+		--g-check-indicator-shape-size: var(
+			--g-token-check-indicator-shape-size-m
+		);
+		--g-check-indicator-track-width: var(
+			--g-token-check-indicator-track-width-m
+		);
+		--g-check-indicator-track-height: var(
+			--g-token-check-indicator-track-height-m
+		);
+		--g-check-indicator-thumb-size: var(
+			--g-token-check-indicator-thumb-size-m
+		);
+		--g-check-indicator-thumb-translate: var(
+			--g-token-check-indicator-thumb-translate-m
+		);
+		--g-check-indicator-shape-radius: var(
+			--g-token-check-indicator-shape-radius
+		);
+		--g-check-indicator-shape-border: var(
+			--g-token-check-indicator-shape-border
+		);
+		--g-check-indicator-shape-bg: var(--g-token-check-indicator-shape-bg);
+		--g-check-indicator-track-border: var(
+			--g-token-check-indicator-track-border
+		);
+		--g-check-indicator-track-bg: var(--g-token-check-indicator-track-bg);
 		--g-check-indicator-dot-scale: 0;
 		--g-check-indicator-thumb-transform: translateX(0);
-		--g-check-indicator-icon-color: rgb(var(--g-theme-on-primary));
+		--g-check-indicator-icon-color: var(--g-token-color-on-primary);
 
 		display: inline-flex;
 		align-items: center;
@@ -79,7 +95,8 @@
 
 			width: var(--g-check-indicator-shape-size);
 			height: var(--g-check-indicator-shape-size);
-			border: 1px solid var(--g-check-indicator-shape-border);
+			border: var(--g-token-check-indicator-border-width) solid
+				var(--g-check-indicator-shape-border);
 			border-radius: var(--g-check-indicator-shape-radius);
 
 			background-color: var(--g-check-indicator-shape-bg);
@@ -94,8 +111,8 @@
 		&__radio-dot {
 			transform: scale(var(--g-check-indicator-dot-scale));
 
-			width: 10px;
-			height: 10px;
+			width: var(--g-token-check-indicator-dot-size);
+			height: var(--g-token-check-indicator-dot-size);
 			border-radius: 999px;
 
 			background-color: currentcolor;
@@ -111,8 +128,9 @@
 
 			width: var(--g-check-indicator-track-width);
 			height: var(--g-check-indicator-track-height);
-			padding: 2px;
-			border: 1px solid var(--g-check-indicator-track-border);
+			padding: var(--g-token-check-indicator-track-padding);
+			border: var(--g-token-check-indicator-border-width) solid
+				var(--g-check-indicator-track-border);
 			border-radius: 999px;
 
 			background-color: var(--g-check-indicator-track-bg);
@@ -129,8 +147,8 @@
 			height: var(--g-check-indicator-thumb-size);
 			border-radius: 999px;
 
-			background-color: rgb(var(--g-theme-surface));
-			box-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+			background-color: var(--g-token-check-indicator-thumb-bg);
+			box-shadow: var(--g-token-check-indicator-thumb-shadow);
 
 			transition: transform 0.18s ease;
 		}
@@ -160,47 +178,78 @@
 		&_focused {
 			.g-check-indicator__shape,
 			.g-check-indicator__switch-track {
-				box-shadow: 0 0 0 4px rgb(var(--g-theme-primary) / 12%);
+				box-shadow: var(--g-token-check-indicator-focus-ring);
 			}
 		}
 
 		&_error {
-			--g-check-indicator-accent: rgb(var(--g-theme-error));
+			--g-check-indicator-accent: var(--g-token-color-error);
 		}
 
 		&_warning {
-			--g-check-indicator-accent: rgb(var(--g-theme-warning));
+			--g-check-indicator-accent: var(--g-token-color-warning);
 		}
 
 		&_success {
-			--g-check-indicator-accent: rgb(var(--g-theme-success));
+			--g-check-indicator-accent: var(--g-token-color-success);
 		}
 
 		&_disabled {
-			opacity: 0.65;
+			opacity: var(--g-token-check-indicator-disabled-opacity);
 		}
 
 		&_s {
-			--g-check-indicator-shape-size: 18px;
-			--g-check-indicator-track-width: 36px;
-			--g-check-indicator-track-height: 20px;
-			--g-check-indicator-thumb-size: 14px;
-			--g-check-indicator-thumb-translate: 16px;
+			--g-check-indicator-shape-size: var(
+				--g-token-check-indicator-shape-size-s
+			);
+			--g-check-indicator-track-width: var(
+				--g-token-check-indicator-track-width-s
+			);
+			--g-check-indicator-track-height: var(
+				--g-token-check-indicator-track-height-s
+			);
+			--g-check-indicator-thumb-size: var(
+				--g-token-check-indicator-thumb-size-s
+			);
+			--g-check-indicator-thumb-translate: var(
+				--g-token-check-indicator-thumb-translate-s
+			);
 		}
 
 		&_l {
-			--g-check-indicator-shape-size: 26px;
-			--g-check-indicator-track-width: 48px;
-			--g-check-indicator-track-height: 28px;
-			--g-check-indicator-thumb-size: 22px;
+			--g-check-indicator-shape-size: var(
+				--g-token-check-indicator-shape-size-l
+			);
+			--g-check-indicator-track-width: var(
+				--g-token-check-indicator-track-width-l
+			);
+			--g-check-indicator-track-height: var(
+				--g-token-check-indicator-track-height-l
+			);
+			--g-check-indicator-thumb-size: var(
+				--g-token-check-indicator-thumb-size-l
+			);
+			--g-check-indicator-thumb-translate: var(
+				--g-token-check-indicator-thumb-translate-l
+			);
 		}
 
 		&_xl {
-			--g-check-indicator-shape-size: 30px;
-			--g-check-indicator-track-width: 54px;
-			--g-check-indicator-track-height: 32px;
-			--g-check-indicator-thumb-size: 26px;
-			--g-check-indicator-thumb-translate: 20px;
+			--g-check-indicator-shape-size: var(
+				--g-token-check-indicator-shape-size-xl
+			);
+			--g-check-indicator-track-width: var(
+				--g-token-check-indicator-track-width-xl
+			);
+			--g-check-indicator-track-height: var(
+				--g-token-check-indicator-track-height-xl
+			);
+			--g-check-indicator-thumb-size: var(
+				--g-token-check-indicator-thumb-size-xl
+			);
+			--g-check-indicator-thumb-translate: var(
+				--g-token-check-indicator-thumb-translate-xl
+			);
 		}
 	}
 </style>

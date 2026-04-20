@@ -46,13 +46,22 @@
 	--g-token-duration-base: 0.2s;
 	--g-token-duration-slow: 0.3s;
 	--g-token-easing-standard: ease;
+	--g-token-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
 	--g-token-opacity-disabled: 0.55;
 	--g-token-opacity-muted: 0.65;
 	--g-token-opacity-soft: 0.75;
 	--g-token-opacity-subtle: 0.14;
+	--g-token-state-hover-opacity: 0.1;
+	--g-token-state-hover-opacity-strong: 0.16;
+	--g-token-state-selected-opacity: 0.12;
+	--g-token-state-focus-ring-width: 2px;
 	--g-token-elevation-1: 0 1px 2px rgb(0 0 0 / 10%);
 	--g-token-elevation-2: 2px 5px 4px -2px rgb(0 0 0 / 20%);
 	--g-token-elevation-3: 0 8px 24px rgb(0 0 0 / 18%);
+	--g-token-icon-size-s: 16px;
+	--g-token-icon-size-m: 18px;
+	--g-token-icon-size-l: 20px;
+	--g-token-icon-size-xl: 24px;
 
 	/* Semantic tokens */
 	--g-token-color-primary: rgb(var(--g-theme-primary));
@@ -89,26 +98,21 @@
 	--g-token-button-font-size-l: var(--g-token-font-size-lg);
 	--g-token-button-font-size-xl: var(--g-token-font-size-xl);
 	--g-token-button-line-height: var(--g-token-line-height-md);
-
-	--g-token-chip-radius: var(--g-token-radius-lg);
+	--g-token-chip-radius: 999px;
 	--g-token-chip-gap: 6px;
-	--g-token-chip-padding-y-s: 2px;
-	--g-token-chip-padding-x-s: var(--g-token-space-2);
-	--g-token-chip-padding-y-m: var(--g-token-space-1);
-	--g-token-chip-padding-x-m: 10px;
-	--g-token-chip-padding-y-l: 6px;
-	--g-token-chip-padding-x-l: var(--g-token-space-3);
-	--g-token-chip-padding-y-xl: var(--g-token-space-2);
-	--g-token-chip-padding-x-xl: 14px;
-	--g-token-chip-font-size-s: var(--g-token-font-size-xs);
-	--g-token-chip-font-size-m: var(--g-token-font-size-sm);
-	--g-token-chip-font-size-l: var(--g-token-font-size-md);
-	--g-token-chip-font-size-xl: 15px;
-	--g-token-chip-line-height-s: var(--g-token-line-height-sm);
-	--g-token-chip-line-height-m: var(--g-token-line-height-sm);
-	--g-token-chip-line-height-l: var(--g-token-line-height-md);
-	--g-token-chip-line-height-xl: var(--g-token-line-height-md);
-
+	--g-token-chip-padding-y-s: var(--g-token-button-padding-y-s);
+	--g-token-chip-padding-x-s: var(--g-token-button-padding-x-s);
+	--g-token-chip-padding-y-m: var(--g-token-button-padding-y-m);
+	--g-token-chip-padding-x-m: var(--g-token-button-padding-x-m);
+	--g-token-chip-padding-y-l: var(--g-token-button-padding-y-l);
+	--g-token-chip-padding-x-l: var(--g-token-button-padding-x-l);
+	--g-token-chip-padding-y-xl: var(--g-token-button-padding-y-xl);
+	--g-token-chip-padding-x-xl: var(--g-token-button-padding-x-xl);
+	--g-token-chip-font-size-s: var(--g-token-button-font-size-s);
+	--g-token-chip-font-size-m: var(--g-token-button-font-size-m);
+	--g-token-chip-font-size-l: var(--g-token-button-font-size-l);
+	--g-token-chip-font-size-xl: var(--g-token-button-font-size-xl);
+	--g-token-chip-line-height: var(--g-token-button-line-height);
 	--g-token-toggle-radius: var(--g-token-radius-md);
 	--g-token-toggle-gap: var(--g-token-space-2);
 	--g-token-toggle-padding-y-s: var(--g-token-space-1);
@@ -123,23 +127,49 @@
 	--g-token-toggle-font-size-m: var(--g-token-font-size-md);
 	--g-token-toggle-font-size-l: 15px;
 	--g-token-toggle-font-size-xl: 16px;
-
+	--g-token-toggle-line-height-compact: var(--g-token-line-height-sm);
+	--g-token-toggle-line-height: var(--g-token-line-height-md);
 	--g-token-field-radius: var(--g-token-radius-sm);
 	--g-token-field-gap: 3px;
 	--g-token-field-inner-gap: var(--g-token-space-1);
 	--g-token-field-affix-width: 24px;
 	--g-token-field-label-margin-inline: 2px;
+	--g-token-field-label-focus-margin-inline: 12px;
+	--g-token-field-label-opacity: 0.8;
+	--g-token-field-label-opacity-disabled: 0.5;
 	--g-token-field-helper-margin-left: 10px;
+	--g-token-field-helper-margin-left-focused: 12px;
 	--g-token-field-helper-font-size: 10px;
 	--g-token-field-helper-offset: 4px;
+	--g-token-field-helper-visible-translate-y: -2px;
+	--g-token-field-helper-opacity: 0.8;
 	--g-token-field-multiline-height: 80px;
 	--g-token-field-textarea-min-height: 64px;
 	--g-token-field-multiline-affix-padding-top: 10px;
 	--g-token-field-clear-padding-top: 6px;
+	--g-token-field-clear-opacity: 0.5;
+	--g-token-field-clear-opacity-hover: 0.8;
 	--g-token-field-height-s: 32px;
 	--g-token-field-height-m: 40px;
 	--g-token-field-height-l: 48px;
 	--g-token-field-height-xl: 56px;
+	--g-token-field-surface: rgb(244 247 248);
+	--g-token-field-surface-disabled: rgba(var(--g-theme-surface), 0.55);
+	--g-token-field-text-disabled: rgba(var(--g-theme-on-surface), 0.55);
+	--g-token-field-placeholder-disabled: rgba(var(--g-theme-on-surface), 0.4);
+	--g-token-field-state-surface-error: rgba(
+		var(--g-theme-error-container),
+		0.35
+	);
+	--g-token-field-state-surface-warning: rgba(
+		var(--g-theme-warning-container),
+		0.35
+	);
+	--g-token-field-state-surface-success: rgba(
+		var(--g-theme-success-container),
+		0.3
+	);
+	--g-token-field-state-placeholder-opacity: 0.3;
 	--g-token-field-padding-y-s: var(--g-token-space-1);
 	--g-token-field-padding-x-s: var(--g-token-space-2);
 	--g-token-field-padding-y-m: var(--g-token-space-2);
@@ -156,16 +186,61 @@
 	--g-token-field-input-font-size-m: var(--g-token-font-size-md);
 	--g-token-field-input-font-size-l: var(--g-token-font-size-lg);
 	--g-token-field-input-font-size-xl: var(--g-token-font-size-xl);
-
 	--g-token-check-gap: 10px;
 	--g-token-check-content-gap: 2px;
+	--g-token-check-group-gap: var(--g-token-space-2);
+	--g-token-check-group-items-gap-y: var(--g-token-space-3);
+	--g-token-check-group-items-gap-x: var(--g-token-space-4);
+	--g-token-check-group-legend-gap: var(--g-token-space-2);
+	--g-token-check-group-label-font-size: var(--g-token-font-size-xs);
+	--g-token-check-group-message-font-size: var(--g-token-font-size-xs);
+	--g-token-check-group-label-color: rgba(var(--g-theme-on-surface), 0.76);
+	--g-token-check-group-message-color: var(--g-token-text-muted);
+	--g-token-check-group-disabled-opacity: 0.7;
 	--g-token-check-indicator-size: 24px;
+	--g-token-check-indicator-border-width: 1px;
+	--g-token-check-indicator-shape-size-s: 18px;
+	--g-token-check-indicator-shape-size-m: 22px;
+	--g-token-check-indicator-shape-size-l: 26px;
+	--g-token-check-indicator-shape-size-xl: 30px;
+	--g-token-check-indicator-shape-radius: 8px;
+	--g-token-check-indicator-track-width-s: 36px;
+	--g-token-check-indicator-track-width-m: 42px;
+	--g-token-check-indicator-track-width-l: 48px;
+	--g-token-check-indicator-track-width-xl: 54px;
+	--g-token-check-indicator-track-height-s: 20px;
+	--g-token-check-indicator-track-height-m: 24px;
+	--g-token-check-indicator-track-height-l: 28px;
+	--g-token-check-indicator-track-height-xl: 32px;
+	--g-token-check-indicator-track-padding: 2px;
+	--g-token-check-indicator-thumb-size-s: 14px;
+	--g-token-check-indicator-thumb-size-m: 18px;
+	--g-token-check-indicator-thumb-size-l: 22px;
+	--g-token-check-indicator-thumb-size-xl: 26px;
+	--g-token-check-indicator-thumb-translate-s: 16px;
+	--g-token-check-indicator-thumb-translate-m: 18px;
+	--g-token-check-indicator-thumb-translate-l: 18px;
+	--g-token-check-indicator-thumb-translate-xl: 20px;
+	--g-token-check-indicator-dot-size: 10px;
+	--g-token-check-indicator-icon-size: 14px;
+	--g-token-check-indicator-shape-border: rgba(
+		var(--g-theme-on-surface),
+		0.24
+	);
+	--g-token-check-indicator-shape-bg: rgba(var(--g-theme-surface), 0.92);
+	--g-token-check-indicator-track-border: rgba(var(--g-theme-on-surface), 0.2);
+	--g-token-check-indicator-track-bg: rgba(var(--g-theme-on-surface), 0.12);
+	--g-token-check-indicator-thumb-bg: rgb(var(--g-theme-surface));
+	--g-token-check-indicator-thumb-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+	--g-token-check-indicator-focus-ring: 0 0 0 4px rgb(
+		var(--g-theme-primary) / 12%
+	);
+	--g-token-check-indicator-disabled-opacity: var(--g-token-opacity-muted);
 	--g-token-check-label-color: rgba(var(--g-theme-on-surface), 0.92);
 	--g-token-check-label-font-size-s: var(--g-token-font-size-sm);
 	--g-token-check-label-font-size-m: var(--g-token-font-size-md);
 	--g-token-check-label-font-size-l: 15px;
 	--g-token-check-label-font-size-xl: var(--g-token-font-size-lg);
-
 	--g-token-select-control-min-height: 20px;
 	--g-token-select-placeholder-opacity: 0.5;
 

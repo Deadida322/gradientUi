@@ -172,10 +172,8 @@
 		--g-size-font-size-m: var(--g-token-toggle-font-size-m);
 		--g-size-font-size-l: var(--g-token-toggle-font-size-l);
 		--g-size-font-size-xl: var(--g-token-toggle-font-size-xl);
-		--g-size-line-height-s: var(--g-token-line-height-sm);
-		--g-size-line-height-m: var(--g-token-line-height-md);
-		--g-size-line-height-l: var(--g-token-line-height-md);
-		--g-size-line-height-xl: var(--g-token-line-height-md);
+		--g-size-line-height: var(--g-token-toggle-line-height);
+		--g-size-line-height-s: var(--g-token-toggle-line-height-compact);
 
 		gap: var(--g-token-toggle-gap);
 
@@ -212,7 +210,8 @@
 		}
 
 		&_focused {
-			box-shadow: 0 0 0 2px var(--g-token-focus-ring);
+			box-shadow: 0 0 0 var(--g-token-state-focus-ring-width)
+				var(--g-token-focus-ring);
 		}
 
 		&_disabled {

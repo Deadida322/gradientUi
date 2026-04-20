@@ -78,10 +78,7 @@
 		--g-size-font-size-m: var(--g-token-chip-font-size-m);
 		--g-size-font-size-l: var(--g-token-chip-font-size-l);
 		--g-size-font-size-xl: var(--g-token-chip-font-size-xl);
-		--g-size-line-height-s: var(--g-token-chip-line-height-s);
-		--g-size-line-height-m: var(--g-token-chip-line-height-m);
-		--g-size-line-height-l: var(--g-token-chip-line-height-l);
-		--g-size-line-height-xl: var(--g-token-chip-line-height-xl);
+		--g-size-line-height: var(--g-token-chip-line-height);
 
 		user-select: none;
 
@@ -90,7 +87,7 @@
 		border-radius: var(--g-token-chip-radius);
 
 		font-size: var(--g-token-chip-font-size-m);
-		line-height: var(--g-token-chip-line-height-m);
+		line-height: var(--g-token-chip-line-height);
 
 		&__content {
 			display: inline-flex;

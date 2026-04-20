@@ -142,7 +142,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			min-width: 24px;
+			min-width: var(--g-token-field-affix-width);
 		}
 
 		&__label {
@@ -154,7 +154,7 @@
 			color: var(--primary-text);
 			text-align: left;
 
-			opacity: 0.8;
+			opacity: var(--g-token-field-label-opacity);
 
 			transition: margin var(--g-token-duration-base)
 				var(--g-token-easing-standard);
@@ -173,46 +173,46 @@
 				var(--g-token-field-padding-x-m);
 			border-radius: var(--g-token-field-radius);
 
-			background-color: rgb(244 247 248);
+			background-color: var(--g-token-field-surface);
 
 			&_error {
 				color: $field-error;
-				background-color: rgba(var(--g-theme-error-container), 0.35);
+				background-color: var(--g-token-field-state-surface-error);
 
 				:deep(.g-field-base__native) {
 					color: $field-error;
 
 					&::placeholder {
 						color: $field-error;
-						opacity: 0.3;
+						opacity: var(--g-token-field-state-placeholder-opacity);
 					}
 				}
 			}
 
 			&_warning {
 				color: $field-warning;
-				background-color: rgba(var(--g-theme-warning-container), 0.35);
+				background-color: var(--g-token-field-state-surface-warning);
 
 				:deep(.g-field-base__native) {
 					color: $field-warning;
 
 					&::placeholder {
 						color: $field-warning;
-						opacity: 0.3;
+						opacity: var(--g-token-field-state-placeholder-opacity);
 					}
 				}
 			}
 
 			&_success {
 				color: $field-success;
-				background-color: rgba(var(--g-theme-success-container), 0.3);
+				background-color: var(--g-token-field-state-surface-success);
 
 				:deep(.g-field-base__native) {
 					color: $field-success;
 
 					&::placeholder {
 						color: $field-success;
-						opacity: 0.3;
+						opacity: var(--g-token-field-state-placeholder-opacity);
 					}
 				}
 			}
@@ -291,12 +291,13 @@
 
 		&__cross {
 			cursor: pointer;
-			opacity: 0.5;
-			transition: all 0.1s ease-in;
+			opacity: var(--g-token-field-clear-opacity);
+			transition: all var(--g-token-duration-fast)
+				var(--g-token-easing-standard);
 
 			&:hover {
 				transform: rotate(4deg);
-				opacity: 0.8;
+				opacity: var(--g-token-field-clear-opacity-hover);
 			}
 		}
 
@@ -313,10 +314,13 @@
 
 			opacity: 0;
 
-			transition: all 0.2s ease-in-out;
+			transition: all var(--g-token-duration-base)
+				var(--g-token-easing-emphasized);
 
 			&_visible {
-				transform: translateY(-2px);
+				transform: translateY(
+					var(--g-token-field-helper-visible-translate-y)
+				);
 				opacity: 1;
 			}
 		}
@@ -334,34 +338,34 @@
 
 		&_focused {
 			.g-field-base__label {
-				margin-left: 12px;
+				margin-left: var(--g-token-field-label-focus-margin-inline);
 			}
 
 			.g-field-base__helper {
 				transform: translateY(0);
 				border-bottom: none;
-				opacity: 0.8;
+				opacity: var(--g-token-field-helper-opacity);
 			}
 		}
 
 		&_disabled {
 			.g-field-base__label {
 				cursor: not-allowed;
-				opacity: 0.5;
+				opacity: var(--g-token-field-label-opacity-disabled);
 			}
 
 			.g-field-base__wrapper {
 				cursor: not-allowed;
 				opacity: 0.75;
-				background-color: rgba(var(--g-theme-surface), 0.55);
+				background-color: var(--g-token-field-surface-disabled);
 			}
 
 			:deep(.g-field-base__native) {
 				cursor: not-allowed;
-				color: rgba(var(--g-theme-on-surface), 0.55);
+				color: var(--g-token-field-text-disabled);
 
 				&::placeholder {
-					color: rgba(var(--g-theme-on-surface), 0.4);
+					color: var(--g-token-field-placeholder-disabled);
 				}
 			}
 		}

@@ -13,7 +13,10 @@
 		&.#{$prefix}_tonal {
 			border-color: transparent;
 			color: rgb(var(#{$accent-var}));
-			background: rgba(var(#{$accent-var}), 0.14);
+			background: rgba(
+				var(#{$accent-var}),
+				var(--g-token-state-hover-opacity-strong)
+			);
 
 			&:not(:disabled):hover {
 				color: white;
@@ -28,7 +31,10 @@
 
 			&:not(:disabled):hover {
 				color: rgb(var(#{$accent-var}));
-				background: rgba(var(#{$accent-var}), 0.1);
+				background: rgba(
+					var(#{$accent-var}),
+					var(--g-token-state-hover-opacity)
+				);
 			}
 		}
 
@@ -38,12 +44,16 @@
 
 			&:not(:disabled):hover {
 				color: rgb(var(#{$accent-var}));
-				background: rgba(var(#{$accent-var}), 0.1);
+				background: rgba(
+					var(#{$accent-var}),
+					var(--g-token-state-hover-opacity)
+				);
 			}
 		}
 
 		&.#{$prefix}_focused {
-			box-shadow: 0 0 0 2px rgba(var(#{$accent-var}), 0.18);
+			box-shadow: 0 0 0 var(--g-token-state-focus-ring-width)
+				rgba(var(#{$accent-var}), 0.18);
 		}
 	}
 }

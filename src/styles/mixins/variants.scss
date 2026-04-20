@@ -1,7 +1,3 @@
-// styles/mixins/_variants.scss
-
-.test-class { color: red; }
-
 @mixin variant-filled($prefix) {
     .#{$prefix}_filled {
         color: white;
@@ -21,7 +17,10 @@
         background: transparent;
 
         &:hover {
-            background-color: rgb(0 0 0 / 5%);
+            background-color: rgb(
+				var(--g-theme-on-surface) /
+					var(--g-token-state-hover-opacity)
+			);
         }
     }
 }
@@ -45,7 +44,10 @@
 
         &:hover {
             color: var(--g-primary-color);
-            background-color: rgb(0 0 0 / 5%);
+            background-color: rgb(
+				var(--g-theme-on-surface) /
+					var(--g-token-state-hover-opacity)
+			);
         }
     }
 }
