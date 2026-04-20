@@ -1,0 +1,67 @@
+@mixin action-state($prefix, $name, $accent-var) {
+	.#{$prefix}_#{$name} {
+		&.#{$prefix}_default {
+			border-color: transparent;
+			color: white;
+			background: rgb(var(#{$accent-var}));
+
+			&:not(:disabled):hover {
+				background: rgba(var(#{$accent-var}), 0.9);
+			}
+		}
+
+		&.#{$prefix}_tonal {
+			border-color: transparent;
+			color: rgb(var(#{$accent-var}));
+			background: rgba(var(#{$accent-var}), 0.14);
+
+			&:not(:disabled):hover {
+				color: white;
+				background: rgba(var(#{$accent-var}), 0.82);
+			}
+		}
+
+		&.#{$prefix}_outlined {
+			border-color: rgba(var(#{$accent-var}), 0.42);
+			color: rgb(var(#{$accent-var}));
+			background: transparent;
+
+			&:not(:disabled):hover {
+				color: rgb(var(#{$accent-var}));
+				background: rgba(var(#{$accent-var}), 0.1);
+			}
+		}
+
+		&.#{$prefix}_text {
+			color: rgb(var(#{$accent-var}));
+			background: transparent;
+
+			&:not(:disabled):hover {
+				color: rgb(var(#{$accent-var}));
+				background: rgba(var(#{$accent-var}), 0.1);
+			}
+		}
+
+		&.#{$prefix}_focused {
+			box-shadow: 0 0 0 2px rgba(var(#{$accent-var}), 0.18);
+		}
+	}
+}
+
+@mixin action-state-overrides($prefix) {
+	@include action-state(
+		$prefix,
+		'warning',
+		--g-theme-warning
+	);
+	@include action-state(
+		$prefix,
+		'error',
+		--g-theme-error
+	);
+	@include action-state(
+		$prefix,
+		'success',
+		--g-theme-success
+	);
+}

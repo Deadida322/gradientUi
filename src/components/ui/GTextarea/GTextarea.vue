@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-	import { v4 as uuidv4 } from 'uuid';
-	import { toRef, useAttrs } from 'vue';
+	import { toRef } from 'vue';
 	import GFieldBase from '../GFieldBase/GFieldBase.vue';
 	import { type GTextareaSlots } from './types';
 	import { GInputEmits } from '@/use/input';
+	import { useTextFieldComponent } from '@/use/form/textFieldComponent';
 	import { makeTextareaProps } from '@/use/textarea';
 	import { useTextFieldControl } from '@/use/form/textFieldControl';
-	import { useVisibleProps } from '@/use/visibleProps';
 
 	defineOptions({
 		inheritAttrs: false
@@ -15,12 +14,8 @@
 	const props = defineProps(makeTextareaProps());
 	const slots = defineSlots<GTextareaSlots>();
 	const emit = defineEmits(GInputEmits);
-	const slotNames = ['default', 'prepend', 'append', 'message'] as const;
-	const visibleSlotNames = useVisibleProps(slots, slotNames);
-
-	const attrs = useAttrs();
 	const modelValue = defineModel<string>({ default: '' });
-	const id = uuidv4();
+	const { attrs, id, visibleSlotNames } = useTextFieldComponent(slots);
 
 	const {
 		$v,

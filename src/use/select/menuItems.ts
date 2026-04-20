@@ -2,8 +2,10 @@ import { computed, type ComputedRef, type Ref } from 'vue';
 import type { GMenuItemBase } from '@/use/menu';
 import type { InternalItem } from './types';
 
-export type SelectMenuItem<T, V> = InternalItem<T, V> &
-	Required<Pick<GMenuItemBase, 'id'>>;
+export interface SelectMenuItem<T, V> extends InternalItem<T, V> {
+	id: string;
+	children?: SelectMenuItem<T, V>[];
+}
 
 export function useSelectMenuItems<T, V>(
 	items: Ref<InternalItem<T, V>[]>
@@ -34,10 +36,7 @@ export function useSelectMenuItems<T, V>(
 		for (const menuItem of list) {
 			if (menuItem.id === id) return menuItem;
 			if (menuItem.children?.length) {
-				const found = findById(
-					menuItem.children as SelectMenuItem<T, V>[],
-					id
-				);
+				const found = findById(menuItem.children, id);
 				if (found) return found;
 			}
 		}

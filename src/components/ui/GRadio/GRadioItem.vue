@@ -1,77 +1,71 @@
-<script setup lang="ts">
-	import TransitionScale from '@/components/transitions/TransitionScale.vue';
-	import GButton from '../GButton/GButton.vue';
-	import GIcon from '../GIcon.vue';
-	import { ref } from 'vue';
-	const { name, value, label, active } = defineProps<{
-		name?: string;
-		label: string;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		value: any;
-		active: boolean;
-	}>();
+<script lang="ts" setup generic="T">
+	import { computed } from 'vue';
+	import { GCheckControl, GCheckIndicator } from '../GCheckControl';
+	import type { GGradienStates } from '../GGradient/types';
+	import type { Sizes } from '@/types/CommonTypes';
+	import type { CheckControlEmits, CheckControlSlots } from '@/use/check';
+	import { createComponentId } from '@/utils/createComponentId';
 
-	const hovered = ref(false);
+	const props = withDefaults(
+		defineProps<{
+			name: string;
+			label: string;
+			value: T;
+			checked?: boolean;
+			disabled?: boolean;
+			size?: Sizes;
+			state?: GGradienStates;
+		}>(),
+		{
+			checked: false,
+			disabled: false,
+			size: 'm',
+			state: undefined
+		}
+	);
 
-	const emit = defineEmits<{
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		'update:model-value': [value: any];
-	}>();
-	const onChange = () => {
-		emit('update:model-value', value);
-	};
+	defineSlots<Pick<CheckControlSlots, 'default'>>();
+
+	const emit = defineEmits<CheckControlEmits<T>>();
+
+	const inputId = computed(() => createComponentId('g-radio-item'));
+	const controlProps = computed(() => ({
+		id: inputId.value,
+		inputType: 'radio' as const,
+		name: props.name,
+		label: props.label,
+		disabled: props.disabled,
+		size: props.size,
+		state: props.state,
+		checked: props.checked
+	}));
+	const indicatorProps = computed(() => ({
+		kind: 'radio' as const,
+		checked: props.checked,
+		disabled: props.disabled,
+		size: props.size,
+		state: props.state
+	}));
+
+	function handleChange(event: Event) {
+		emit('change', props.value, event);
+	}
 </script>
 
 <template>
-	<div
-		class="g-radio"
-		@mouseleave="hovered = false"
-		@mouseover="hovered = true">
-		<label
-			class="g-radio__body"
-			:for="name + value">
-			<g-button
-				:glow="1"
-				size="s"
-				:variant="active ? 'text' : 'outlined'"
-				rounded
-				:active="hovered"
-				border-radius="50"
-				is-icon-button
-				:border-width="active ? 1 : 0">
-				<transition-scale>
-					<g-icon
-						v-if="active"
-						v-gradient-icon
-						class="g-icon"
-						icon="circle-medium"></g-icon>
-				</transition-scale>
-			</g-button>
-			<div class="g-radio__label">
-				{{ label }}
-			</div>
-		</label>
-		<input
-			:id="name + value"
-			class="g-radio__input"
-			type="radio"
-			:value="value"
-			:name="name"
-			@change="onChange" />
-	</div>
+	<g-check-control
+		v-bind="controlProps"
+		@change="handleChange"
+		@focus="emit('focus', $event)"
+		@blur="emit('blur', $event)">
+		<template #indicator>
+			<g-check-indicator v-bind="indicatorProps" />
+		</template>
+
+		<template
+			v-if="$slots.default"
+			#default>
+			<slot />
+		</template>
+	</g-check-control>
 </template>
-
-<style scoped lang="scss">
-	.g-radio {
-		&__body {
-			cursor: pointer;
-			display: flex;
-			gap: 8px;
-			align-items: center;
-		}
-
-		&__input {
-			display: none;
-		}
-	}
-</style>

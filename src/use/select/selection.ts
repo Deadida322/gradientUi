@@ -1,40 +1,47 @@
 import { unref, type MaybeRef } from 'vue';
 import { useBooleanProp } from '@/use/booleanProp';
-import type { InternalItem, SelectionValue } from './types';
+import type {
+	InternalItem,
+	SelectionComparatorValue,
+	SelectionValue,
+	SelectionValueComparator
+} from './types';
 
 export function useSelection<
 	T,
 	V,
 	Multiple extends boolean,
-	ReturnObject extends boolean,
-	Model extends SelectionValue<T, V, Multiple, ReturnObject>
+	ReturnObject extends boolean
 >(
 	props: {
-		modelValue: MaybeRef<Model>;
+		modelValue: MaybeRef<SelectionValue<T, V, Multiple, ReturnObject>>;
 		multiple?: MaybeRef<unknown>;
 		returnObject?: MaybeRef<unknown>;
-		comparator?: (
-			a: Model extends (infer U)[] ? U : Model,
-			b: Model extends (infer U)[] ? U : Model
-		) => boolean;
+		comparator?: SelectionValueComparator<
+			SelectionValue<T, V, Multiple, ReturnObject>
+		>;
 	},
-	emit: (e: 'update:modelValue', value: Model) => void
+	emit: (
+		e: 'update:modelValue',
+		value: SelectionValue<T, V, Multiple, ReturnObject>
+	) => void
 ) {
 	const isMultiple = useBooleanProp(props.multiple ?? false);
 	const isReturnObject = useBooleanProp(props.returnObject ?? false);
 
-	type SingleValue = Model extends (infer U)[] ? U : Model;
-	type Comparator = (a: SingleValue, b: SingleValue) => boolean;
+	type ModelValue = SelectionValue<T, V, Multiple, ReturnObject>;
+	type SingleValue = SelectionComparatorValue<ModelValue>;
+	type Comparator = SelectionValueComparator<ModelValue>;
 
 	const compare: Comparator =
 		props.comparator ??
 		((a: SingleValue, b: SingleValue) => Object.is(a, b));
 
-	function getModelAsArray(modelValue: Model): SingleValue[] {
+	function getModelAsArray(modelValue: ModelValue): SingleValue[] {
 		return Array.isArray(modelValue) ? modelValue : [];
 	}
 
-	function getModelAsSingle(modelValue: Model): SingleValue | null {
+	function getModelAsSingle(modelValue: ModelValue): SingleValue | null {
 		return Array.isArray(modelValue) ? null : (modelValue as SingleValue);
 	}
 
@@ -56,7 +63,9 @@ export function useSelection<
 		return compare(model, value);
 	}
 
-	function select(item: InternalItem<T, V>) {
+	function getNextValue(
+		item: InternalItem<T, V>
+	): SelectionValue<T, V, Multiple, ReturnObject> | undefined {
 		if (item.disabled) return;
 
 		const value = extract(item);
@@ -74,16 +83,26 @@ export function useSelection<
 				next.push(value);
 			}
 
-			emit('update:modelValue', next as Model);
-		} else {
-			if (compare(modelValue as SingleValue, value))
-				return emit('update:modelValue', null as unknown as Model);
-			emit('update:modelValue', value as Model);
+			return next as ModelValue;
 		}
+
+		if (compare(modelValue as SingleValue, value)) {
+			return null as ModelValue;
+		}
+
+		return value as ModelValue;
+	}
+
+	function select(item: InternalItem<T, V>) {
+		const nextValue = getNextValue(item);
+		if (nextValue === undefined) return;
+
+		emit('update:modelValue', nextValue);
 	}
 
 	return {
 		isSelected,
+		getNextValue,
 		select
 	};
 }

@@ -7,15 +7,16 @@
 		Multiple extends boolean = false,
 		ReturnObject extends boolean = false
 	">
-	import { computed, reactive, ref, toRef } from 'vue';
+	import { computed, ref, toRef } from 'vue';
 	import GFieldBase from '../GFieldBase/GFieldBase.vue';
 	import GDropdown from '../GDropdown/GDropdown.vue';
 	import GMenu from '../GMenu/GMenu.vue';
 	import GIcon from '../GIcon/GIcon.vue';
 	import { useBooleanProp } from '@/use/booleanProp';
+	import { useFormControl } from '@/use/form/control';
+	import { useSelectMenuSlot } from '@/use/select/menuSlot';
 	import { useSelectController } from '@/use/select/controller';
 	import type { SelectionValue } from '@/use/select/types';
-	import { useValidation } from '@/use/validation';
 	import { useVisibleProps } from '@/use/visibleProps';
 	import type { GSelectProps, GSelectSlots } from './types';
 
@@ -43,6 +44,7 @@
 	const isMultiple = useBooleanProp(toRef(props, 'multiple'));
 	const {
 		menuItems,
+		resolveMenuItem,
 		isMenuItemSelected,
 		handleSelect,
 		selectedItems,
@@ -61,45 +63,28 @@
 		},
 		(e, value) => emit(e, value)
 	);
+	const { getSlotItem } = useSelectMenuSlot<T, V>(resolveMenuItem);
 
-	const focused = ref(false);
-	const validatable = reactive({
-		modelValue: computed(() => props.modelValue)
-	});
-	const $v = useValidation(validatable, {
-		modelValue: [
-			async (value) => {
-				const rules = props.rules ?? [];
-
-				for (const rule of rules) {
-					const result = await rule(value as ModelValue);
-					if (typeof result === 'string') return result;
-				}
-
-				return true;
-			}
-		]
-	});
-	const computedMessage = computed(
-		() => $v.value.$errors.modelValue?.[0] ?? props.message ?? ''
-	);
+	const { focused, $v, computedMessage, onFocus, onBlur } =
+		useFormControl<ModelValue>({
+			modelValue: computed(() => props.modelValue),
+			rules: computed(() => props.rules),
+			message: computed(() => props.message)
+		});
 
 	function onSelect(item: Parameters<typeof handleSelect>[0]) {
-		console.log('onSelect item', item);
 		handleSelect(item, () => {
 			open.value = false;
 		});
 	}
 
 	function handleFocus(event: FocusEvent) {
-		$v.value.$reset();
-		focused.value = true;
+		onFocus();
 		emit('focus', event);
 	}
 
 	function handleBlur(event: FocusEvent) {
-		$v.value.$touchField('modelValue');
-		focused.value = false;
+		onBlur();
 		emit('blur', event);
 	}
 
@@ -196,7 +181,7 @@
 			<template #item="{ item, selected }">
 				<slot
 					name="item"
-					:item="item"
+					:item="getSlotItem(item)"
 					:selected="selected">
 					{{ item.label }}
 				</slot>

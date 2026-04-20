@@ -90,6 +90,7 @@
 	.g-dropdown {
 		pointer-events: auto;
 
+		min-width: fit-content;
 		padding: 8px;
 		border-radius: 8px;
 

@@ -8,7 +8,7 @@ import type {
 	SelectBaseProps,
 	SelectionValue
 } from '@/use/select/types';
-import type { GMenuItemBase } from '@/use/menu';
+import type { SelectMenuItem } from '@/use/select/menuItems';
 
 export type GSelectProps<
 	T,
@@ -34,5 +34,5 @@ export interface GSelectSlots<T, V> extends PLASlots {
 		selection: string;
 		selectedItems: InternalItem<T, V>[];
 	}) => unknown;
-	item?: (props: { item: GMenuItemBase; selected: boolean }) => unknown;
+	item?: (props: { item: SelectMenuItem<T, V>; selected: boolean }) => unknown;
 }

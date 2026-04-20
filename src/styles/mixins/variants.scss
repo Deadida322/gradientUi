@@ -8,6 +8,7 @@
         background-color: var(--g-primary-color);
 
         &:hover {
+            color: white;
             background-color: var(--g-primary-color-hover);
         }
     }
@@ -31,6 +32,7 @@
         background-color: var(--g-tonal);
 
         &:hover {
+            color: var(--g-on-tonal);
             background-color: var(--g-tonal-hover);
         }
     }	
@@ -42,6 +44,7 @@
         background: transparent;
 
         &:hover {
+            color: var(--g-primary-color);
             background-color: rgb(0 0 0 / 5%);
         }
     }

@@ -1,11 +1,9 @@
 import type { MdiIcon, Sizes } from '@/types/CommonTypes';
-import { makeDisabledProps } from '@/use/disabled';
+import { makeActionSurfaceProps } from '@/use/actionSurface';
 import { makeGradientProps } from '@/use/gradient';
-import { makeRoundedProps } from '@/use/rounded';
 import { makePLAProps } from '@/use/PLA';
 import { propsFactory } from '@/utils/propsFactory';
-import { makeSizeProps } from '@/use/size';
-import { makeVariantProps } from '@/use/variant';
+import type { GGradienStates } from '../GGradient/types';
 import type { PropType } from 'vue';
 
 export interface GButtonProps {
@@ -13,24 +11,23 @@ export interface GButtonProps {
 	active?: boolean;
 	rounded?: boolean;
 	color?: string;
-	appendIcon?: MdiIcon;
 	iconButton?: MdiIcon;
-	prependIcon?: MdiIcon;
+	prepend?: MdiIcon;
+	append?: MdiIcon;
 	label?: string;
 	disabled?: boolean;
 	size?: Sizes;
+	state?: GGradienStates;
+	activeVariant?: GButtonVariants;
 	isIconButton?: boolean;
 }
 
 export type GButtonVariants = 'tonal' | 'text' | 'outlined' | 'default';
 
 export const makeButtonProps = propsFactory({
-	...makeVariantProps(),
+	...makeActionSurfaceProps(),
 	...makePLAProps(),
 	...makeGradientProps(),
-	...makeSizeProps(),
-	...makeDisabledProps(),
-	...makeRoundedProps(),
 	isIconButton: Boolean as PropType<boolean>,
 	iconButton: String as PropType<MdiIcon>,
 	color: String

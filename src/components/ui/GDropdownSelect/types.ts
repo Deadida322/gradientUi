@@ -1,10 +1,12 @@
 import type {
+	SelectionValue,
 	SelectBaseProps,
 	SelectItemChildren,
 	SelectItemKey,
 	SelectLabelKey,
 	SelectValueKey
 } from '@/use/select/types';
+import type { SelectMenuItem } from '@/use/select/menuItems';
 
 export type DropdownSelectItemKey<T> = SelectItemKey<T>;
 export type DropdownSelectLabelKey<T> = SelectLabelKey<T>;
@@ -17,3 +19,16 @@ export type DropdownSelectProps<
 	Multiple extends boolean = false,
 	ReturnObject extends boolean = false
 > = SelectBaseProps<T, V, Multiple, ReturnObject>;
+
+export interface DropdownSelectSlots<
+	T,
+	V,
+	Multiple extends boolean = false,
+	ReturnObject extends boolean = false
+> {
+	trigger?: () => unknown;
+	item?: (props: {
+		item: SelectMenuItem<T, V>;
+		selected: boolean;
+	}) => unknown;
+}

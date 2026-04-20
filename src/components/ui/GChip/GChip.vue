@@ -2,161 +2,134 @@
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
-	import type { GGradienProps } from '../GGradient/types';
-	import type { GButtonProps } from './types';
+	import { useActionSurface } from '@/use/actionSurface';
+	import { makeChipProps } from './types';
 
 	const slots = defineSlots<PLASlots>();
+	const props = defineProps(makeChipProps());
 
-	const props = withDefaults(
-		defineProps<
-			GButtonProps &
-				GGradienProps & {
-					removable?: boolean; // флаг для крестика удаления
-					onRemove?: () => void; // коллбек при удалении
-				}
-		>(),
-		{
-			borderWidth: 1,
-			removable: false
-		}
-	);
+	const { actionSurfaceClasses } = useActionSurface(props, 'g-chip');
 </script>
 
 <template>
 	<g-gradient
 		class="g-gradient"
-		:class="{ 'g-chip__disabled': disabled }"
-		v-bind="props"
-		:border-radius="20"
-		:border-width="borderWidth">
-		<div class="g-chip">
+		v-bind="props">
+		<div
+			class="g-chip"
+			:class="actionSurfaceClasses">
 			<div class="g-chip__content">
-				<!-- Иконка слева -->
 				<div
 					v-if="slots.prepend || prependIcon"
 					class="g-chip__prepend">
 					<slot name="prepend">
 						<g-icon
 							v-if="prependIcon"
-							:icon="prependIcon"></g-icon>
+							:icon="prependIcon" />
 					</slot>
 				</div>
 
-				<!-- Текст чипа -->
 				<div class="g-chip__label">
 					<slot>{{ label }}</slot>
 				</div>
 
-				<!-- Иконка справа -->
 				<div
 					v-if="slots.append || appendIcon"
 					class="g-chip__append">
 					<slot name="append">
 						<g-icon
 							v-if="appendIcon"
-							:icon="appendIcon"></g-icon>
+							:icon="appendIcon" />
 					</slot>
 				</div>
 
-				<div
+				<button
 					v-if="removable"
+					type="button"
 					class="g-chip__remove"
-					@click="onRemove?.()">
-					<g-icon icon="close"></g-icon>
-				</div>
+					@click.stop="onRemove?.()">
+					<g-icon icon="close" />
+				</button>
 			</div>
 		</div>
 	</g-gradient>
 </template>
 
 <style lang="scss" scoped>
+	@use '@/styles/mixins/action-surface' as actionSurface;
+	@use '@/styles/mixins/rounded' as rounded;
+	@use '@/styles/mixins/variants' as variants;
+	@use '@/styles/mixins/base' as base;
+	@use '@/styles/mixins/sizes' as size;
+
 	.g-chip {
-		cursor: pointer;
+		@include base.base-component('g-chip');
+
 		user-select: none;
 
-		display: inline-flex;
-		gap: 6px;
-		align-items: center;
-
-		padding: 4px 12px;
-		border-radius: 16px;
+		min-width: 0;
+		padding: 4px 10px;
+		border-radius: 999px;
 
 		font-size: 13px;
 		line-height: 18px;
-		color: white;
-
-		background-color: var(--g-primary-color);
-
-		transition: all 0.2s ease-in-out;
-
-		&__disabled {
-			pointer-events: none;
-			opacity: 0.5;
-		}
 
 		&__content {
 			display: inline-flex;
-			gap: 4px;
+			gap: 6px;
 			align-items: center;
+			min-width: 0;
 		}
 
 		&__prepend,
-		&__append {
+		&__append,
+		&__remove {
 			display: inline-flex;
+			flex: 0 0 auto;
 			align-items: center;
 		}
 
 		&__label {
-			display: inline-flex;
-			align-items: center;
+			overflow: hidden;
+			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
 
 		&__remove {
 			cursor: pointer;
 
-			display: inline-flex;
-			align-items: center;
+			padding: 0;
+			border: none;
 
-			margin-left: 4px;
+			color: inherit;
 
-			transition: opacity 0.2s;
+			opacity: 0.72;
+			background: transparent;
+
+			transition: opacity 0.16s ease;
 
 			&:hover {
-				opacity: 0.7;
+				opacity: 1;
 			}
 		}
 
-		&:hover {
-			background-color: var(--g-primary-color-hover);
+		&_disabled {
+			cursor: not-allowed;
+			opacity: 0.56;
 		}
 
-		&.g-chip_outlined {
-			border: 1px solid var(--g-primary-color);
-			color: var(--g-primary-color);
-			background-color: transparent;
-
-			&:hover {
-				background-color: rgb(0 0 0 / 5%);
-			}
-		}
-
-		&.g-chip_tonal {
-			color: var(--g-on-tonal);
-			background-color: var(--g-tonal);
-
-			&:hover {
-				background-color: var(--g-tonal-hover);
-			}
-		}
-
-		&.g-chip_text {
-			color: var(--g-primary-color);
-			background-color: transparent;
-
-			&:hover {
-				background-color: rgb(0 0 0 / 5%);
-			}
+		&_active {
+			transform: translateY(1px);
 		}
 	}
+
+	@include variants.variant-tonal('g-chip');
+	@include variants.variant-text('g-chip');
+	@include variants.variant-outlined('g-chip');
+	@include size.size-s('g-chip');
+	@include size.size-m('g-chip');
+	@include size.size-l('g-chip');
+	@include size.size-xl('g-chip');
+	@include rounded.rounded('g-chip');
+	@include actionSurface.action-state-overrides('g-chip');
 </style>

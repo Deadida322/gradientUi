@@ -26,6 +26,14 @@ export type SelectionValue<
 		? T | null
 		: V | null;
 
+export type SelectionComparatorValue<TModel> =
+	TModel extends readonly (infer U)[] ? U : TModel;
+
+export type SelectionValueComparator<TModel> = (
+	a: SelectionComparatorValue<TModel>,
+	b: SelectionComparatorValue<TModel>
+) => boolean;
+
 export type SelectBaseProps<
 	T,
 	V,

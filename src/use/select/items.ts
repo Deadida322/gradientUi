@@ -1,48 +1,19 @@
 import { computed, unref, type MaybeRef } from 'vue';
-import type { InternalItem } from './types';
+import type {
+	InternalItem,
+	SelectItemChildren,
+	SelectLabelKey,
+	SelectValueKey
+} from './types';
 
-type ItemKey<T> = Extract<keyof T, string | number | symbol>;
-type labelKey<T> = ItemKey<T> | ((item: T) => string);
-type ItemChildren<T> = ItemKey<T> | ((item: T) => readonly T[] | undefined);
-
-interface UseItemsOptionsBase<T> {
+interface UseItemsOptions<T, V> {
 	items: MaybeRef<readonly T[]>;
-	labelKey?: MaybeRef<labelKey<T> | undefined>;
-	itemChildren?: MaybeRef<ItemChildren<T> | undefined>;
+	labelKey?: MaybeRef<SelectLabelKey<T> | undefined>;
+	valueKey?: MaybeRef<SelectValueKey<T, V> | undefined>;
+	itemChildren?: MaybeRef<SelectItemChildren<T> | undefined>;
 }
 
-interface UseItemsOptionsWithValueKey<
-	T,
-	K extends ItemKey<T>
-> extends UseItemsOptionsBase<T> {
-	valueKey?: MaybeRef<K | undefined>;
-}
-
-interface UseItemsOptionsWithValueGetter<T, V> extends UseItemsOptionsBase<T> {
-	valueKey?: MaybeRef<((item: T) => V) | undefined>;
-}
-
-export function useItems<T, K extends ItemKey<T>>(
-	options: UseItemsOptionsWithValueKey<T, K>
-): {
-	items: Readonly<ReturnType<typeof computed<InternalItem<T, T[K]>[]>>>;
-	resolveLabel: (item: T) => string;
-	resolveValue: (item: T) => T[K];
-};
-
-export function useItems<T, V = unknown>(
-	options: UseItemsOptionsWithValueGetter<T, V>
-): {
-	items: Readonly<ReturnType<typeof computed<InternalItem<T, V>[]>>>;
-	resolveLabel: (item: T) => string;
-	resolveValue: (item: T) => V;
-};
-
-export function useItems<T, V = unknown>(
-	options:
-		| UseItemsOptionsWithValueKey<T, ItemKey<T>>
-		| UseItemsOptionsWithValueGetter<T, V>
-) {
+export function useItems<T, V = unknown>(options: UseItemsOptions<T, V>) {
 	function resolveLabel(item: T): string {
 		const labelKey = unref(options.labelKey);
 
@@ -59,7 +30,7 @@ export function useItems<T, V = unknown>(
 
 	function resolveValue(item: T): V {
 		const valueKey = unref(options.valueKey);
-		console.log(item, 'item');
+
 		if (typeof valueKey === 'function') {
 			return valueKey(item);
 		}
@@ -86,13 +57,19 @@ export function useItems<T, V = unknown>(
 			label: resolveLabel(item),
 			value: resolveValue(item),
 			raw: item,
+			disabled: Boolean(
+				(item as Record<string, unknown>).disabled ?? false
+			),
 			children: childrenRaw?.map(normalize) as
 				| InternalItem<T, V>[]
 				| undefined
 		};
 	}
 
-	const normalizedItems = computed(() => unref(options.items).map(normalize));
+	const normalizedItems = computed(() => {
+		const source = unref(options.items) ?? [];
+		return source.map(normalize);
+	});
 
 	return {
 		items: normalizedItems,

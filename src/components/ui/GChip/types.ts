@@ -1,17 +1,37 @@
 import type { MdiIcon, Sizes } from '@/types/CommonTypes';
+import { makeActionSurfaceProps } from '@/use/actionSurface';
+import { makeGradientProps } from '@/use/gradient';
+import { propsFactory } from '@/utils/propsFactory';
+import type { GGradienStates } from '../GGradient/types';
+import type { PropType } from 'vue';
 
-export interface GButtonProps {
-	variant?: GButtonVariants;
+export interface GChipProps {
+	variant?: GChipVariants;
 	active?: boolean;
 	rounded?: boolean;
-	color?: string;
-	appendIcon?: MdiIcon;
-	iconButton?: MdiIcon;
-	prependIcon?: MdiIcon;
 	label?: string;
 	disabled?: boolean;
 	size?: Sizes;
-	isIconButton?: boolean;
+	state?: GGradienStates;
+	activeVariant?: GChipVariants;
+	prependIcon?: MdiIcon;
+	appendIcon?: MdiIcon;
+	removable?: boolean;
+	onRemove?: () => void;
 }
 
-export type GButtonVariants = 'tonal' | 'text' | 'outlined' | 'default';
+export type GChipVariants = 'tonal' | 'text' | 'outlined' | 'default';
+
+export const makeChipProps = propsFactory({
+	...makeActionSurfaceProps(),
+	...makeGradientProps({
+		borderWidth: 0,
+		borderRadius: 20,
+		placement: 'center'
+	}),
+	label: String,
+	prependIcon: String as PropType<MdiIcon>,
+	appendIcon: String as PropType<MdiIcon>,
+	removable: Boolean,
+	onRemove: Function as PropType<() => void>
+});

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-	import { v4 as uuidv4 } from 'uuid';
-	import { toRef, useAttrs } from 'vue';
+	import { toRef } from 'vue';
 	import GFieldBase from '../GFieldBase/GFieldBase.vue';
 	import SwitchPassword from './SwitchPassword.vue';
 	import { type GInputSlots } from './types';
 	import { GInputEmits, makeInputProps, useInputControl } from '@/use/input';
+	import { useTextFieldComponent } from '@/use/form/textFieldComponent';
 	import { useTextFieldControl } from '@/use/form/textFieldControl';
-	import { useVisibleProps } from '@/use/visibleProps';
 
 	defineOptions({
 		inheritAttrs: false
@@ -15,12 +14,8 @@
 	const props = defineProps(makeInputProps());
 	const slots = defineSlots<GInputSlots>();
 	const emit = defineEmits(GInputEmits);
-	const slotNames = ['default', 'prepend', 'append', 'message'] as const;
-	const visibleSlotNames = useVisibleProps(slots, slotNames);
-
-	const attrs = useAttrs();
 	const modelValue = defineModel<string>({ default: '' });
-	const id = uuidv4();
+	const { attrs, id, visibleSlotNames } = useTextFieldComponent(slots);
 
 	const { passwordVisible, computedType, togglePasswordVisibility } =
 		useInputControl({

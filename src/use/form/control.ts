@@ -8,20 +8,20 @@ import {
 	toValue
 } from 'vue';
 
-export interface UseFormControlOptions {
-	modelValue: MaybeRefOrGetter<string>;
-	rules: MaybeRefOrGetter<ValidationRule<string>[] | undefined>;
+export interface UseFormControlOptions<T> {
+	modelValue: MaybeRefOrGetter<T>;
+	rules: MaybeRefOrGetter<ValidationRule<T>[] | undefined>;
 	message: MaybeRefOrGetter<string | undefined>;
 }
 
-export function useFormControl(options: UseFormControlOptions) {
+export function useFormControl<T>(options: UseFormControlOptions<T>) {
 	const focused = ref(false);
 
 	const validatable = reactive({
 		modelValue: computed(() => toValue(options.modelValue))
 	});
 
-	const $v = useValidation(validatable, {
+	const $v = useValidation<{ modelValue: T }>(validatable, {
 		modelValue: [
 			async (value) => {
 				const rules = toValue(options.rules) ?? [];
