@@ -38,13 +38,13 @@
 			<div class="design-system__row">
 				<g-button
 					:active="mode === 'light'"
-					active-variant="default"
+					active-variant="filled"
 					variant="tonal"
 					label="Light"
 					@click="applyMode('light')" />
 				<g-button
 					:active="mode === 'dark'"
-					active-variant="default"
+					active-variant="filled"
 					variant="tonal"
 					label="Dark"
 					@click="applyMode('dark')" />
@@ -155,8 +155,8 @@
 				</div>
 				<div class="design-system__token-card">
 					<div
-						class="design-system__swatch design-system__swatch_tonal" />
-					<div>Tonal</div>
+						class="design-system__swatch design-system__swatch_tint" />
+					<div>Surface tint</div>
 				</div>
 				<div class="design-system__token-card">
 					<div
@@ -236,7 +236,9 @@
 					class="design-system__helper-card d-flex align-center gap-2 p-3 rounded-md elevation-2 bg-surface">
 					<div class="opacity-50">opacity-50</div>
 					<div class="opacity-75">opacity-75</div>
-					<div class="px-2 py-1 rounded-pill bg-tonal">bg-tonal</div>
+					<div class="px-2 py-1 rounded-pill bg-surface">
+						bg-surface
+					</div>
 				</div>
 			</div>
 		</div>
@@ -289,8 +291,21 @@
 				background: var(--g-token-color-primary);
 			}
 
-			&_tonal {
-				background: var(--g-token-surface-tonal);
+			&_tint {
+				position: relative;
+				overflow: hidden;
+				background: var(--g-token-color-surface);
+
+				&::before {
+					pointer-events: none;
+					content: '';
+
+					position: absolute;
+					inset: 0;
+
+					opacity: var(--g-token-state-tonal-opacity);
+					background: var(--g-token-color-primary);
+				}
 			}
 
 			&_surface {

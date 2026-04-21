@@ -3,10 +3,12 @@
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import TransitionExpansion from '@/components/transitions/TransitionExpansion.vue';
+	import { useColor } from '@/use/color';
 	import { useExpansionGroupInject } from '@/use/expansion';
 	import { useRounded } from '@/use/rounded';
 	import { useSelected } from '@/use/selected';
 	import { useSize } from '@/use/size';
+	import { useSurfaceLayers } from '@/use/surface';
 	import { useVariant } from '@/use/variant';
 	import { createComponentId } from '@/utils/createComponentId';
 	import {
@@ -32,6 +34,7 @@
 			animateGlow: false,
 			shadow: false,
 			placement: 'center',
+			variant: 'text',
 			activeBorderWidth: undefined,
 			activeGlow: undefined,
 			activeAnimateGlow: undefined,
@@ -72,6 +75,11 @@
 		{ selected: () => expanded.value },
 		'g-expansion'
 	);
+	const {
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useSurfaceLayers('g-expansion');
 	const resolvedVisualState = computed(() =>
 		expanded.value && props.activeState !== undefined
 			? props.activeState
@@ -82,6 +90,10 @@
 			? `g-expansion_state-${resolvedVisualState.value}`
 			: ''
 	);
+	const resolvedColor = computed(() =>
+		resolvedVisualState.value ? resolvedVisualState.value : props.color
+	);
+	const { colorStyles } = useColor({ color: resolvedColor });
 	const gradientBorderRadius = computed(() => (props.rounded ? 20 : 10));
 	const headerId = createComponentId('g-expansion-header');
 	const contentId = createComponentId('g-expansion-content');
@@ -109,6 +121,9 @@
 		expanded.value && props.activeState !== undefined
 			? props.activeState
 			: props.state
+	);
+	const resolvedGradientColor = computed(() =>
+		resolvedGradientState.value ? resolvedGradientState.value : props.color
 	);
 	const resolvedGradientPlacement = computed(() =>
 		expanded.value && props.activePlacement !== undefined
@@ -144,6 +159,7 @@
 					glow: resolvedGradientGlow.value,
 					animateGlow: resolvedGradientAnimateGlow.value,
 					shadow: resolvedGradientShadow.value,
+					color: resolvedGradientColor.value,
 					state: resolvedGradientState.value,
 					placement: resolvedGradientPlacement.value,
 					inheritWidth: true
@@ -195,70 +211,80 @@
 				{
 					'g-expansion_gradient': hasGradientSurface
 				}
-			]">
-			<button
-				:id="headerId"
-				:aria-controls="contentId"
-				:aria-expanded="expanded"
-				:disabled="resolvedDisabled"
-				class="g-expansion__header"
-				type="button"
-				@click="onHeaderClick">
-				<span class="g-expansion__heading">
-					<span
-						v-if="slots.title || props.title"
-						class="g-expansion__title">
-						<slot
-							name="title"
-							v-bind="slotProps">
-							{{ props.title }}
-						</slot>
+			]"
+			:style="colorStyles">
+			<div :class="surfaceUnderlayClasses"></div>
+			<div :class="surfaceOverlayClasses"></div>
+			<div
+				class="g-expansion__surface-content"
+				:class="surfaceContentClasses">
+				<button
+					:id="headerId"
+					:aria-controls="contentId"
+					:aria-expanded="expanded"
+					:disabled="resolvedDisabled"
+					class="g-expansion__header"
+					type="button"
+					@click="onHeaderClick">
+					<span class="g-expansion__heading">
+						<span
+							v-if="slots.title || props.title"
+							class="g-expansion__title">
+							<slot
+								name="title"
+								v-bind="slotProps">
+								{{ props.title }}
+							</slot>
+						</span>
+
+						<span
+							v-if="slots.text || props.text"
+							class="g-expansion__text">
+							<slot
+								name="text"
+								v-bind="slotProps">
+								{{ props.text }}
+							</slot>
+						</span>
 					</span>
 
 					<span
-						v-if="slots.text || props.text"
-						class="g-expansion__text">
+						v-if="!props.hideActions"
+						class="g-expansion__actions"
+						:class="{ 'g-expansion__actions_expanded': expanded }">
 						<slot
-							name="text"
+							name="actions"
 							v-bind="slotProps">
-							{{ props.text }}
+							<g-icon
+								:icon="
+									expanded
+										? props.openedIcon
+										: props.closedIcon
+								" />
 						</slot>
 					</span>
-				</span>
+				</button>
 
-				<span
-					v-if="!props.hideActions"
-					class="g-expansion__actions"
-					:class="{ 'g-expansion__actions_expanded': expanded }">
-					<slot
-						name="actions"
-						v-bind="slotProps">
-						<g-icon
-							:icon="
-								expanded ? props.openedIcon : props.closedIcon
-							" />
-					</slot>
-				</span>
-			</button>
-
-			<transition-expansion :duration="0.24">
-				<div
-					v-if="contentMounted"
-					v-show="expanded"
-					:id="contentId"
-					:aria-labelledby="headerId"
-					class="g-expansion__body"
-					role="region">
-					<div class="g-expansion__content">
-						<slot v-bind="slotProps" />
+				<transition-expansion :duration="0.24">
+					<div
+						v-if="contentMounted"
+						v-show="expanded"
+						:id="contentId"
+						:aria-labelledby="headerId"
+						class="g-expansion__body"
+						role="region">
+						<div class="g-expansion__content">
+							<slot v-bind="slotProps" />
+						</div>
 					</div>
-				</div>
-			</transition-expansion>
+				</transition-expansion>
+			</div>
 		</article>
 	</component>
 </template>
 
 <style scoped lang="scss">
+	@use '@/styles/mixins/action-surface' as actionSurface;
 	@use '@/styles/mixins/focus-ring' as focusRing;
 
 	.g-expansion {
@@ -268,9 +294,9 @@
 		width: 100%;
 		border-radius: var(--g-token-expansion-radius);
 
-		color: var(--g-token-expansion-color);
+		color: var(--g-surface-content-color, var(--g-token-expansion-color));
 
-		background: var(--g-token-expansion-surface);
+		background: transparent;
 		box-shadow: var(--g-token-expansion-shadow);
 
 		transition:
@@ -281,6 +307,66 @@
 
 		&_gradient {
 			box-shadow: none;
+		}
+
+		&_filled,
+		&_default {
+			--g-surface-content-color: var(--g-on-color);
+			--g-surface-underlay-color: var(--g-color);
+			--g-surface-underlay-opacity: 1;
+			--g-surface-overlay-color: var(--g-on-color);
+			--g-surface-overlay-opacity: 0;
+		}
+
+		&_filled:hover,
+		&_default:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+		}
+
+		&_tonal {
+			--g-surface-content-color: var(--g-color);
+			--g-surface-underlay-color: var(--g-surface-color);
+			--g-surface-underlay-opacity: 1;
+			--g-surface-overlay-color: var(--g-color);
+			--g-surface-overlay-opacity: var(--g-token-state-tonal-opacity);
+
+			box-shadow: none;
+		}
+
+		&_tonal:hover {
+			--g-surface-overlay-opacity: var(
+				--g-token-state-tonal-hover-opacity
+			);
+		}
+
+		&_outlined {
+			--g-surface-content-color: var(--g-color);
+			--g-surface-underlay-color: transparent;
+			--g-surface-underlay-opacity: 0;
+			--g-surface-overlay-color: var(--g-color);
+			--g-surface-overlay-opacity: 0;
+
+			outline: 1px solid currentcolor;
+			outline-offset: -1px;
+			box-shadow: none;
+		}
+
+		&_outlined:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+		}
+
+		&_text {
+			--g-surface-content-color: var(--g-color);
+			--g-surface-underlay-color: transparent;
+			--g-surface-underlay-opacity: 0;
+			--g-surface-overlay-color: var(--g-color);
+			--g-surface-overlay-opacity: 0;
+
+			box-shadow: none;
+		}
+
+		&_text:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
 		}
 
 		&__header {
@@ -362,61 +448,45 @@
 			color: var(--g-token-expansion-content-color);
 		}
 
-		&_default {
-			background: var(--g-token-expansion-surface);
-			box-shadow: var(--g-token-expansion-shadow);
+		&_filled .g-expansion__text,
+		&_filled .g-expansion__content,
+		&_default .g-expansion__text,
+		&_default .g-expansion__content {
+			color: color-mix(in srgb, currentcolor 82%, transparent);
 		}
 
-		&_default#{&}_selected {
-			background: var(--g-token-expansion-surface-active);
-			box-shadow: var(--g-token-expansion-shadow-active);
-		}
-
-		&_tonal {
-			background: var(--g-token-expansion-tonal-surface);
-			box-shadow: none;
+		&_filled .g-expansion__actions,
+		&_default .g-expansion__actions {
+			color: currentcolor;
 		}
 
 		&_tonal .g-expansion__text,
-		&_tonal .g-expansion__content {
-			color: var(--g-token-expansion-tonal-content-color);
+		&_tonal .g-expansion__content,
+		&_outlined .g-expansion__text,
+		&_outlined .g-expansion__content,
+		&_text .g-expansion__text,
+		&_text .g-expansion__content {
+			color: color-mix(in srgb, currentcolor 72%, transparent);
 		}
 
-		&_tonal .g-expansion__actions {
-			color: var(--g-token-expansion-tonal-actions-color);
+		&_tonal .g-expansion__actions,
+		&_outlined .g-expansion__actions,
+		&_text .g-expansion__actions {
+			color: currentcolor;
 		}
 
 		&_tonal#{&}_selected {
-			background: var(--g-token-expansion-tonal-surface-active);
-			box-shadow: none;
-		}
+			--g-surface-overlay-opacity: var(
+				--g-token-state-tonal-hover-opacity
+			);
 
-		&_outlined {
-			background: var(--g-token-expansion-outlined-surface);
-			outline: 1px solid var(--g-token-expansion-outlined-border-color);
-			outline-offset: -1px;
 			box-shadow: none;
-		}
-
-		&_outlined .g-expansion__actions {
-			color: var(--g-token-expansion-outlined-actions-color);
 		}
 
 		&_outlined#{&}_selected {
-			background: var(--g-token-expansion-outlined-surface-active);
-			outline-color: var(
-				--g-token-expansion-outlined-border-color-active
-			);
-			box-shadow: none;
-		}
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
 
-		&_text {
-			background: transparent;
 			box-shadow: none;
-		}
-
-		&_text .g-expansion__actions {
-			color: var(--g-token-expansion-text-actions-color);
 		}
 
 		&_text .g-expansion__content {
@@ -424,115 +494,39 @@
 		}
 
 		&_text#{&}_selected {
-			background: var(--g-token-expansion-text-surface-active);
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+
 			box-shadow: none;
 		}
 
 		&_selected {
-			color: var(--g-token-expansion-color-active);
+			color: var(
+				--g-surface-content-color,
+				var(--g-token-expansion-color-active)
+			);
 		}
 
 		&_selected &__header {
-			color: var(--g-token-expansion-color-active);
+			color: inherit;
 		}
 
 		&_selected &__actions {
-			color: var(--g-token-expansion-actions-color-active);
+			color: inherit;
 		}
 
 		&_state-warning {
-			&.g-expansion_default {
-				background: var(--g-token-expansion-state-warning-surface);
-			}
-
-			&.g-expansion_default.g-expansion_selected {
-				background: var(
-					--g-token-expansion-state-warning-surface-active
-				);
-			}
-
-			&.g-expansion_tonal {
-				background: var(
-					--g-token-expansion-state-warning-tonal-surface
-				);
-			}
-
-			&.g-expansion_tonal.g-expansion_selected {
-				background: var(
-					--g-token-expansion-state-warning-tonal-surface-active
-				);
-			}
-
-			&.g-expansion_outlined {
-				outline-color: var(--g-token-expansion-state-warning-border);
-			}
-
-			.g-expansion__title,
-			.g-expansion__actions {
-				color: var(--g-token-expansion-state-warning-color);
-			}
+			--g-color: var(--g-token-color-warning);
+			--g-on-color: var(--g-token-color-on-warning);
 		}
 
 		&_state-error {
-			&.g-expansion_default {
-				background: var(--g-token-expansion-state-error-surface);
-			}
-
-			&.g-expansion_default.g-expansion_selected {
-				background: var(--g-token-expansion-state-error-surface-active);
-			}
-
-			&.g-expansion_tonal {
-				background: var(--g-token-expansion-state-error-tonal-surface);
-			}
-
-			&.g-expansion_tonal.g-expansion_selected {
-				background: var(
-					--g-token-expansion-state-error-tonal-surface-active
-				);
-			}
-
-			&.g-expansion_outlined {
-				outline-color: var(--g-token-expansion-state-error-border);
-			}
-
-			.g-expansion__title,
-			.g-expansion__actions {
-				color: var(--g-token-expansion-state-error-color);
-			}
+			--g-color: var(--g-token-color-error);
+			--g-on-color: var(--g-token-color-on-error);
 		}
 
 		&_state-success {
-			&.g-expansion_default {
-				background: var(--g-token-expansion-state-success-surface);
-			}
-
-			&.g-expansion_default.g-expansion_selected {
-				background: var(
-					--g-token-expansion-state-success-surface-active
-				);
-			}
-
-			&.g-expansion_tonal {
-				background: var(
-					--g-token-expansion-state-success-tonal-surface
-				);
-			}
-
-			&.g-expansion_tonal.g-expansion_selected {
-				background: var(
-					--g-token-expansion-state-success-tonal-surface-active
-				);
-			}
-
-			&.g-expansion_outlined {
-				outline-color: var(--g-token-expansion-state-success-border);
-			}
-
-			.g-expansion__title,
-			.g-expansion__actions {
-				color: var(--g-token-expansion-state-success-color);
-			}
+			--g-color: var(--g-token-color-success);
+			--g-on-color: var(--g-token-color-on-success);
 		}
 
 		&_disabled {
@@ -592,11 +586,13 @@
 		}
 
 		&_text &__header:hover {
-			background: var(--g-token-expansion-text-hover-surface);
+			background: transparent;
 		}
 	}
 
 	.g-expansion__surface {
 		width: 100%;
 	}
+
+	@include actionSurface.action-surface-layers('g-expansion', true);
 </style>

@@ -23,7 +23,14 @@
 	--g-token-field-height-m: 40px;
 	--g-token-field-height-l: 48px;
 	--g-token-field-height-xl: 56px;
-	--g-token-field-surface: rgb(244 247 248);
+	--g-token-field-surface-tint-opacity: 0.06;
+	--g-token-field-surface: color-mix(
+		in srgb,
+		var(--g-token-color-surface)
+			calc(100% - var(--g-token-field-surface-tint-opacity) * 100%),
+		var(--g-token-color-on-surface)
+			calc(var(--g-token-field-surface-tint-opacity) * 100%)
+	);
 	--g-token-field-surface-disabled: rgba(var(--g-theme-surface), 0.55);
 	--g-token-field-text-disabled: rgba(var(--g-theme-on-surface), 0.55);
 	--g-token-field-placeholder-disabled: rgba(var(--g-theme-on-surface), 0.4);

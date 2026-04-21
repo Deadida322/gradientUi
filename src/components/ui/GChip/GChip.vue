@@ -8,7 +8,13 @@
 	const slots = defineSlots<PLASlots>();
 	const props = defineProps(makeChipProps());
 
-	const { actionSurfaceClasses } = useActionSurface(props, 'g-chip');
+	const {
+		actionSurfaceClasses,
+		surfaceStyles,
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useActionSurface(props, 'g-chip');
 </script>
 
 <template>
@@ -17,8 +23,13 @@
 		v-bind="props">
 		<div
 			class="g-chip"
-			:class="actionSurfaceClasses">
-			<div class="g-chip__content">
+			:class="actionSurfaceClasses"
+			:style="surfaceStyles">
+			<span :class="surfaceUnderlayClasses"></span>
+			<span :class="surfaceOverlayClasses"></span>
+			<div
+				class="g-chip__content"
+				:class="surfaceContentClasses">
 				<div
 					v-if="slots.prepend || prependIcon"
 					class="g-chip__prepend">
@@ -92,9 +103,13 @@
 		line-height: var(--g-token-chip-line-height);
 
 		&__content {
+			position: relative;
+			z-index: 2;
+
 			display: inline-flex;
 			gap: var(--g-token-chip-gap);
 			align-items: center;
+
 			min-width: 0;
 		}
 
@@ -139,13 +154,15 @@
 		}
 	}
 
-	@include variants.variant-tonal('g-chip');
-	@include variants.variant-text('g-chip');
-	@include variants.variant-outlined('g-chip');
 	@include size.size-s('g-chip');
 	@include size.size-m('g-chip');
 	@include size.size-l('g-chip');
 	@include size.size-xl('g-chip');
 	@include rounded.rounded('g-chip');
+	@include actionSurface.action-surface-layers('g-chip', true);
 	@include actionSurface.action-state-overrides('g-chip');
+	@include variants.variant-filled('g-chip');
+	@include variants.variant-tonal('g-chip');
+	@include variants.variant-text('g-chip');
+	@include variants.variant-outlined('g-chip');
 </style>

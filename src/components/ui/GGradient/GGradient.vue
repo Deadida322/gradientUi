@@ -2,21 +2,24 @@
 	import usePx from '@/use/px';
 	import { toRefs } from 'vue';
 	import { makeGradientProps, useGradient } from '@/use/gradient';
+	import { useGradientGlow } from '@/use/gradientGlow';
+	import { useGradientSurface } from '@/use/gradientSurface';
 	const props = defineProps(makeGradientProps());
 
-	const { borderWidth, borderRadius } = toRefs(props);
+	const { borderWidth } = toRefs(props);
 	const padding = usePx(borderWidth);
-	const computedBR = usePx(borderRadius);
 
-	const { gradientClasses } = useGradient(props);
+	const { containerBorderRadius, gradientClasses, gradientStyles } =
+		useGradient(props);
+	const { glowClasses } = useGradientGlow(props);
+	const { surfaceBorderRadius } = useGradientSurface(props);
 </script>
 
 <template>
 	<div
 		class="g-gradient"
-		:class="{
-			...gradientClasses
-		}">
+		:class="[gradientClasses, glowClasses]"
+		:style="gradientStyles">
 		<div class="g-gradient__slot">
 			<slot></slot>
 		</div>
@@ -35,9 +38,9 @@
 		width: fit-content;
 		height: fit-content;
 		padding: 1px;
-		border-radius: v-bind('computedBR');
+		border-radius: v-bind('containerBorderRadius');
 
-		background: var(--g-gradient-main);
+		background: var(--g-gradient-current, var(--g-gradient-main));
 		box-shadow: none;
 
 		transition:
@@ -62,10 +65,10 @@
 
 			width: 100%;
 			height: 100%;
-			border-radius: v-bind('computedBR');
+			border-radius: v-bind('containerBorderRadius');
 
 			opacity: 0;
-			background: var(--g-gradient-main);
+			background: var(--g-gradient-current, var(--g-gradient-main));
 			filter: blur(5px);
 
 			transition: all var(--g-token-duration-base)
@@ -74,8 +77,8 @@
 
 		&__slot {
 			overflow: hidden;
-			border-radius: v-bind('computedBR');
-			background-color: white;
+			border-radius: v-bind('surfaceBorderRadius');
+			background-color: var(--g-token-color-surface);
 			transition: transform var(--g-token-duration-slow)
 				var(--g-token-easing-emphasized);
 		}

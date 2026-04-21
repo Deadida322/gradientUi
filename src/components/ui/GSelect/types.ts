@@ -2,6 +2,7 @@ import type { PLASlots } from '@/types/CommonTypes';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
 import type { ValidationRule } from '@/use/validation';
+import type { GColor } from '@/use/color';
 import type { GGradienStates } from '../GGradient/types';
 import type {
 	InternalItem,
@@ -17,6 +18,7 @@ export type GSelectProps<
 	ReturnObject extends boolean = false
 > = SelectBaseProps<T, V, Multiple, ReturnObject> & {
 	label?: string;
+	color?: GColor;
 	placeholder?: string;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
@@ -34,5 +36,8 @@ export interface GSelectSlots<T, V> extends PLASlots {
 		selection: string;
 		selectedItems: InternalItem<T, V>[];
 	}) => unknown;
-	item?: (props: { item: SelectMenuItem<T, V>; selected: boolean }) => unknown;
+	item?: (props: {
+		item: SelectMenuItem<T, V>;
+		selected: boolean;
+	}) => unknown;
 }

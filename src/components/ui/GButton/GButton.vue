@@ -16,7 +16,13 @@
 	);
 
 	const computedBorderRadius = usePx(props.borderRadius);
-	const { actionSurfaceClasses } = useActionSurface(props, 'g-button');
+	const {
+		actionSurfaceClasses,
+		surfaceStyles,
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useActionSurface(props, 'g-button');
 </script>
 
 <template>
@@ -34,32 +40,39 @@
 				{
 					'g-button_icon': iconButton || isIconButton
 				}
-			]">
-			<div
-				v-if="(slots.prepend || prepend) && !iconButton"
-				class="g-button__prepend">
-				<slot name="prepend">
-					<g-icon :icon="prepend"></g-icon>
-				</slot>
-			</div>
-			<div class="g-button__label">
-				<slot>
-					<template v-if="!iconButton">
-						{{ label }}
-					</template>
-					<g-icon
-						v-else
-						:icon="iconButton">
-					</g-icon>
-				</slot>
-			</div>
-			<div
-				v-if="(slots.append || append) && !iconButton"
-				class="g-button__append">
-				<slot name="append">
-					<g-icon :icon="append"></g-icon>
-				</slot>
-			</div>
+			]"
+			:style="surfaceStyles">
+			<span :class="surfaceUnderlayClasses"></span>
+			<span :class="surfaceOverlayClasses"></span>
+			<span
+				class="g-button__content"
+				:class="surfaceContentClasses">
+				<span
+					v-if="(slots.prepend || prepend) && !iconButton"
+					class="g-button__prepend">
+					<slot name="prepend">
+						<g-icon :icon="prepend"></g-icon>
+					</slot>
+				</span>
+				<span class="g-button__label">
+					<slot>
+						<template v-if="!iconButton">
+							{{ label }}
+						</template>
+						<g-icon
+							v-else
+							:icon="iconButton">
+						</g-icon>
+					</slot>
+				</span>
+				<span
+					v-if="(slots.append || append) && !iconButton"
+					class="g-button__append">
+					<slot name="append">
+						<g-icon :icon="append"></g-icon>
+					</slot>
+				</span>
+			</span>
 		</div>
 	</g-gradient>
 </template>
@@ -93,6 +106,15 @@
 
 		border-radius: v-bind('computedBorderRadius');
 
+		&__content {
+			display: inline-flex;
+			gap: inherit;
+			align-items: center;
+			justify-content: center;
+
+			min-width: 0;
+		}
+
 		&_disabled {
 			cursor: not-allowed;
 			opacity: var(--g-token-opacity-disabled);
@@ -110,14 +132,15 @@
 		}
 	}
 
-	@include variants.variant-filled('g-button');
-	@include variants.variant-tonal('g-button');
-	@include variants.variant-text('g-button');
-	@include variants.variant-outlined('g-button');
 	@include size.size-s('g-button');
 	@include size.size-m('g-button');
 	@include size.size-l('g-button');
 	@include size.size-xl('g-button');
 	@include rounded.rounded('g-button');
+	@include actionSurface.action-surface-layers('g-button', true);
 	@include actionSurface.action-state-overrides('g-button');
+	@include variants.variant-filled('g-button');
+	@include variants.variant-tonal('g-button');
+	@include variants.variant-text('g-button');
+	@include variants.variant-outlined('g-button');
 </style>

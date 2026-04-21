@@ -8,6 +8,7 @@
 	--g-theme-surface: 255, 255, 255;
 	--g-theme-on-surface: 29, 27, 32;
 	--g-theme-background: 255, 251, 254;
+	--g-theme-shadow: 0, 0, 0;
 	--g-theme-error: 186, 26, 26;
 	--g-theme-on-error: 255, 255, 255;
 	--g-theme-error-container: 255, 218, 214;
@@ -28,7 +29,4 @@
 	--g-token-gradient-success: var(--g-gradient-success);
 	--g-primary-color: var(--g-token-color-primary);
 	--g-primary-color-hover: rgb(var(--g-theme-primary), 0.9);
-	--g-tonal: var(--g-token-surface-tonal);
-	--g-tonal-hover: var(--g-token-surface-tonal-hover);
-	--g-on-tonal: var(--g-token-color-on-tonal);
 }

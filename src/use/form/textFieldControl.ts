@@ -4,9 +4,11 @@ import type { ValidationRule } from '@/use/validation';
 import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
+import type { GColor } from '@/use/color';
 
 export interface FieldVisualProps {
 	label?: string;
+	color?: GColor;
 	state?: GGradienStates;
 	disabled?: boolean;
 	clearable?: boolean;

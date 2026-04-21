@@ -23,9 +23,9 @@
 	--g-token-tooltip-radius: var(--g-token-radius-xs);
 	--g-token-tooltip-font-size: var(--g-token-font-size-xs);
 	--g-token-tooltip-backdrop-blur: 2px;
-	--g-token-tooltip-surface: var(--g-token-surface-tonal);
+	--g-token-tooltip-surface: var(--g-token-color-surface);
 	--g-token-tooltip-surface-underlay: rgba(var(--g-theme-surface), 0.7);
-	--g-token-tooltip-color: var(--g-token-color-on-tonal);
+	--g-token-tooltip-color: var(--g-token-color-on-surface);
 	--g-token-select-control-min-height: 20px;
 	--g-token-select-placeholder-opacity: 0.5;
 }

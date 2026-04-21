@@ -14,6 +14,9 @@
 	const stateError = ref('Error state');
 	const stateSuccess = ref('Success state');
 	const validatedValue = ref('');
+	const gradientInputA = ref('Red gradient');
+	const gradientInputB = ref('Teal gradient');
+	const gradientInputC = ref('Deep purple gradient');
 </script>
 
 <template>
@@ -70,6 +73,24 @@
 				v-model="stateSuccess"
 				state="success"
 				label="Success" />
+		</div>
+
+		<div class="row">
+			<g-input
+				v-model="gradientInputA"
+				color="red40"
+				label="Red 40"
+				prepend-icon="palette" />
+			<g-input
+				v-model="gradientInputB"
+				color="teal40"
+				label="Teal 40"
+				prepend-icon="palette" />
+			<g-input
+				v-model="gradientInputC"
+				color="deep-purple-40"
+				label="Deep purple 40"
+				prepend-icon="palette" />
 		</div>
 
 		<g-input

@@ -4,20 +4,25 @@
 	--g-token-expansion-radius: var(--g-token-radius-md);
 	--g-token-expansion-radius-rounded: var(--g-token-radius-xl);
 	--g-token-expansion-surface: var(--g-token-color-surface);
-	--g-token-expansion-surface-active: var(--g-token-surface-selected);
+	--g-token-expansion-surface-active: var(--g-token-color-surface);
 	--g-token-expansion-color: var(--g-token-color-on-surface);
 	--g-token-expansion-color-active: var(--g-token-color-on-surface);
-	--g-token-expansion-tonal-surface: var(--g-token-surface-tonal);
-	--g-token-expansion-tonal-surface-active: var(--g-token-surface-selected-hover);
-	--g-token-expansion-tonal-content-color: var(--g-token-color-on-surface);
-	--g-token-expansion-tonal-actions-color: rgb(var(--g-theme-primary));
+	--g-token-expansion-tint-surface: var(--g-token-color-surface);
+	--g-token-expansion-tint-surface-active: var(--g-token-color-surface);
+	--g-token-expansion-tint-content-color: var(--g-token-color-on-surface);
+	--g-token-expansion-tint-actions-color: rgb(var(--g-theme-primary));
 	--g-token-expansion-outlined-surface: transparent;
-	--g-token-expansion-outlined-surface-active: var(--g-token-surface-selected);
+	--g-token-expansion-outlined-surface-active: var(--g-token-color-surface);
 	--g-token-expansion-outlined-border-color: var(--g-token-border-subtle);
-	--g-token-expansion-outlined-border-color-active: var(--g-token-border-strong);
+	--g-token-expansion-outlined-border-color-active: var(
+		--g-token-border-strong
+	);
 	--g-token-expansion-outlined-actions-color: var(--g-token-text-soft);
-	--g-token-expansion-text-surface-active: var(--g-token-surface-selected);
-	--g-token-expansion-text-hover-surface: rgba(var(--g-theme-on-surface), 0.04);
+	--g-token-expansion-text-surface-active: var(--g-token-color-surface);
+	--g-token-expansion-text-hover-surface: rgba(
+		var(--g-theme-on-surface),
+		0.04
+	);
 	--g-token-expansion-text-actions-color: rgb(var(--g-theme-primary));
 	--g-token-expansion-text-color: var(--g-token-text-soft);
 	--g-token-expansion-content-color: var(--g-token-text-soft);
@@ -31,25 +36,25 @@
 		var(--g-theme-warning),
 		0.16
 	);
-	--g-token-expansion-state-warning-tonal-surface: rgba(
-		var(--g-theme-warning),
-		0.12
+	--g-token-expansion-state-warning-tint-surface: var(
+		--g-token-color-surface
 	);
-	--g-token-expansion-state-warning-tonal-surface-active: rgba(
-		var(--g-theme-warning),
-		0.2
+	--g-token-expansion-state-warning-tint-surface-active: var(
+		--g-token-expansion-state-warning-tint-surface
 	);
-	--g-token-expansion-state-warning-border: rgba(var(--g-theme-warning), 0.34);
+	--g-token-expansion-state-warning-border: rgba(
+		var(--g-theme-warning),
+		0.34
+	);
 	--g-token-expansion-state-warning-color: rgb(var(--g-theme-warning));
 	--g-token-expansion-state-error-surface: rgba(var(--g-theme-error), 0.08);
 	--g-token-expansion-state-error-surface-active: rgba(
 		var(--g-theme-error),
 		0.15
 	);
-	--g-token-expansion-state-error-tonal-surface: rgba(var(--g-theme-error), 0.12);
-	--g-token-expansion-state-error-tonal-surface-active: rgba(
-		var(--g-theme-error),
-		0.2
+	--g-token-expansion-state-error-tint-surface: var(--g-token-color-surface);
+	--g-token-expansion-state-error-tint-surface-active: var(
+		--g-token-expansion-state-error-tint-surface
 	);
 	--g-token-expansion-state-error-border: rgba(var(--g-theme-error), 0.34);
 	--g-token-expansion-state-error-color: rgb(var(--g-theme-error));
@@ -61,15 +66,16 @@
 		var(--g-theme-success),
 		0.14
 	);
-	--g-token-expansion-state-success-tonal-surface: rgba(
-		var(--g-theme-success),
-		0.12
+	--g-token-expansion-state-success-tint-surface: var(
+		--g-token-color-surface
 	);
-	--g-token-expansion-state-success-tonal-surface-active: rgba(
-		var(--g-theme-success),
-		0.18
+	--g-token-expansion-state-success-tint-surface-active: var(
+		--g-token-expansion-state-success-tint-surface
 	);
-	--g-token-expansion-state-success-border: rgba(var(--g-theme-success), 0.34);
+	--g-token-expansion-state-success-border: rgba(
+		var(--g-theme-success),
+		0.34
+	);
 	--g-token-expansion-state-success-color: rgb(var(--g-theme-success));
 	--g-token-expansion-shadow: var(--g-token-elevation-1);
 	--g-token-expansion-shadow-active: var(--g-token-elevation-2);

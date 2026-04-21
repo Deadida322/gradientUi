@@ -13,6 +13,8 @@
 	const errorValue = ref('Error text');
 	const successValue = ref('Success text');
 	const validatedValue = ref('');
+	const gradientTextareaA = ref('Red gradient textarea');
+	const gradientTextareaB = ref('Teal gradient textarea');
 </script>
 
 <template>
@@ -67,6 +69,19 @@
 				v-model="successValue"
 				state="success"
 				label="Success"
+				:rows="2" />
+		</div>
+
+		<div class="row">
+			<g-textarea
+				v-model="gradientTextareaA"
+				color="red40"
+				label="Red 40"
+				:rows="2" />
+			<g-textarea
+				v-model="gradientTextareaB"
+				color="teal40"
+				label="Teal 40"
 				:rows="2" />
 		</div>
 

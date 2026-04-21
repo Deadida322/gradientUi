@@ -4,10 +4,11 @@
 	import { computed } from 'vue';
 	const {
 		size = 40,
+		variant = 'tonal',
 		shadow = true,
 		borderColor,
 		border,
-		color = `var(--g-tonal)`
+		color = 'var(--g-primary-color)'
 	} = defineProps<GSquircleProps>();
 	const radius = 0.1;
 	const d = computed(
@@ -19,6 +20,12 @@
 	);
 	const uuid = v4();
 	const height = computed(() => `${size}px`);
+	const fillSurface = computed(() =>
+		variant === 'tonal' ? 'var(--g-token-color-surface)' : color
+	);
+	const fillOpacity = computed(() =>
+		variant === 'tonal' ? 'var(--g-token-state-tonal-opacity)' : 0
+	);
 </script>
 
 <template>
@@ -42,11 +49,15 @@
 			</defs>
 			<path
 				:d="d"
-				fill="white" />
+				:fill="fillSurface" />
 			<path
 				class="squircle__fill"
 				:d="d"
 				:fill="color"
+				:fill-opacity="fillOpacity" />
+			<path
+				:d="d"
+				fill="transparent"
 				:stroke="borderColor"
 				:stroke-width="border" />
 

@@ -3,6 +3,7 @@
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '../GIcon/GIcon.vue';
 	import { makeFieldShellProps } from './props';
+	import { useColor } from '@/use/color';
 	import { useDisabled } from '@/use/disabled';
 	import { useSize } from '@/use/size';
 
@@ -34,6 +35,10 @@
 	);
 	const sizeClass = useSize(props, 'g-field-base');
 	const disabledClass = useDisabled(props, 'g-field-base');
+	const resolvedColor = computed(() =>
+		props.state ? props.state : props.color
+	);
+	const { colorStyles } = useColor({ color: resolvedColor });
 
 	function onClear(event: MouseEvent) {
 		event.stopPropagation();
@@ -49,8 +54,10 @@
 			[sizeClass]: true,
 			[disabledClass]: true,
 			'g-field-base_focused': focused,
-			'g-field-base_multiline': multiline
-		}">
+			'g-field-base_multiline': multiline,
+			[`g-field-base_state-${state}`]: state
+		}"
+		:style="colorStyles">
 		<label
 			:for="id"
 			class="g-field-base__label">
@@ -60,6 +67,7 @@
 		</label>
 
 		<g-gradient
+			:color="resolvedColor"
 			:state="state"
 			:disabled="disabled"
 			position="bottom"
@@ -121,14 +129,18 @@
 </template>
 
 <style lang="scss" scoped>
-	$field-error: rgb(var(--g-theme-error));
-	$field-on-error: rgb(var(--g-theme-on-error));
-	$field-warning: rgb(var(--g-theme-warning));
-	$field-on-warning: rgb(var(--g-theme-on-warning));
-	$field-success: rgb(var(--g-theme-success));
-	$field-on-success: rgb(var(--g-theme-on-success));
-
 	.g-field-base {
+		--g-field-accent-color: var(--g-color);
+		--g-field-content-color: color-mix(
+			in srgb,
+			var(--g-token-color-on-surface) 92%,
+			transparent
+		);
+		--g-field-label-color: var(--g-token-color-on-surface);
+		--g-field-helper-color: var(--g-token-color-on-surface);
+		--g-field-surface-color: var(--g-token-field-surface);
+		--g-field-placeholder-opacity: 0.62;
+
 		position: relative;
 
 		display: flex;
@@ -142,7 +154,10 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+
 			min-width: var(--g-token-field-affix-width);
+
+			color: var(--g-field-content-color);
 		}
 
 		&__label {
@@ -151,7 +166,7 @@
 			margin-left: var(--g-token-field-label-margin-inline);
 
 			font-size: var(--g-token-field-label-font-size-m);
-			color: var(--primary-text);
+			color: var(--g-field-label-color);
 			text-align: left;
 
 			opacity: var(--g-token-field-label-opacity);
@@ -173,48 +188,44 @@
 				var(--g-token-field-padding-x-m);
 			border-radius: var(--g-token-field-radius);
 
-			background-color: var(--g-token-field-surface);
+			color: var(--g-field-content-color);
+
+			background-color: var(--g-field-surface-color);
 
 			&_error {
-				color: $field-error;
-				background-color: var(--g-token-field-state-surface-error);
-
-				:deep(.g-field-base__native) {
-					color: $field-error;
-
-					&::placeholder {
-						color: $field-error;
-						opacity: var(--g-token-field-state-placeholder-opacity);
-					}
-				}
+				--g-field-surface-color: color-mix(
+					in srgb,
+					var(--g-color) 14%,
+					var(--g-surface-color)
+				);
+				--g-field-content-color: var(--g-color);
+				--g-field-placeholder-opacity: var(
+					--g-token-field-state-placeholder-opacity
+				);
 			}
 
 			&_warning {
-				color: $field-warning;
-				background-color: var(--g-token-field-state-surface-warning);
-
-				:deep(.g-field-base__native) {
-					color: $field-warning;
-
-					&::placeholder {
-						color: $field-warning;
-						opacity: var(--g-token-field-state-placeholder-opacity);
-					}
-				}
+				--g-field-surface-color: color-mix(
+					in srgb,
+					var(--g-color) 14%,
+					var(--g-surface-color)
+				);
+				--g-field-content-color: var(--g-color);
+				--g-field-placeholder-opacity: var(
+					--g-token-field-state-placeholder-opacity
+				);
 			}
 
 			&_success {
-				color: $field-success;
-				background-color: var(--g-token-field-state-surface-success);
-
-				:deep(.g-field-base__native) {
-					color: $field-success;
-
-					&::placeholder {
-						color: $field-success;
-						opacity: var(--g-token-field-state-placeholder-opacity);
-					}
-				}
+				--g-field-surface-color: color-mix(
+					in srgb,
+					var(--g-color) 14%,
+					var(--g-surface-color)
+				);
+				--g-field-content-color: var(--g-color);
+				--g-field-placeholder-opacity: var(
+					--g-token-field-state-placeholder-opacity
+				);
 			}
 		}
 
@@ -291,6 +302,7 @@
 
 		&__cross {
 			cursor: pointer;
+			color: var(--g-field-content-color);
 			opacity: var(--g-token-field-clear-opacity);
 			transition: all var(--g-token-duration-fast)
 				var(--g-token-easing-standard);
@@ -310,6 +322,7 @@
 			margin-left: var(--g-token-field-helper-margin-left);
 
 			font-size: var(--g-token-field-helper-font-size);
+			color: var(--g-field-helper-color);
 			text-align: left;
 
 			opacity: 0;
@@ -332,11 +345,22 @@
 			width: 100%;
 			border: none;
 
+			color: inherit;
+
 			background-color: transparent;
 			outline: none;
+
+			&::placeholder {
+				color: currentcolor;
+				opacity: var(--g-field-placeholder-opacity);
+			}
 		}
 
 		&_focused {
+			--g-field-label-color: var(--g-field-accent-color);
+			--g-field-helper-color: var(--g-field-accent-color);
+			--g-field-placeholder-opacity: 0.48;
+
 			.g-field-base__label {
 				margin-left: var(--g-token-field-label-focus-margin-inline);
 			}
@@ -346,6 +370,13 @@
 				border-bottom: none;
 				opacity: var(--g-token-field-helper-opacity);
 			}
+		}
+
+		&_state-error,
+		&_state-warning,
+		&_state-success {
+			--g-field-label-color: var(--g-field-accent-color);
+			--g-field-helper-color: var(--g-field-accent-color);
 		}
 
 		&_disabled {

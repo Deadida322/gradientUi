@@ -1,31 +1,39 @@
 @mixin base-component($prefix) {
-    --g-size-gap: var(--g-token-button-gap);
-    --g-size-padding-y-m: var(--g-token-button-padding-y-m);
-    --g-size-padding-x-m: var(--g-token-button-padding-x-m);
-    --g-size-font-size-m: var(--g-token-button-font-size-m);
-    --g-size-line-height: var(--g-token-line-height-md);
-    --g-size-line-height-m: var(--g-token-line-height-md);
+	--g-color: var(--g-token-color-primary);
+	--g-on-color: var(--g-token-color-on-primary);
+	--g-surface-color: var(--g-token-color-surface);
+	--g-on-surface-color: var(--g-token-color-on-surface);
+	--g-surface-underlay-color: transparent;
+	--g-surface-underlay-opacity: 0;
+	--g-surface-overlay-color: currentcolor;
+	--g-surface-overlay-opacity: 0;
+	--g-surface-content-color: var(--g-color);
+	--g-size-gap: var(--g-token-button-gap);
+	--g-size-padding-y-m: var(--g-token-button-padding-y-m);
+	--g-size-padding-x-m: var(--g-token-button-padding-x-m);
+	--g-size-font-size-m: var(--g-token-button-font-size-m);
+	--g-size-line-height: var(--g-token-line-height-md);
+	--g-size-line-height-m: var(--g-token-line-height-md);
 
-    cursor: pointer;
+	cursor: pointer;
 
-    display: inline-flex;
-    gap: var(--g-size-gap);
-    align-items: center;
-    justify-content: center;
+	display: inline-flex;
+	gap: var(--g-size-gap);
+	align-items: center;
+	justify-content: center;
 
-    padding: var(--g-size-padding-y-m) var(--g-size-padding-x-m);
-    border: none;
-    border-radius: var(--g-token-button-radius);
+	padding: var(--g-size-padding-y-m) var(--g-size-padding-x-m);
+	border: none;
+	border-radius: var(--g-token-button-radius);
 
-    font-size: var(--g-size-font-size-m);
-    line-height: var(--g-size-line-height-m);
-    color: var(--g-token-color-on-primary);
+	font-size: var(--g-size-font-size-m);
+	line-height: var(--g-size-line-height-m);
+	color: var(--g-surface-content-color);
 
-    background-color: var(--g-token-color-primary);
+	background-color: transparent;
 
-    transition: all var(--g-token-duration-base) var(--g-token-easing-standard);
-
-    &:hover {
-        background-color: var(--g-primary-color-hover);
-    }
+	transition:
+		color var(--g-token-duration-base) var(--g-token-easing-standard),
+		box-shadow var(--g-token-duration-base) var(--g-token-easing-standard),
+		transform var(--g-token-duration-base) var(--g-token-easing-standard);
 }

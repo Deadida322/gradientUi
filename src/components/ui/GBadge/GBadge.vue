@@ -1,7 +1,18 @@
 <script setup lang="ts">
 	import { type GBadgeProps } from './types';
+	import { useColor } from '@/use/color';
+	import { useSurfaceLayers } from '@/use/surface';
 
-	const _props = defineProps<GBadgeProps>();
+	const props = withDefaults(defineProps<GBadgeProps>(), {
+		color: 'primary',
+		variant: 'tonal'
+	});
+	const { colorStyles } = useColor(props);
+	const {
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useSurfaceLayers('content__wrapper');
 </script>
 
 <template>
@@ -23,18 +34,25 @@
 				:class="{
 					[`content__wrapper_${variant}`]: true,
 					content__wrapper_dot: dot
-				}">
-				<slot
-					v-if="!dot"
-					name="content"
-					>{{ content }}</slot
-				>
+				}"
+				:style="colorStyles">
+				<span :class="surfaceUnderlayClasses"></span>
+				<span :class="surfaceOverlayClasses"></span>
+				<span :class="surfaceContentClasses">
+					<slot
+						v-if="!dot"
+						name="content"
+						>{{ content }}</slot
+					>
+				</span>
 			</div>
 		</div>
 	</div>
 </template>
 
 <style lang="scss">
+	@use '@/styles/mixins/action-surface' as actionSurface;
+
 	.g-badge {
 		position: relative;
 		width: fit-content;
@@ -61,13 +79,24 @@
 		}
 
 		.content__wrapper {
+			--g-surface-underlay-color: var(--g-surface-color);
+			--g-surface-underlay-opacity: 1;
+			--g-surface-overlay-color: var(--g-color);
+			--g-surface-overlay-opacity: var(--g-token-state-tonal-opacity);
+			--g-surface-content-color: var(--g-color);
+
 			padding: 2px 4px;
-			color: var(--g-on-tonal);
-			background: var(--g-tonal);
+			color: var(--g-surface-content-color);
+			background: transparent;
 
 			&_primary {
-				color: white;
-				background: var(--g-primary-color);
+				--g-surface-underlay-color: var(--g-color);
+				--g-surface-underlay-opacity: 1;
+				--g-surface-overlay-color: var(--g-on-color);
+				--g-surface-overlay-opacity: 0;
+				--g-surface-content-color: var(--g-on-color);
+
+				background: transparent;
 			}
 
 			&_dot {
@@ -94,4 +123,6 @@
 			}
 		}
 	}
+
+	@include actionSurface.action-surface-layers('content__wrapper', true);
 </style>

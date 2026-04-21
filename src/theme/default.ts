@@ -3,7 +3,10 @@ import {
 	hexFromArgb
 } from '@material/material-color-utilities';
 import { camelToKebabCase } from '../utils/camelToKebabCase';
-import { generateGradientCSS } from './generateGradient';
+import {
+	generateGradientCSS,
+	generateMaterialGradients
+} from './generateGradient';
 import { generateMaterialColors } from './generateColors';
 import { hexToRgbString } from '@/utils/color';
 import { normalizeColor } from '@/utils/colors/normaliseColor';
@@ -18,11 +21,6 @@ export type ThemeMode = 'light' | 'dark';
 
 const THEME_CLASS = 'g-theme--material';
 const MODE_CLASS_PREFIX = 'g-theme--';
-
-const maps = {
-	primaryContainer: 'tonal',
-	onPrimaryContainer: 'onTonal'
-};
 
 function createSemanticTokens(mode: ThemeMode) {
 	const warningSeedArgb = normalizeColor('#FFC107');
@@ -73,7 +71,7 @@ function generateTheme(seedColor: string, mode: ThemeMode) {
 	Object.entries(scheme).forEach(([key, argb]) => {
 		const hex = hexFromArgb(argb);
 		const rgb = hexToRgbString(hex);
-		tokens[maps[key] || key] = rgb;
+		tokens[key] = rgb;
 	});
 
 	return {
@@ -109,6 +107,7 @@ function generatePrimaryGradients(seed: string) {
 	const successHex = hexFromArgb(successScheme.primary);
 
 	return {
+		...generateMaterialGradients(normalizedSeed, 135),
 		main: generateGradientCSS(normalizedSeed, 135),
 		error: generateGradientCSS(errorHex, 135),
 		warning: generateGradientCSS(warningHex, 135),
@@ -169,6 +168,8 @@ export function createDefaultTheme(
 		colors: generateMaterialColors(normalizedSeed),
 		gradient: generatePrimaryGradients(normalizedSeed)
 	};
+
+	console.log(tokens.theme, 'tokens');
 
 	return {
 		tokens,

@@ -27,14 +27,16 @@
 			message: computed(() => props.message)
 		});
 
-	const { actionSurfaceClasses } = useActionSurface(
-		props,
-		'g-toggle-button',
-		{
-			focused: () => focused.value,
-			selected: () => modelValue.value
-		}
-	);
+	const {
+		actionSurfaceClasses,
+		surfaceStyles,
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useActionSurface(props, 'g-toggle-button', {
+		focused: () => focused.value,
+		selected: () => modelValue.value
+	});
 
 	const hasMessage = computed(
 		() => Boolean(computedMessage.value) || Boolean(slots.message)
@@ -85,33 +87,40 @@
 				type="button"
 				class="g-toggle-button"
 				:class="actionSurfaceClasses"
+				:style="surfaceStyles"
 				:disabled="props.disabled"
 				:aria-pressed="modelValue"
 				@click="toggle"
 				@focus="handleFocus"
 				@blur="handleBlur">
+				<span :class="surfaceUnderlayClasses"></span>
+				<span :class="surfaceOverlayClasses"></span>
 				<span
-					v-if="$slots.prepend || props.prepend"
-					class="g-toggle-button__prepend">
-					<slot name="prepend">
-						<g-icon :icon="props.prepend" />
-					</slot>
-				</span>
+					class="g-toggle-button__content"
+					:class="surfaceContentClasses">
+					<span
+						v-if="$slots.prepend || props.prepend"
+						class="g-toggle-button__prepend">
+						<slot name="prepend">
+							<g-icon :icon="props.prepend" />
+						</slot>
+					</span>
 
-				<span
-					v-if="hasTextContent"
-					class="g-toggle-button__label">
-					<slot>
-						{{ props.label }}
-					</slot>
-				</span>
+					<span
+						v-if="hasTextContent"
+						class="g-toggle-button__label">
+						<slot>
+							{{ props.label }}
+						</slot>
+					</span>
 
-				<span
-					v-if="$slots.append || props.append"
-					class="g-toggle-button__append">
-					<slot name="append">
-						<g-icon :icon="props.append" />
-					</slot>
+					<span
+						v-if="$slots.append || props.append"
+						class="g-toggle-button__append">
+						<slot name="append">
+							<g-icon :icon="props.append" />
+						</slot>
+					</span>
 				</span>
 			</button>
 		</g-gradient>
@@ -196,6 +205,15 @@
 			transform var(--g-token-duration-fast)
 				var(--g-token-easing-standard);
 
+		&__content {
+			display: inline-flex;
+			gap: inherit;
+			align-items: center;
+			justify-content: center;
+
+			min-width: 0;
+		}
+
 		&:not(:disabled):active {
 			transform: translateY(1px);
 		}
@@ -231,5 +249,5 @@
 	@include size.size-l('g-toggle-button');
 	@include size.size-xl('g-toggle-button');
 	@include rounded.rounded('g-toggle-button');
-	@include actionSurface.action-state-overrides('g-toggle-button');
+	@include actionSurface.action-surface-layers('g-toggle-button', true);
 </style>

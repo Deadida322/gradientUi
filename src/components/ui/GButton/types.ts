@@ -22,13 +22,17 @@ export interface GButtonProps {
 	isIconButton?: boolean;
 }
 
-export type GButtonVariants = 'tonal' | 'text' | 'outlined' | 'default';
+export type GButtonVariants =
+	| 'filled'
+	| 'tonal'
+	| 'text'
+	| 'outlined'
+	| 'default';
 
 export const makeButtonProps = propsFactory({
 	...makeActionSurfaceProps(),
 	...makePLAProps(),
 	...makeGradientProps(),
 	isIconButton: Boolean as PropType<boolean>,
-	iconButton: String as PropType<MdiIcon>,
-	color: String
+	iconButton: String as PropType<MdiIcon>
 });

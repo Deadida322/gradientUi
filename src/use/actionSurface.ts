@@ -2,7 +2,12 @@ import type { Sizes } from '@/types/CommonTypes';
 import { makeSizeProps, useSize } from '@/use/size';
 import { propsFactory } from '@/utils/propsFactory';
 import { computed, toValue, type MaybeRefOrGetter, type PropType } from 'vue';
-import { makeSurfaceProps, useSurface, type SurfaceProps } from './surface';
+import {
+	makeSurfaceProps,
+	useSurface,
+	useSurfaceLayers,
+	type SurfaceProps
+} from './surface';
 import { type GVariant } from './variant';
 
 export interface ActionSurfaceProps extends SurfaceProps {
@@ -29,10 +34,13 @@ export function useActionSurface(
 	baseClass: string,
 	options: ActionSurfaceStateOptions = {}
 ) {
-	const { disabledClass, roundedClass, stateClass } = useSurface(
-		props,
-		baseClass
-	);
+	const { disabledClass, roundedClass, stateClass, surfaceStyles } =
+		useSurface(props, baseClass);
+	const {
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
+	} = useSurfaceLayers(baseClass);
 	const sizeClass = useSize(props, baseClass);
 
 	const actionSurfaceClasses = computed(() => {
@@ -57,6 +65,10 @@ export function useActionSurface(
 	});
 
 	return {
-		actionSurfaceClasses
+		actionSurfaceClasses,
+		surfaceStyles,
+		surfaceOverlayClasses,
+		surfaceUnderlayClasses,
+		surfaceContentClasses
 	};
 }

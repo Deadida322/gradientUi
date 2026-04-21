@@ -1,53 +1,62 @@
-@mixin variant-filled($prefix) {
-    .#{$prefix}_filled {
-        color: white;
-        background-color: var(--g-primary-color);
-
-        &:hover {
-            color: white;
-            background-color: var(--g-primary-color-hover);
-        }
-    }
-}
-
 @mixin variant-outlined($prefix) {
-    .#{$prefix}_outlined {
-        border: 1px solid var(--g-primary-color);
-        color: var(--g-primary-color);
-        background: transparent;
+	.#{$prefix}_outlined {
+		--g-surface-content-color: var(--g-color);
+		--g-surface-underlay-color: transparent;
+		--g-surface-underlay-opacity: 0;
+		--g-surface-overlay-color: var(--g-color);
+		--g-surface-overlay-opacity: 0;
 
-        &:hover {
-            background-color: rgb(
-				var(--g-theme-on-surface) /
-					var(--g-token-state-hover-opacity)
-			);
-        }
-    }
+		border: 1px solid currentcolor;
+
+		&:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+		}
+	}
 }
 
 @mixin variant-tonal($prefix) {
-    .#{$prefix}_tonal {
-        color: var(--g-on-tonal);
-        background-color: var(--g-tonal);
+	.#{$prefix}_tonal {
+		--g-surface-content-color: var(--g-color);
+		--g-surface-underlay-color: var(--g-surface-color);
+		--g-surface-underlay-opacity: 1;
+		--g-surface-overlay-color: var(--g-color);
+		--g-surface-overlay-opacity: var(--g-token-state-tonal-opacity);
 
-        &:hover {
-            color: var(--g-on-tonal);
-            background-color: var(--g-tonal-hover);
-        }
-    }	
+		background-color: transparent;
+
+		&:hover {
+			--g-surface-overlay-opacity: var(
+				--g-token-state-tonal-hover-opacity
+			);
+		}
+	}
 }
 
 @mixin variant-text($prefix) {
-    .#{$prefix}_text {
-        color: var(--g-primary-color);
-        background: transparent;
+	.#{$prefix}_text {
+		--g-surface-content-color: var(--g-color);
+		--g-surface-underlay-color: transparent;
+		--g-surface-underlay-opacity: 0;
+		--g-surface-overlay-color: var(--g-color);
+		--g-surface-overlay-opacity: 0;
 
-        &:hover {
-            color: var(--g-primary-color);
-            background-color: rgb(
-				var(--g-theme-on-surface) /
-					var(--g-token-state-hover-opacity)
-			);
-        }
-    }
+		&:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+		}
+	}
+}
+
+@mixin variant-filled($prefix) {
+	.#{$prefix}_filled,
+	.#{$prefix}_default {
+		--g-surface-content-color: var(--g-on-color);
+		--g-surface-underlay-color: var(--g-color);
+		--g-surface-underlay-opacity: 1;
+		--g-surface-overlay-color: var(--g-on-color);
+		--g-surface-overlay-opacity: 0;
+
+		&:hover {
+			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
+		}
+	}
 }

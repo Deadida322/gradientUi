@@ -60,8 +60,7 @@ $text-color-values: (
 
 $background-values: (
 	primary: var(--g-token-color-primary),
-	surface: var(--g-token-color-surface),
-	tonal: var(--g-token-surface-tonal)
+	surface: var(--g-token-color-surface)
 );
 
 $breakpoints: (
@@ -288,6 +287,7 @@ $spacing-scale: (
 }
 
 @each $bp, $min-width in $breakpoints {
+	/* stylelint-disable-next-line media-query-no-invalid */
 	@media (width >= $min-width) {
 		@each $name, $value in $display-values {
 			.d-#{$bp}-#{$name} {

@@ -98,6 +98,7 @@
 	const fieldProps = computed(() => ({
 		id,
 		label: props.label,
+		color: props.color,
 		state: props.state,
 		disabled: props.disabled,
 		clearable: props.clearable,

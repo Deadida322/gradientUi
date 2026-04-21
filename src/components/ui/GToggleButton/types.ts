@@ -2,6 +2,7 @@ import type { MdiIcon, Sizes } from '@/types/CommonTypes';
 import type { GGradienStates } from '../GGradient/types';
 import type { ValidationRule } from '@/use/validation';
 import { makeCheckFieldProps } from '@/use/check';
+import { makeColorProps } from '@/use/color';
 import { makeRoundedProps } from '@/use/rounded';
 import { propsFactory } from '@/utils/propsFactory';
 import { makeVariantProps, type GVariant } from '@/use/variant';
@@ -16,6 +17,7 @@ export interface GToggleButtonProps {
 	state?: GGradienStates;
 	activeVariant?: GVariant;
 	inline?: boolean;
+	color?: string;
 	variant?: GVariant;
 	rounded?: boolean;
 	prepend?: MdiIcon;
@@ -36,6 +38,7 @@ export const makeToggleButtonProps = propsFactory({
 		size: 'm',
 		inline: false
 	}),
+	...makeColorProps(),
 	...makeVariantProps(),
 	...makeRoundedProps(),
 	activeVariant: String as PropType<GVariant>,

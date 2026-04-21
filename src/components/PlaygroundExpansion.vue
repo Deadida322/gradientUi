@@ -15,6 +15,81 @@
 	type StateKey = 'warning' | 'error' | 'success' | 'mixed';
 	type GapKey = 'gap-a' | 'gap-b';
 
+	const materialExpansionColors = [
+		'red40',
+		'pink40',
+		'purple40',
+		'deep-purple-40',
+		'indigo40',
+		'blue40',
+		'light-blue-40',
+		'cyan40',
+		'teal40',
+		'green40',
+		'light-green-40',
+		'lime40',
+		'yellow40',
+		'amber40',
+		'orange40',
+		'deep-orange-40',
+		'brown40',
+		'grey40',
+		'blue-grey-40'
+	];
+	const materialExpansionTones = [
+		'blue20',
+		'blue30',
+		'blue40',
+		'blue50',
+		'blue60',
+		'blue70',
+		'blue80',
+		'blue90',
+		'blue100'
+	];
+	const materialExpansionToneRows = [
+		'red20',
+		'red40',
+		'red60',
+		'red80',
+		'orange20',
+		'orange40',
+		'orange60',
+		'orange80',
+		'green20',
+		'green40',
+		'green60',
+		'green80',
+		'teal20',
+		'teal40',
+		'teal60',
+		'teal80',
+		'blue20',
+		'blue40',
+		'blue60',
+		'blue80',
+		'deep-purple-20',
+		'deep-purple-40',
+		'deep-purple-60',
+		'deep-purple-80'
+	];
+	const gradientExpansionColors = [
+		'red40',
+		'red70',
+		'orange40',
+		'orange70',
+		'green40',
+		'green70',
+		'teal40',
+		'teal70',
+		'blue40',
+		'blue70',
+		'deep-purple-40',
+		'deep-purple-70',
+		'pink40',
+		'blue-grey-40'
+	];
+
 	const standaloneOpen = ref(true);
 	const singleValue = ref<FaqKey | null>('tokens');
 	const multipleValue = ref<SetupKey[]>(['install']);
@@ -272,7 +347,7 @@
 				gap="12">
 				<g-expansion
 					value="default"
-					variant="default"
+					variant="filled"
 					title="Default variant"
 					text="The neutral surface stays closest to the current implementation.">
 					<div class="expansion-playground__body-copy">
@@ -316,6 +391,120 @@
 			</g-expansion-group>
 
 			<div class="value-line">variants: {{ variantsValue }}</div>
+		</div>
+
+		<div
+			class="expansion-playground__section expansion-playground__section_wide">
+			<g-text
+				type="subtitle-1"
+				label="Colors" />
+
+			<div class="expansion-color-grid">
+				<g-expansion
+					v-for="color in materialExpansionColors"
+					:key="`filled-${color}`"
+					:color="color"
+					variant="filled"
+					size="s"
+					:title="color"
+					text="filled">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid">
+				<g-expansion
+					v-for="color in materialExpansionColors"
+					:key="`tonal-${color}`"
+					:color="color"
+					variant="tonal"
+					size="s"
+					:title="color"
+					text="tonal">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid">
+				<g-expansion
+					v-for="color in materialExpansionColors"
+					:key="`outlined-${color}`"
+					:color="color"
+					variant="outlined"
+					size="s"
+					:title="color"
+					text="outlined">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid">
+				<g-expansion
+					v-for="color in materialExpansionColors"
+					:key="`text-${color}`"
+					:color="color"
+					variant="text"
+					size="s"
+					:title="color"
+					text="text">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid expansion-color-grid_tones">
+				<g-expansion
+					v-for="color in materialExpansionTones"
+					:key="`tone-${color}`"
+					:color="color"
+					variant="filled"
+					size="s"
+					:title="color"
+					text="tone scale">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid expansion-color-grid_tones">
+				<g-expansion
+					v-for="color in materialExpansionToneRows"
+					:key="`outlined-tone-${color}`"
+					:color="color"
+					variant="outlined"
+					size="s"
+					:title="color"
+					text="outlined tone">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
+
+			<div class="expansion-color-grid">
+				<g-expansion
+					v-for="color in gradientExpansionColors"
+					:key="`gradient-${color}`"
+					:color="color"
+					variant="tonal"
+					border-width="2"
+					glow
+					size="s"
+					:title="`gradient ${color}`"
+					text="border and glow use the same color">
+					<div class="expansion-playground__body-copy">
+						{{ color }}
+					</div>
+				</g-expansion>
+			</div>
 		</div>
 
 		<div class="expansion-playground__section">
@@ -425,7 +614,7 @@
 					value="warning"
 					title="Warning becomes stronger on open"
 					text="Closed state uses warning, open state keeps the same semantic color and intensifies it."
-					variant="default"
+					variant="filled"
 					state="warning"
 					active-state="warning">
 					<div class="expansion-playground__body-copy">
@@ -467,7 +656,7 @@
 					value="mixed"
 					title="Mixed visual transition"
 					text="Closed warning, open success, with active gradient props on top."
-					variant="default"
+					variant="filled"
 					state="warning"
 					active-state="success"
 					:active-glow="true"

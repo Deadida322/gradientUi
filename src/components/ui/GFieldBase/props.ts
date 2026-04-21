@@ -1,10 +1,12 @@
 import type { GGradienStates } from '../GGradient/types';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
+import { makeColorProps } from '@/use/color';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';
 
 export const makeFieldBaseProps = propsFactory({
+	...makeColorProps(),
 	id: {
 		type: String,
 		required: true

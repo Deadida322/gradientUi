@@ -45,7 +45,9 @@
 		&_checked {
 			transform: translateX(4px);
 			color: var(--g-primary-color);
-			background-color: var(--g-tonal);
+			background-color: rgb(
+				var(--g-theme-primary) / var(--g-token-state-tonal-opacity)
+			);
 		}
 	}
 </style>

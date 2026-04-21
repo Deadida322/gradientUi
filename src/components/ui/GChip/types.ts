@@ -9,6 +9,7 @@ export interface GChipProps {
 	variant?: GChipVariants;
 	active?: boolean;
 	rounded?: boolean;
+	color?: string;
 	label?: string;
 	disabled?: boolean;
 	size?: Sizes;
@@ -20,7 +21,12 @@ export interface GChipProps {
 	onRemove?: () => void;
 }
 
-export type GChipVariants = 'tonal' | 'text' | 'outlined' | 'default';
+export type GChipVariants =
+	| 'filled'
+	| 'tonal'
+	| 'text'
+	| 'outlined'
+	| 'default';
 
 export const makeChipProps = propsFactory({
 	...makeActionSurfaceProps(),

@@ -1,4 +1,5 @@
 import type { MdiIcon } from '@/types/CommonTypes';
+import { makeColorProps } from '@/use/color';
 import { makeDisabledProps } from '@/use/disabled';
 import type {
 	GGradienPositions,
@@ -44,11 +45,18 @@ export const makeExpansionProps = propsFactory({
 	...makeRoundedProps(),
 	...makeSizeProps(),
 	...makeVariantProps(),
+	...makeColorProps(),
 	title: String,
 	text: String,
 	modelValue: Boolean,
 	value: {
-		type: [String, Number, Boolean, Object, Array] as PropType<ExpansionValue>,
+		type: [
+			String,
+			Number,
+			Boolean,
+			Object,
+			Array
+		] as PropType<ExpansionValue>,
 		default: undefined
 	},
 	readonly: Boolean,
@@ -85,4 +93,6 @@ export const makeExpansionProps = propsFactory({
 	}
 });
 
-export type GExpansionProps = ExtractPropTypes<ReturnType<typeof makeExpansionProps>>;
+export type GExpansionProps = ExtractPropTypes<
+	ReturnType<typeof makeExpansionProps>
+>;

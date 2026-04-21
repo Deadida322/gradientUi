@@ -214,7 +214,7 @@
 				label="Outlined to filled"
 				prepend="swap-horizontal"
 				variant="outlined"
-				active-variant="default" />
+				active-variant="filled" />
 		</div>
 
 		<div class="row row_two">

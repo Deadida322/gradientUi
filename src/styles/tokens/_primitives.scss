@@ -42,9 +42,37 @@
 	--g-token-state-hover-opacity-strong: 0.16;
 	--g-token-state-selected-opacity: 0.12;
 	--g-token-state-focus-ring-width: 2px;
-	--g-token-elevation-1: 0 1px 2px rgb(0 0 0 / 10%);
-	--g-token-elevation-2: 2px 5px 4px -2px rgb(0 0 0 / 20%);
-	--g-token-elevation-3: 0 8px 24px rgb(0 0 0 / 18%);
+	--g-token-elevation-shadow-color: var(--g-theme-shadow);
+	--g-token-elevation-1-opacity: 0.1;
+	--g-token-elevation-2-opacity: 0.14;
+	--g-token-elevation-3-opacity: 0.18;
+	--g-token-elevation-1: 0 1px 2px
+		rgba(
+			var(--g-token-elevation-shadow-color),
+			var(--g-token-elevation-1-opacity)
+		);
+	--g-token-elevation-2:
+		0 2px 6px
+			rgba(
+				var(--g-token-elevation-shadow-color),
+				var(--g-token-elevation-2-opacity)
+			),
+		0 4px 12px -4px
+			rgba(
+				var(--g-token-elevation-shadow-color),
+				var(--g-token-elevation-3-opacity)
+			);
+	--g-token-elevation-3:
+		0 8px 24px
+			rgba(
+				var(--g-token-elevation-shadow-color),
+				var(--g-token-elevation-3-opacity)
+			),
+		0 2px 8px
+			rgba(
+				var(--g-token-elevation-shadow-color),
+				var(--g-token-elevation-1-opacity)
+			);
 	--g-token-icon-size-s: 16px;
 	--g-token-icon-size-m: 18px;
 	--g-token-icon-size-l: 20px;
