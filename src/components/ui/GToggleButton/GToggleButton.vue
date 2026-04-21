@@ -29,6 +29,8 @@
 
 	const {
 		actionSurfaceClasses,
+		resolvedColor,
+		resolvedState,
 		surfaceStyles,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
@@ -78,7 +80,8 @@
 			:active="modelValue"
 			:glow="modelValue"
 			:disabled="props.disabled"
-			:state="props.state"
+			:color="resolvedColor"
+			:state="resolvedState"
 			:rounded="props.rounded"
 			:border-width="modelValue ? 1 : 0"
 			:border-radius="gradientBorderRadius">

@@ -2,7 +2,6 @@
 	lang="ts"
 	setup
 	generic="T, V = T, ReturnObject extends boolean = false">
-	import { computed } from 'vue';
 	import { GCheckGroup } from '../GCheckControl';
 	import GRadioItem from './GRadioItem.vue';
 	import {
@@ -21,7 +20,9 @@
 		label: undefined,
 		disabled: false,
 		size: 'm',
+		color: 'primary',
 		state: undefined,
+		indicatorView: 'default',
 		message: undefined,
 		inline: false,
 		vertical: false,
@@ -66,7 +67,10 @@
 			checked: isItemSelected(item),
 			disabled: props.disabled || item.disabled,
 			size: props.size,
-			state: props.state
+			color: props.color,
+			state: props.state,
+			indicatorView: props.indicatorView,
+			inline: !props.vertical
 		};
 	}
 

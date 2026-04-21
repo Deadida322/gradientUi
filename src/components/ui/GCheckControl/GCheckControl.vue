@@ -10,6 +10,7 @@
 	import { useSelected } from '@/use/selected';
 	import { useSize } from '@/use/size';
 	import { useState } from '@/use/state';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 
 	const props = defineProps(makeCheckControlBaseProps());
 
@@ -36,6 +37,7 @@
 	const disabledClass = useDisabled(props, 'g-check-control');
 	const focusedClass = useFocused(props, 'g-check-control');
 	const stateClass = useState(props, 'g-check-control');
+	const { colorStyles } = useSurfaceColor(props);
 	const checkedClass = useSelected(
 		{ selected: () => props.checked },
 		'g-check-control'
@@ -55,6 +57,7 @@
 				'g-check-control_inline': props.inline
 			}
 		]"
+		:style="colorStyles"
 		@focusin="emit('focusin', $event)"
 		@focusout="emit('focusout', $event)"
 		@pointerdown="emit('pointerdown', $event)"
@@ -103,9 +106,13 @@
 
 <style scoped lang="scss">
 	.g-check-control {
-		display: inline-flex;
+		--g-check-control-accent: var(--g-color);
+
+		display: flex;
 		flex-direction: column;
 		gap: var(--g-token-space-2);
+
+		width: 100%;
 		min-width: 0;
 
 		&__native {
@@ -121,6 +128,7 @@
 			gap: var(--g-token-check-gap);
 			align-items: center;
 
+			width: 100%;
 			min-width: 0;
 		}
 
@@ -153,7 +161,12 @@
 		}
 
 		&_inline {
-			display: flex;
+			display: inline-flex;
+			width: fit-content;
+
+			.g-check-control__body {
+				width: fit-content;
+			}
 		}
 
 		&_disabled {
@@ -165,28 +178,28 @@
 
 		&_focused {
 			.g-check-control__label {
-				color: var(--g-token-color-primary);
+				color: var(--g-check-control-accent);
 			}
 		}
 
 		&_error {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: var(--g-token-color-error);
+				color: var(--g-check-control-accent);
 			}
 		}
 
 		&_warning {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: var(--g-token-color-warning);
+				color: var(--g-check-control-accent);
 			}
 		}
 
 		&_success {
 			.g-check-control__label,
 			.g-check-control__message {
-				color: var(--g-token-color-success);
+				color: var(--g-check-control-accent);
 			}
 		}
 

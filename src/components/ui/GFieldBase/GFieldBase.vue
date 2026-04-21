@@ -3,9 +3,9 @@
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '../GIcon/GIcon.vue';
 	import { makeFieldShellProps } from './props';
-	import { useColor } from '@/use/color';
 	import { useDisabled } from '@/use/disabled';
 	import { useSize } from '@/use/size';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 
 	const props = defineProps(
 		makeFieldShellProps({
@@ -35,10 +35,8 @@
 	);
 	const sizeClass = useSize(props, 'g-field-base');
 	const disabledClass = useDisabled(props, 'g-field-base');
-	const resolvedColor = computed(() =>
-		props.state ? props.state : props.color
-	);
-	const { colorStyles } = useColor({ color: resolvedColor });
+	const { resolvedColor, resolvedState, colorStyles } =
+		useSurfaceColor(props);
 
 	function onClear(event: MouseEvent) {
 		event.stopPropagation();
@@ -68,7 +66,7 @@
 
 		<g-gradient
 			:color="resolvedColor"
-			:state="state"
+			:state="resolvedState"
 			:disabled="disabled"
 			position="bottom"
 			:border-width="focused ? 1 : 0"

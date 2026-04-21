@@ -27,7 +27,9 @@
 			label: undefined,
 			disabled: false,
 			size: 'm',
+			color: 'primary',
 			state: undefined,
+			indicatorView: 'default',
 			message: undefined,
 			inline: false,
 			vertical: false,
@@ -80,7 +82,10 @@
 			label: item.label,
 			disabled: props.disabled || item.disabled,
 			size: props.size,
+			color: props.color,
 			state: props.state,
+			indicatorView: props.indicatorView,
+			inline: !props.vertical,
 			checked: isItemSelected(item)
 		};
 	}
@@ -91,7 +96,9 @@
 			checked: isItemSelected(item),
 			disabled: props.disabled || item.disabled,
 			size: props.size,
-			state: props.state
+			color: props.color,
+			state: props.state,
+			view: props.indicatorView
 		};
 	}
 

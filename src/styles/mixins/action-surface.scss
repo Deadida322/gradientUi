@@ -44,20 +44,35 @@
 	}
 }
 
-@mixin action-state($prefix, $name, $accent-var) {
+@mixin action-state($prefix, $name, $color-token, $on-color-token) {
 	.#{$prefix}_#{$name} {
-		--g-color: rgb(var(#{$accent-var}));
-		--g-on-color: white;
+		--g-color: #{$color-token};
+		--g-on-color: #{$on-color-token};
 
 		&.#{$prefix}_focused {
 			box-shadow: 0 0 0 var(--g-token-state-focus-ring-width)
-				rgba(var(#{$accent-var}), 0.18);
+				color-mix(in srgb, #{$color-token} 18%, transparent);
 		}
 	}
 }
 
 @mixin action-state-overrides($prefix) {
-	@include action-state($prefix, 'warning', --g-theme-warning);
-	@include action-state($prefix, 'error', --g-theme-error);
-	@include action-state($prefix, 'success', --g-theme-success);
+	@include action-state(
+		$prefix,
+		'warning',
+		var(--g-token-color-warning),
+		var(--g-token-color-on-warning)
+	);
+	@include action-state(
+		$prefix,
+		'error',
+		var(--g-token-color-error),
+		var(--g-token-color-on-error)
+	);
+	@include action-state(
+		$prefix,
+		'success',
+		var(--g-token-color-success),
+		var(--g-token-color-on-success)
+	);
 }

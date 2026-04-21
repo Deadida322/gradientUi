@@ -8,6 +8,7 @@
 	import { useFocused } from '@/use/focused';
 	import { useSize } from '@/use/size';
 	import { useState } from '@/use/state';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 
 	const props = defineProps(makeCheckGroupBaseProps());
 
@@ -17,6 +18,7 @@
 	const disabledClass = useDisabled(props, 'g-check-group');
 	const focusedClass = useFocused(props, 'g-check-group');
 	const stateClass = useState(props, 'g-check-group');
+	const { colorStyles } = useSurfaceColor(props);
 </script>
 
 <template>
@@ -31,6 +33,7 @@
 				'g-check-group_vertical': props.vertical
 			}
 		]"
+		:style="colorStyles"
 		@focusin="emit('focusin', $event)"
 		@focusout="emit('focusout', $event)"
 		@pointerdown="emit('pointerdown', $event)"
@@ -62,6 +65,8 @@
 
 <style scoped lang="scss">
 	.g-check-group {
+		--g-check-group-accent: var(--g-color);
+
 		display: flex;
 		flex-direction: column;
 
@@ -113,28 +118,28 @@
 
 		&_focused {
 			.g-check-group__label {
-				color: var(--g-token-color-primary);
+				color: var(--g-check-group-accent);
 			}
 		}
 
 		&_error {
 			.g-check-group__label,
 			.g-check-group__message {
-				color: var(--g-token-color-error);
+				color: var(--g-check-group-accent);
 			}
 		}
 
 		&_warning {
 			.g-check-group__label,
 			.g-check-group__message {
-				color: var(--g-token-color-warning);
+				color: var(--g-check-group-accent);
 			}
 		}
 
 		&_success {
 			.g-check-group__label,
 			.g-check-group__message {
-				color: var(--g-token-color-success);
+				color: var(--g-check-group-accent);
 			}
 		}
 	}

@@ -18,6 +18,8 @@ export interface GButtonProps {
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
+	activeColor?: string;
+	activeState?: GGradienStates;
 	activeVariant?: GButtonVariants;
 	isIconButton?: boolean;
 }

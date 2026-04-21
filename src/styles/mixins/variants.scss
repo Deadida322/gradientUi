@@ -1,4 +1,4 @@
-@mixin variant-outlined($prefix) {
+@mixin variant-outlined($prefix, $border-property: border, $shadow: null) {
 	.#{$prefix}_outlined {
 		--g-surface-content-color: var(--g-color);
 		--g-surface-underlay-color: transparent;
@@ -6,7 +6,15 @@
 		--g-surface-overlay-color: var(--g-color);
 		--g-surface-overlay-opacity: 0;
 
-		border: 1px solid currentcolor;
+		#{$border-property}: 1px solid currentcolor;
+
+		@if $border-property == outline {
+			outline-offset: -1px;
+		}
+
+		@if $shadow != null {
+			box-shadow: $shadow;
+		}
 
 		&:hover {
 			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
@@ -14,7 +22,7 @@
 	}
 }
 
-@mixin variant-tonal($prefix) {
+@mixin variant-tonal($prefix, $shadow: null) {
 	.#{$prefix}_tonal {
 		--g-surface-content-color: var(--g-color);
 		--g-surface-underlay-color: var(--g-surface-color);
@@ -24,6 +32,10 @@
 
 		background-color: transparent;
 
+		@if $shadow != null {
+			box-shadow: $shadow;
+		}
+
 		&:hover {
 			--g-surface-overlay-opacity: var(
 				--g-token-state-tonal-hover-opacity
@@ -32,13 +44,17 @@
 	}
 }
 
-@mixin variant-text($prefix) {
+@mixin variant-text($prefix, $shadow: null) {
 	.#{$prefix}_text {
 		--g-surface-content-color: var(--g-color);
 		--g-surface-underlay-color: transparent;
 		--g-surface-underlay-opacity: 0;
 		--g-surface-overlay-color: var(--g-color);
 		--g-surface-overlay-opacity: 0;
+
+		@if $shadow != null {
+			box-shadow: $shadow;
+		}
 
 		&:hover {
 			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);

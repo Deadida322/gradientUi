@@ -1,8 +1,9 @@
 import type { GGradienStates } from '@/components/ui/GGradient/types';
-import { makeColorProps, useColor, type ColorProps } from '@/use/color';
+import { makeColorProps, type ColorProps } from '@/use/color';
 import { makeDisabledProps, useDisabled } from '@/use/disabled';
 import { makeRoundedProps, useRounded } from '@/use/rounded';
 import { makeStateProps, useState } from '@/use/state';
+import { useSurfaceColor } from '@/use/surfaceColor';
 import { propsFactory } from '@/utils/propsFactory';
 import { computed } from 'vue';
 import { makeVariantProps, useVariant, type GVariant } from './variant';
@@ -27,7 +28,7 @@ export function useSurface(props: SurfaceProps, baseClass: string) {
 	const disabledClass = useDisabled(props, baseClass);
 	const roundedClass = useRounded(props, baseClass);
 	const stateClass = useState(props, baseClass);
-	const { colorStyles } = useColor(props);
+	const { colorStyles } = useSurfaceColor(props);
 
 	const surfaceClasses = computed(() =>
 		[

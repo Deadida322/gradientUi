@@ -1,13 +1,23 @@
-<script setup>
-	defineProps({
+<script setup lang="ts">
+	import { useSurfaceColor } from '@/use/surfaceColor';
+
+	const props = defineProps({
 		item: {
 			type: Object,
 			default: () => {}
+		},
+		color: {
+			type: String,
+			default: 'primary'
 		},
 		checked: {
 			type: Boolean,
 			default: false
 		}
+	});
+	const { colorStyles } = useSurfaceColor({
+		color: () => props.color,
+		active: () => props.checked
 	});
 </script>
 
@@ -16,7 +26,8 @@
 		class="g-select-item"
 		:class="{
 			'g-select-item_checked': checked
-		}">
+		}"
+		:style="colorStyles">
 		<slot>
 			{{ item.label }}
 		</slot>
@@ -39,14 +50,16 @@
 
 		&:hover {
 			transform: translateX(4px);
-			color: var(--g-primary-color);
+			color: var(--g-color);
 		}
 
 		&_checked {
 			transform: translateX(4px);
-			color: var(--g-primary-color);
-			background-color: rgb(
-				var(--g-theme-primary) / var(--g-token-state-tonal-opacity)
+			color: var(--g-color);
+			background-color: color-mix(
+				in srgb,
+				var(--g-color) calc(var(--g-token-state-tonal-opacity) * 100%),
+				transparent
 			);
 		}
 	}

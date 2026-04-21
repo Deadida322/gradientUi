@@ -10,6 +10,8 @@
 
 	const {
 		actionSurfaceClasses,
+		resolvedColor,
+		resolvedState,
 		surfaceStyles,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
@@ -20,7 +22,11 @@
 <template>
 	<g-gradient
 		class="g-gradient"
-		v-bind="props">
+		v-bind="{
+			...props,
+			color: resolvedColor,
+			state: resolvedState
+		}">
 		<div
 			class="g-chip"
 			:class="actionSurfaceClasses"

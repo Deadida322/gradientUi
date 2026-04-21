@@ -5,6 +5,7 @@
 	import GCheckboxGroup from './ui/GCheckboxGroup/GCheckboxGroup.vue';
 	import GRadio from './ui/GRadio/GRadio.vue';
 	import GSwitch from './ui/GSwitch/GSwitch.vue';
+	import GSquircle from './ui/GSquircle/GSquircle.vue';
 	import GToggleButton from './ui/GToggleButton/GToggleButton.vue';
 	import type { GCheckboxGroupProps } from './ui/GCheckboxGroup';
 	import type { GRadioProps } from './ui/GRadio';
@@ -48,6 +49,11 @@
 	const warningValue = ref(true);
 	const errorValue = ref(false);
 	const successValue = ref(true);
+	const colorCheckbox = ref(true);
+	const colorSwitch = ref(true);
+	const colorRadio = ref<'red' | 'teal' | 'purple'>('teal');
+	const squircleCheckbox = ref(true);
+	const squircleRadio = ref<'compact' | 'expressive' | 'dense'>('compact');
 	const selectedFeatures = ref<string[]>(['analytics']);
 	const validatedFeatures = ref<string[]>([]);
 	const accessLevel = ref<AccessLevel | null>('editor');
@@ -72,6 +78,15 @@
 		{ id: 2, label: 'Beta' },
 		{ id: 3, label: 'Nightly' }
 	];
+	const squircleColors = [
+		'red40',
+		'pink40',
+		'orange40',
+		'teal40',
+		'blue40',
+		'deep-purple-40'
+	];
+	const colorRadioOptions = ['red', 'teal', 'purple'] as const;
 	const featureGroupProps: Omit<
 		GCheckboxGroupProps<FeatureOption, string, false>,
 		'modelValue'
@@ -288,6 +303,59 @@
 				state="success" />
 		</div>
 
+		<div class="row row_three">
+			<g-checkbox
+				v-model="colorCheckbox"
+				color="red40"
+				label="Red 40" />
+			<g-switch
+				v-model="colorSwitch"
+				color="teal40"
+				label="Teal 40" />
+			<g-radio
+				v-model="colorRadio"
+				color="deep-purple-40"
+				label="Deep purple"
+				:options="colorRadioOptions" />
+		</div>
+
+		<div class="row row_two">
+			<g-checkbox
+				v-model="squircleCheckbox"
+				color="pink40"
+				indicator-view="squircle"
+				label="Squircle checkbox" />
+			<g-radio
+				v-model="squircleRadio"
+				color="blue40"
+				indicator-view="squircle"
+				label="Squircle radio"
+				:options="['compact', 'expressive', 'dense']" />
+		</div>
+
+		<div class="squircle-demo">
+			<g-squircle
+				v-for="color in squircleColors"
+				:key="`tonal-${color}`"
+				:color="color"
+				variant="tonal"
+				:size="44"
+				:shadow="false"
+				:border="1"
+				border-color="color-mix(in srgb, var(--g-color) 38%, transparent)">
+				{{ color.slice(0, 1).toUpperCase() }}
+			</g-squircle>
+			<g-squircle
+				v-for="color in squircleColors"
+				:key="`primary-${color}`"
+				:color="color"
+				variant="primary"
+				:size="44"
+				:shadow="false">
+				{{ color.slice(0, 1).toUpperCase() }}
+			</g-squircle>
+		</div>
+
 		<g-checkbox-group
 			v-model="selectedFeatures"
 			label="Feature toggles"
@@ -400,6 +468,13 @@
 	.item-meta {
 		font-size: 12px;
 		opacity: 0.6;
+	}
+
+	.squircle-demo {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		align-items: center;
 	}
 
 	@media (width >= 900px) {

@@ -28,8 +28,16 @@ function addMaterialPalette(
 
 	for (let tone = 10; tone <= 100; tone += 10) {
 		const hex = hexFromArgb(tonal.tone(tone));
+		const onTone = tone >= 60 ? 10 : 100;
+		const onHex = hexFromArgb(tonal.tone(onTone));
 		const rgb = hexToRgbString(hex);
+		const onRgb = hexToRgbString(onHex);
 
 		colors[`${colorName}${tone}`] = rgb;
+		colors[`on${capitalize(colorName)}${tone}`] = onRgb;
 	}
+}
+
+function capitalize(value: string) {
+	return value.charAt(0).toUpperCase() + value.slice(1);
 }

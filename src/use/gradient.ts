@@ -10,8 +10,7 @@ import { makePlacementProps, usePlacement } from './placement';
 import { makeGradientGlowProps } from './gradientGlow';
 import { makeGradientSurfaceProps } from './gradientSurface';
 import type { GColor } from './color';
-import { MaterialSeeds } from '@/theme/colorSeeds';
-import { camelToKebabCase } from '@/utils/camelToKebabCase';
+import { useResolveGradientValue } from './colorResolver';
 
 export type GGradienStates = 'warning' | 'success' | 'error';
 export type GBorderRadius = number | StringeredNumber;
@@ -47,8 +46,6 @@ type GGradientProps = ExtractPropTypes<
 		ReturnType<typeof makeGradientSurfaceProps>
 >;
 
-const GRADIENT_ALIASES = createGradientAliases();
-
 export function useGradient(props: GGradientProps) {
 	const borderWidthPx = usePx(toRef(props, 'borderWidth'));
 	const borderRadiusPx = usePx(toRef(props, 'borderRadius'));
@@ -62,6 +59,9 @@ export function useGradient(props: GGradientProps) {
 	const disabledClass = useDisabled(props, 'g-gradient');
 	const placementClass = usePlacement(props, 'g-gradient');
 	const roundedClasses = useRounded(props, 'g-gradient');
+	const resolvedGradient = useResolveGradientValue(
+		() => props.color ?? props.state
+	);
 	const gradientClasses = computed(() => {
 		return {
 			[disabledClass.value]: true,
@@ -77,57 +77,15 @@ export function useGradient(props: GGradientProps) {
 	const gradientStyles = computed(() => ({
 		'--g-border-radius': borderRadiusPx.value,
 		'--g-border-width': borderWidthPx.value,
-		'--g-gradient-current': resolveGradient(props.color ?? props.state)
+		'--g-gradient-current': resolvedGradient.value
 	}));
 
 	return {
 		borderWidthPx,
 		borderRadiusPx,
 		containerBorderRadius,
+		resolvedGradient,
 		gradientClasses,
 		gradientStyles
 	};
-}
-
-function resolveGradient(color?: GColor | GGradienStates) {
-	if (!color) return 'var(--g-gradient-main)';
-
-	return GRADIENT_ALIASES[color] ?? `var(--g-gradient-${color})`;
-}
-
-function createGradientAliases() {
-	const aliases: Record<string, string> = {
-		primary: 'var(--g-gradient-main)',
-		main: 'var(--g-gradient-main)',
-		error: 'var(--g-gradient-error)',
-		warning: 'var(--g-gradient-warning)',
-		success: 'var(--g-gradient-success)',
-		source: 'var(--g-gradient-source-40)'
-	};
-
-	addGradientAliases(aliases, 'source');
-
-	Object.keys(MaterialSeeds).forEach((colorName) => {
-		addGradientAliases(aliases, colorName);
-	});
-
-	return aliases;
-}
-
-function addGradientAliases(
-	aliases: Record<string, string>,
-	colorName: string
-) {
-	const kebabColorName = camelToKebabCase(colorName);
-
-	for (let tone = 10; tone <= 100; tone += 10) {
-		const gradient = `var(--g-gradient-${kebabColorName}-${tone})`;
-
-		aliases[`${colorName}${tone}`] = gradient;
-		aliases[`${kebabColorName}${tone}`] = gradient;
-		aliases[`${kebabColorName}-${tone}`] = gradient;
-	}
-
-	aliases[colorName] = aliases[`${colorName}40`];
-	aliases[kebabColorName] = aliases[`${kebabColorName}40`];
 }

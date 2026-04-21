@@ -2,44 +2,52 @@
 	import type { GSquircleProps } from './types';
 	import { v4 } from 'uuid';
 	import { computed } from 'vue';
-	const {
-		size = 40,
-		variant = 'tonal',
-		shadow = true,
-		borderColor,
-		border,
-		color = 'var(--g-primary-color)'
-	} = defineProps<GSquircleProps>();
+	import { useSurfaceColor } from '@/use/surfaceColor';
+
+	const props = withDefaults(defineProps<GSquircleProps>(), {
+		size: 40,
+		variant: 'tonal',
+		shadow: true,
+		border: undefined,
+		borderColor: undefined,
+		color: 'primary'
+	});
 	const radius = 0.1;
 	const d = computed(
 		() =>
-			`M ${+size * 0.5},0 C ${+size * (1 - radius)},0 ${+size},${+size * radius} ${+size},
-            ${+size * 0.5} C ${+size},${+size * (1 - radius)} ${+size * (1 - radius)},${+size} 
-            ${+size * 0.5},${+size} C ${+size * radius},${+size} 0,${+size * (1 - radius)} 0,${+size * 0.5} C 
-            0,${+size * radius} ${+size * radius},0 ${+size * 0.5},0 Z`
+			`M ${+props.size * 0.5},0 C ${+props.size * (1 - radius)},0 ${+props.size},${+props.size * radius} ${+props.size},
+            ${+props.size * 0.5} C ${+props.size},${+props.size * (1 - radius)} ${+props.size * (1 - radius)},${+props.size} 
+            ${+props.size * 0.5},${+props.size} C ${+props.size * radius},${+props.size} 0,${+props.size * (1 - radius)} 0,${+props.size * 0.5} C 
+            0,${+props.size * radius} ${+props.size * radius},0 ${+props.size * 0.5},0 Z`
 	);
 	const uuid = v4();
-	const height = computed(() => `${size}px`);
+	const height = computed(() => `${props.size}px`);
+	const { colorStyles } = useSurfaceColor(props);
 	const fillSurface = computed(() =>
-		variant === 'tonal' ? 'var(--g-token-color-surface)' : color
+		props.variant === 'tonal' ? 'var(--g-surface-color)' : 'var(--g-color)'
 	);
+	const fillColor = computed(() => 'var(--g-color)');
 	const fillOpacity = computed(() =>
-		variant === 'tonal' ? 'var(--g-token-state-tonal-opacity)' : 0
+		props.variant === 'tonal' ? 'var(--g-token-state-tonal-opacity)' : 0
 	);
+	const strokeColor = computed(() => props.borderColor ?? 'transparent');
+	const strokeWidth = computed(() => props.border ?? 0);
 </script>
 
 <template>
 	<div
 		class="squircle"
 		:class="{
-			squircle_shadow: shadow
-		}">
+			squircle_shadow: props.shadow,
+			[`squircle_${props.variant}`]: true
+		}"
+		:style="colorStyles">
 		<svg
 			id="squircle"
 			class="squircle__svg"
-			:width="size"
-			:height="size"
-			:viewBox="`0 0 ${size} ${size}`">
+			:width="props.size"
+			:height="props.size"
+			:viewBox="`0 0 ${props.size} ${props.size}`">
 			<defs>
 				<clipPath
 					:id="`squircle-clip-${uuid}`"
@@ -48,18 +56,20 @@
 				</clipPath>
 			</defs>
 			<path
+				class="squircle__surface"
 				:d="d"
 				:fill="fillSurface" />
 			<path
 				class="squircle__fill"
 				:d="d"
-				:fill="color"
+				:fill="fillColor"
 				:fill-opacity="fillOpacity" />
 			<path
+				class="squircle__border"
 				:d="d"
 				fill="transparent"
-				:stroke="borderColor"
-				:stroke-width="border" />
+				:stroke="strokeColor"
+				:stroke-width="strokeWidth" />
 
 			<foreignObject
 				x="0"
@@ -87,11 +97,21 @@
 		height: v-bind('height');
 		transition:
 			opacity 0.2s ease-in,
-			filter 0.2s ease-in,
-			transform 0.2s ease-in;
+			filter var(--g-token-duration-base) var(--g-token-easing-standard),
+			transform var(--g-token-duration-base)
+				var(--g-token-easing-standard);
 
+		&__surface,
+		&__border,
 		&__fill {
-			transition: fill 0.2s ease-in;
+			transition:
+				fill var(--g-token-duration-base) var(--g-token-easing-standard),
+				fill-opacity var(--g-token-duration-base)
+					var(--g-token-easing-standard),
+				stroke var(--g-token-duration-base)
+					var(--g-token-easing-standard),
+				stroke-width var(--g-token-duration-base)
+					var(--g-token-easing-standard);
 		}
 	}
 
@@ -112,5 +132,13 @@
 		height: 100%;
 
 		font-size: calc(v-bind('height') - 20px);
+		color: var(--g-on-color);
+
+		transition: color var(--g-token-duration-base)
+			var(--g-token-easing-standard);
+	}
+
+	.squircle_tonal .squircle__inner {
+		color: var(--g-color);
 	}
 </style>

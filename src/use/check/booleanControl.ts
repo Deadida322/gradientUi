@@ -44,7 +44,9 @@ export function useCheckBooleanControl(
 		checked: modelValue.value,
 		disabled: props.disabled,
 		size: props.size,
-		state: props.state
+		color: props.color,
+		state: props.state,
+		view: props.indicatorView
 	}));
 
 	const {

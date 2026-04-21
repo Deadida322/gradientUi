@@ -1,13 +1,14 @@
 <script setup lang="ts">
 	import { type GBadgeProps } from './types';
-	import { useColor } from '@/use/color';
 	import { useSurfaceLayers } from '@/use/surface';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 
 	const props = withDefaults(defineProps<GBadgeProps>(), {
 		color: 'primary',
+		state: undefined,
 		variant: 'tonal'
 	});
-	const { colorStyles } = useColor(props);
+	const { colorStyles } = useSurfaceColor(props);
 	const {
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,

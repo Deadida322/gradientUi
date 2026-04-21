@@ -15,6 +15,8 @@ export interface GToggleButtonProps {
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
+	activeColor?: string;
+	activeState?: GGradienStates;
 	activeVariant?: GVariant;
 	inline?: boolean;
 	color?: string;
@@ -41,6 +43,8 @@ export const makeToggleButtonProps = propsFactory({
 	...makeColorProps(),
 	...makeVariantProps(),
 	...makeRoundedProps(),
+	activeColor: String,
+	activeState: String as PropType<GGradienStates>,
 	activeVariant: String as PropType<GVariant>,
 	prepend: String as PropType<MdiIcon>,
 	append: String as PropType<MdiIcon>,

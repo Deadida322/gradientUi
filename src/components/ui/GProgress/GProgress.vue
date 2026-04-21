@@ -1,23 +1,42 @@
 <script setup lang="ts">
-	import { ref, onMounted, computed } from 'vue';
+	import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 	import type { GProgressProps } from './types';
-	import { useColor } from '@/use/color';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useSurfaceLayers } from '@/use/surface';
+
 	const props = withDefaults(defineProps<GProgressProps>(), {
 		noLabel: false,
-		sizes: 'm',
+		size: 'm',
 		color: 'primary',
-		modelValue: 0
+		modelValue: 0,
+		label: undefined,
+		state: undefined
 	});
-	const { colorStyles } = useColor(props);
+	const { gradientStyles } = useSurfaceColor(props);
 	const width = ref(0);
 	const parentRef = ref<Element | null>(null);
+	let observer: ResizeObserver | undefined;
+
+	const normalizedValue = computed(() =>
+		Math.min(100, Math.max(0, props.modelValue))
+	);
+	const computedWidth = computed(() => `${width.value}px`);
+	const percentage = computed(() => `${normalizedValue.value}%`);
+	const displayLabel = computed(
+		() => props.label ?? `${Math.round(normalizedValue.value)}%`
+	);
+	const progressStyles = computed(() => ({
+		...gradientStyles.value,
+		'--g-progress-value': percentage.value,
+		'--g-progress-track-width': computedWidth.value
+	}));
 	const observeParentWidth = () => {
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
+		observer = new ResizeObserver((entries) => {
+			for (const entry of entries) {
 				width.value = entry.contentRect.width;
 			}
 		});
+
 		if (parentRef.value) observer.observe(parentRef.value);
 	};
 
@@ -25,8 +44,10 @@
 		observeParentWidth();
 	});
 
-	const computedWidth = computed(() => `${width.value}px`);
-	const percentage = computed(() => `${props.modelValue}%`);
+	onBeforeUnmount(() => {
+		observer?.disconnect();
+	});
+
 	const {
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
@@ -38,11 +59,17 @@
 	<div
 		ref="parentRef"
 		class="g-progress"
+		role="progressbar"
+		:aria-valuemin="0"
+		:aria-valuemax="100"
+		:aria-valuenow="indeterminate ? undefined : normalizedValue"
 		:class="{
 			'g-progress_rounded': rounded,
+			'g-progress_indeterminate': indeterminate,
+			'g-progress_no-label': noLabel,
 			[`g-progress_${size}`]: true
 		}"
-		:style="colorStyles">
+		:style="progressStyles">
 		<span :class="surfaceUnderlayClasses"></span>
 		<span :class="surfaceOverlayClasses"></span>
 		<div
@@ -51,15 +78,11 @@
 			<div
 				v-if="!noLabel"
 				class="g-progress__label">
-				{{ percentage }}
+				<slot>{{ displayLabel }}</slot>
 			</div>
 			<div class="g-progress__bar">
 				<div class="g-progress__active">
-					<div
-						class="g-progress__overlay"
-						:class="{
-							'g-progress_indeterminate': indeterminate
-						}"></div>
+					<div class="g-progress__overlay"></div>
 				</div>
 			</div>
 		</div>
@@ -70,6 +93,8 @@
 	@use '@/styles/mixins/action-surface' as actionSurface;
 
 	.g-progress {
+		--g-progress-height: var(--g-token-space-5);
+		--g-progress-radius: var(--g-token-radius-sm);
 		--g-surface-underlay-color: var(--g-surface-color);
 		--g-surface-underlay-opacity: 1;
 		--g-surface-overlay-color: var(--g-color);
@@ -80,13 +105,24 @@
 		overflow: hidden;
 
 		width: 100%;
-		height: 20px;
-		border-radius: 5px;
+		height: var(--g-progress-height);
+		border-radius: var(--g-progress-radius);
 
 		color: var(--g-color);
 
 		&_s {
-			height: 6px;
+			--g-progress-height: var(--g-token-space-2);
+			--g-progress-radius: var(--g-token-radius-xs);
+		}
+
+		&_l {
+			--g-progress-height: var(--g-token-space-6);
+			--g-progress-radius: var(--g-token-radius-md);
+		}
+
+		&_xl {
+			--g-progress-height: var(--g-token-space-6);
+			--g-progress-radius: var(--g-token-radius-md);
 		}
 
 		&__surface-content {
@@ -96,15 +132,24 @@
 
 		&__label {
 			position: absolute;
+			z-index: 2;
 			top: 0;
 			left: 0;
+
+			display: block;
 
 			width: 100%;
 			height: 100%;
 
 			font-size: 12px;
-			line-height: 20px;
-			color: white;
+			line-height: var(--g-progress-height);
+			color: color-mix(
+				in srgb,
+				var(--g-color) 76%,
+				var(--g-on-surface-color)
+			);
+			text-align: center;
+			text-shadow: 0 1px 1px var(--g-surface-color);
 		}
 
 		&__bar {
@@ -119,9 +164,12 @@
 
 			overflow: hidden;
 
-			width: v-bind('percentage');
+			width: var(--g-progress-value);
 			height: 100%;
-			border-radius: 5px;
+			border-radius: var(--g-progress-radius);
+
+			transition: width var(--g-token-duration-base)
+				var(--g-token-easing-standard);
 		}
 
 		&__overlay {
@@ -129,13 +177,19 @@
 			top: 0;
 			left: 0;
 
-			width: v-bind('computedWidth');
+			width: var(--g-progress-track-width);
 			height: 100%;
-			border-radius: 5px;
+			border-radius: var(--g-progress-radius);
 
-			background: var(--g-gradient-main);
+			background: var(--g-gradient-current, var(--g-gradient-main));
+		}
 
-			&.g-progress_indeterminate {
+		&_indeterminate {
+			.g-progress__active {
+				width: 100%;
+			}
+
+			.g-progress__overlay {
 				animation-name: loading-animation;
 				animation-duration: 2s;
 				animation-timing-function: ease-in-out;
@@ -144,14 +198,14 @@
 		}
 
 		&_rounded {
-			border-radius: 10px;
+			--g-progress-radius: 999px;
 
 			.g-progress__active {
-				border-radius: 10px;
+				border-radius: var(--g-progress-radius);
 			}
 
 			.g-progress__overlay {
-				border-radius: 10px;
+				border-radius: var(--g-progress-radius);
 			}
 		}
 	}

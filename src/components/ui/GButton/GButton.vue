@@ -18,6 +18,8 @@
 	const computedBorderRadius = usePx(props.borderRadius);
 	const {
 		actionSurfaceClasses,
+		resolvedColor,
+		resolvedState,
 		surfaceStyles,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
@@ -30,7 +32,9 @@
 		v-gradient-icon
 		class="g-gradient"
 		v-bind="{
-			...props
+			...props,
+			color: resolvedColor,
+			state: resolvedState
 		}">
 		<div
 			v-ripple

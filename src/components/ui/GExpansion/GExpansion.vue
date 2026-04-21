@@ -3,12 +3,12 @@
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import TransitionExpansion from '@/components/transitions/TransitionExpansion.vue';
-	import { useColor } from '@/use/color';
 	import { useExpansionGroupInject } from '@/use/expansion';
 	import { useRounded } from '@/use/rounded';
 	import { useSelected } from '@/use/selected';
 	import { useSize } from '@/use/size';
 	import { useSurfaceLayers } from '@/use/surface';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useVariant } from '@/use/variant';
 	import { createComponentId } from '@/utils/createComponentId';
 	import {
@@ -80,20 +80,15 @@
 		surfaceUnderlayClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers('g-expansion');
-	const resolvedVisualState = computed(() =>
-		expanded.value && props.activeState !== undefined
-			? props.activeState
-			: props.state
-	);
+	const { resolvedColor, resolvedState, colorStyles } = useSurfaceColor({
+		color: () => props.color,
+		state: () => props.state,
+		active: () => expanded.value,
+		activeState: () => props.activeState
+	});
 	const stateClass = computed(() =>
-		resolvedVisualState.value
-			? `g-expansion_state-${resolvedVisualState.value}`
-			: ''
+		resolvedState.value ? `g-expansion_state-${resolvedState.value}` : ''
 	);
-	const resolvedColor = computed(() =>
-		resolvedVisualState.value ? resolvedVisualState.value : props.color
-	);
-	const { colorStyles } = useColor({ color: resolvedColor });
 	const gradientBorderRadius = computed(() => (props.rounded ? 20 : 10));
 	const headerId = createComponentId('g-expansion-header');
 	const contentId = createComponentId('g-expansion-content');
@@ -117,14 +112,6 @@
 			? props.activeShadow
 			: props.shadow
 	);
-	const resolvedGradientState = computed(() =>
-		expanded.value && props.activeState !== undefined
-			? props.activeState
-			: props.state
-	);
-	const resolvedGradientColor = computed(() =>
-		resolvedGradientState.value ? resolvedGradientState.value : props.color
-	);
 	const resolvedGradientPlacement = computed(() =>
 		expanded.value && props.activePlacement !== undefined
 			? props.activePlacement
@@ -143,7 +130,7 @@
 			hasBorder ||
 			resolvedGradientGlow.value ||
 			resolvedGradientShadow.value ||
-			resolvedGradientState.value ||
+			resolvedState.value ||
 			props.animateGlow ||
 			props.activeAnimateGlow
 		);
@@ -159,8 +146,8 @@
 					glow: resolvedGradientGlow.value,
 					animateGlow: resolvedGradientAnimateGlow.value,
 					shadow: resolvedGradientShadow.value,
-					color: resolvedGradientColor.value,
-					state: resolvedGradientState.value,
+					color: resolvedColor.value,
+					state: resolvedState.value,
 					placement: resolvedGradientPlacement.value,
 					inheritWidth: true
 				}
@@ -286,6 +273,7 @@
 <style scoped lang="scss">
 	@use '@/styles/mixins/action-surface' as actionSurface;
 	@use '@/styles/mixins/focus-ring' as focusRing;
+	@use '@/styles/mixins/variants' as variants;
 
 	.g-expansion {
 		display: flex;
@@ -307,66 +295,6 @@
 
 		&_gradient {
 			box-shadow: none;
-		}
-
-		&_filled,
-		&_default {
-			--g-surface-content-color: var(--g-on-color);
-			--g-surface-underlay-color: var(--g-color);
-			--g-surface-underlay-opacity: 1;
-			--g-surface-overlay-color: var(--g-on-color);
-			--g-surface-overlay-opacity: 0;
-		}
-
-		&_filled:hover,
-		&_default:hover {
-			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
-		}
-
-		&_tonal {
-			--g-surface-content-color: var(--g-color);
-			--g-surface-underlay-color: var(--g-surface-color);
-			--g-surface-underlay-opacity: 1;
-			--g-surface-overlay-color: var(--g-color);
-			--g-surface-overlay-opacity: var(--g-token-state-tonal-opacity);
-
-			box-shadow: none;
-		}
-
-		&_tonal:hover {
-			--g-surface-overlay-opacity: var(
-				--g-token-state-tonal-hover-opacity
-			);
-		}
-
-		&_outlined {
-			--g-surface-content-color: var(--g-color);
-			--g-surface-underlay-color: transparent;
-			--g-surface-underlay-opacity: 0;
-			--g-surface-overlay-color: var(--g-color);
-			--g-surface-overlay-opacity: 0;
-
-			outline: 1px solid currentcolor;
-			outline-offset: -1px;
-			box-shadow: none;
-		}
-
-		&_outlined:hover {
-			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
-		}
-
-		&_text {
-			--g-surface-content-color: var(--g-color);
-			--g-surface-underlay-color: transparent;
-			--g-surface-underlay-opacity: 0;
-			--g-surface-overlay-color: var(--g-color);
-			--g-surface-overlay-opacity: 0;
-
-			box-shadow: none;
-		}
-
-		&_text:hover {
-			--g-surface-overlay-opacity: var(--g-token-state-hover-opacity);
 		}
 
 		&__header {
@@ -514,21 +442,6 @@
 			color: inherit;
 		}
 
-		&_state-warning {
-			--g-color: var(--g-token-color-warning);
-			--g-on-color: var(--g-token-color-on-warning);
-		}
-
-		&_state-error {
-			--g-color: var(--g-token-color-error);
-			--g-on-color: var(--g-token-color-on-error);
-		}
-
-		&_state-success {
-			--g-color: var(--g-token-color-success);
-			--g-on-color: var(--g-token-color-on-success);
-		}
-
 		&_disabled {
 			opacity: var(--g-token-opacity-disabled);
 		}
@@ -595,4 +508,9 @@
 	}
 
 	@include actionSurface.action-surface-layers('g-expansion', true);
+	@include actionSurface.action-state-overrides('g-expansion');
+	@include variants.variant-filled('g-expansion');
+	@include variants.variant-tonal('g-expansion', none);
+	@include variants.variant-outlined('g-expansion', outline, none);
+	@include variants.variant-text('g-expansion', none);
 </style>

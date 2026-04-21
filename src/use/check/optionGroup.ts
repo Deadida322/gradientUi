@@ -76,9 +76,11 @@ export function useCheckOptionGroup<
 	const groupProps = computed(() => ({
 		label: props.label,
 		message: computedMessage.value,
+		color: props.color,
 		disabled: props.disabled,
 		size: props.size,
 		state: props.state,
+		indicatorView: props.indicatorView,
 		vertical: props.vertical,
 		focused: focused.value
 	}));

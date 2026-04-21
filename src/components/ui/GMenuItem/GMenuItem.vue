@@ -4,6 +4,7 @@
 	import { makeMenuItemProps } from './types';
 	import { useDisabled } from '@/use/disabled';
 	import { useSelected } from '@/use/selected';
+	import { useSurfaceColor } from '@/use/surfaceColor';
 
 	const slots = defineSlots<PLASlots>();
 	const props = defineProps(makeMenuItemProps());
@@ -12,12 +13,14 @@
 	const stateClass = computed(() =>
 		props.state ? `g-menu-item_${props.state}` : undefined
 	);
+	const { colorStyles } = useSurfaceColor(props);
 </script>
 
 <template>
 	<li
 		class="g-menu-item"
 		:class="[disabledClass, selectedClass, stateClass]"
+		:style="colorStyles"
 		v-on="$attrs">
 		<div
 			v-if="slots.prepend?.()"
@@ -36,24 +39,25 @@
 </template>
 
 <style lang="scss" scoped>
-	@mixin state($selector, $color, $container: null) {
+	@mixin state($selector) {
 		#{$selector} {
-			background-color: if(
-				$container,
-				rgba(var($container), 0.35),
-				rgba(var($color), var(--g-token-menu-item-selected-opacity))
+			background-color: color-mix(
+				in srgb,
+				var(--g-color)
+					calc(var(--g-token-menu-item-selected-opacity) * 100%),
+				transparent
 			);
 
 			& > .g-menu-item__label {
-				color: rgb(var($color));
+				color: var(--g-color);
 			}
 
 			& > .g-menu-item__append {
-				color: rgb(var($color));
+				color: var(--g-color);
 			}
 
 			& > .g-menu-item__prepend {
-				color: rgb(var($color));
+				color: var(--g-color);
 			}
 		}
 	}
@@ -107,21 +111,9 @@
 			font-size: var(--g-token-menu-item-icon-size);
 		}
 
-		@include state('&_selected', --g-theme-primary);
-		@include state(
-			'&_error.g-menu-item_selected',
-			--g-theme-error,
-			--g-theme-error-container
-		);
-		@include state(
-			'&_warning.g-menu-item_selected',
-			--g-theme-warning,
-			--g-theme-warning-container
-		);
-		@include state(
-			'&_success.g-menu-item_selected',
-			--g-theme-success,
-			--g-theme-success-container
-		);
+		@include state('&_selected');
+		@include state('&_error.g-menu-item_selected');
+		@include state('&_warning.g-menu-item_selected');
+		@include state('&_success.g-menu-item_selected');
 	}
 </style>

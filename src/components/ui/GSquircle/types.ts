@@ -1,4 +1,6 @@
 import type { PXtype } from '@/types/CommonTypes';
+import type { GColor } from '@/use/color';
+import type { GGradienStates } from '../GGradient/types';
 
 type SquircleVariants = 'tonal' | 'primary';
 
@@ -8,5 +10,6 @@ export interface GSquircleProps {
 	shadow?: boolean;
 	border?: number;
 	borderColor?: string;
-	color?: string;
+	color?: GColor;
+	state?: GGradienStates;
 }

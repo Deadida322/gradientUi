@@ -1,23 +1,43 @@
 <script setup lang="ts">
 	import GIcon from '../GIcon/GIcon.vue';
+	import GSquircle from '../GSquircle/GSquircle.vue';
 	import type { GGradienStates } from '../GGradient/types';
 	import type { Sizes } from '@/types/CommonTypes';
+	import type { GColor } from '@/use/color';
+	import type { CheckIndicatorView } from '@/use/check';
+	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { computed } from 'vue';
 
 	const props = withDefaults(
 		defineProps<{
 			kind: 'checkbox' | 'radio' | 'switch';
+			view?: CheckIndicatorView;
 			checked?: boolean;
+			color?: GColor;
 			disabled?: boolean;
 			size?: Sizes;
 			state?: GGradienStates;
 		}>(),
 		{
+			view: 'default',
 			checked: false,
 			disabled: false,
 			size: 'm',
 			state: undefined
 		}
 	);
+	const { resolvedColor, resolvedState, colorStyles } =
+		useSurfaceColor(props);
+	const squircleSize = computed(() => {
+		const sizes: Record<Sizes, number> = {
+			s: 18,
+			m: 22,
+			l: 26,
+			xl: 30
+		};
+
+		return sizes[props.size];
+	});
 </script>
 
 <template>
@@ -29,12 +49,32 @@
 			'g-check-indicator_checked': props.checked,
 			'g-check-indicator_disabled': props.disabled,
 			[`g-check-indicator_${props.state}`]: Boolean(props.state)
-		}">
+		}"
+		:style="colorStyles">
 		<span
 			v-if="props.kind === 'switch'"
 			class="g-check-indicator__switch-track">
 			<span class="g-check-indicator__switch-thumb" />
 		</span>
+
+		<g-squircle
+			v-else-if="props.view === 'squircle'"
+			class="g-check-indicator__squircle"
+			:size="squircleSize"
+			:color="resolvedColor"
+			:state="resolvedState"
+			:variant="props.checked ? 'primary' : 'tonal'"
+			:shadow="false"
+			:border="props.checked ? 0 : 1"
+			:border-color="'var(--g-check-indicator-shape-border)'">
+			<g-icon
+				v-if="props.kind === 'checkbox' && props.checked"
+				icon="check"
+				size="14" />
+			<span
+				v-else-if="props.kind === 'radio'"
+				class="g-check-indicator__radio-dot" />
+		</g-squircle>
 
 		<template v-else>
 			<span class="g-check-indicator__shape">
@@ -52,7 +92,7 @@
 
 <style scoped lang="scss">
 	.g-check-indicator {
-		--g-check-indicator-accent: var(--g-token-color-primary);
+		--g-check-indicator-accent: var(--g-color);
 		--g-check-indicator-shape-size: var(
 			--g-token-check-indicator-shape-size-m
 		);
@@ -81,7 +121,7 @@
 		--g-check-indicator-track-bg: var(--g-token-check-indicator-track-bg);
 		--g-check-indicator-dot-scale: 0;
 		--g-check-indicator-thumb-transform: translateX(0);
-		--g-check-indicator-icon-color: var(--g-token-color-on-primary);
+		--g-check-indicator-icon-color: var(--g-on-color);
 
 		display: inline-flex;
 		align-items: center;
@@ -153,6 +193,14 @@
 			transition: transform 0.18s ease;
 		}
 
+		&__squircle {
+			color: var(--g-check-indicator-accent);
+
+			:deep(.squircle__inner) {
+				color: var(--g-check-indicator-accent);
+			}
+		}
+
 		&_radio {
 			--g-check-indicator-shape-radius: 999px;
 		}
@@ -168,6 +216,14 @@
 			);
 		}
 
+		&_checked &__squircle {
+			color: var(--g-on-color);
+
+			:deep(.squircle__inner) {
+				color: var(--g-on-color);
+			}
+		}
+
 		&.g-check-indicator_radio.g-check-indicator_checked {
 			--g-check-indicator-icon-color: var(--g-check-indicator-accent);
 			--g-check-indicator-shape-bg: rgb(
@@ -180,18 +236,6 @@
 			.g-check-indicator__switch-track {
 				box-shadow: var(--g-token-check-indicator-focus-ring);
 			}
-		}
-
-		&_error {
-			--g-check-indicator-accent: var(--g-token-color-error);
-		}
-
-		&_warning {
-			--g-check-indicator-accent: var(--g-token-color-warning);
-		}
-
-		&_success {
-			--g-check-indicator-accent: var(--g-token-color-success);
 		}
 
 		&_disabled {

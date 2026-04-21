@@ -8,6 +8,7 @@ import type {
 	SelectValueKey
 } from '@/use/select/types';
 import type { ValidationRule } from '@/use/validation';
+import { makeColorProps, type GColor } from '@/use/color';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';
 
@@ -15,12 +16,16 @@ export interface CheckFieldProps {
 	id?: string;
 	name?: string;
 	label?: string;
+	color?: GColor;
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
+	indicatorView?: CheckIndicatorView;
 	message?: string;
 	inline?: boolean;
 }
+
+export type CheckIndicatorView = 'default' | 'squircle';
 
 export interface CheckOption<T> {
 	label: string;
@@ -68,6 +73,7 @@ export type CheckSelectionProps<
 };
 
 export const makeCheckFieldProps = propsFactory({
+	...makeColorProps(),
 	id: String,
 	name: String,
 	label: String,
@@ -77,11 +83,16 @@ export const makeCheckFieldProps = propsFactory({
 		default: 'm'
 	},
 	state: String as PropType<GGradienStates>,
+	indicatorView: {
+		type: String as PropType<CheckIndicatorView>,
+		default: 'default'
+	},
 	message: String,
 	inline: Boolean
 });
 
 export const makeCheckGroupVisualProps = propsFactory({
+	...makeColorProps(),
 	label: String,
 	message: String,
 	disabled: Boolean,
@@ -90,6 +101,10 @@ export const makeCheckGroupVisualProps = propsFactory({
 		default: 'm'
 	},
 	state: String as PropType<GGradienStates>,
+	indicatorView: {
+		type: String as PropType<CheckIndicatorView>,
+		default: 'default'
+	},
 	vertical: Boolean,
 	focused: Boolean
 });

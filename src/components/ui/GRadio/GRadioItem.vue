@@ -3,7 +3,12 @@
 	import { GCheckControl, GCheckIndicator } from '../GCheckControl';
 	import type { GGradienStates } from '../GGradient/types';
 	import type { Sizes } from '@/types/CommonTypes';
-	import type { CheckControlEmits, CheckControlSlots } from '@/use/check';
+	import type { GColor } from '@/use/color';
+	import type {
+		CheckControlEmits,
+		CheckControlSlots,
+		CheckIndicatorView
+	} from '@/use/check';
 	import { createComponentId } from '@/utils/createComponentId';
 
 	const props = withDefaults(
@@ -12,15 +17,20 @@
 			label: string;
 			value: T;
 			checked?: boolean;
+			color?: GColor;
 			disabled?: boolean;
 			size?: Sizes;
 			state?: GGradienStates;
+			indicatorView?: CheckIndicatorView;
+			inline?: boolean;
 		}>(),
 		{
 			checked: false,
 			disabled: false,
 			size: 'm',
-			state: undefined
+			state: undefined,
+			indicatorView: 'default',
+			inline: false
 		}
 	);
 
@@ -36,7 +46,9 @@
 		label: props.label,
 		disabled: props.disabled,
 		size: props.size,
+		color: props.color,
 		state: props.state,
+		inline: props.inline,
 		checked: props.checked
 	}));
 	const indicatorProps = computed(() => ({
@@ -44,7 +56,9 @@
 		checked: props.checked,
 		disabled: props.disabled,
 		size: props.size,
-		state: props.state
+		color: props.color,
+		state: props.state,
+		view: props.indicatorView
 	}));
 
 	function handleChange(event: Event) {

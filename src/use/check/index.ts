@@ -4,6 +4,7 @@ export type {
 	CheckOptionItemSlotProps,
 	CheckComparatorValue,
 	CheckValueComparator,
+	CheckIndicatorView,
 	CheckSelectionProps,
 	CheckboxProps,
 	SwitchProps,

@@ -25,7 +25,13 @@
 		<slot v-if="props.label || $slots.default"> {{ props.label }}</slot>
 		<g-squircle
 			class="squircle"
-			:size="computedSize">
+			:size="computedSize"
+			:variant="props.variant"
+			:shadow="props.shadow"
+			:border="props.border"
+			:border-color="props.borderColor"
+			:color="props.color"
+			:state="props.state">
 			<slot name="icon">
 				<g-icon
 					v-if="iconValue"

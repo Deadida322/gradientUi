@@ -1,4 +1,5 @@
 import { makeDisabledProps } from '@/use/disabled';
+import { makeColorProps } from '@/use/color';
 import { makeHighlightedProps } from '@/use/highlighted';
 import { makeSelectedProps } from '@/use/selected';
 import { makePLAProps } from '@/use/PLA';
@@ -9,6 +10,7 @@ import type { ExtractPropTypes, PropType } from 'vue';
 
 export const makeMenuItemProps = propsFactory({
 	...makePLAProps(),
+	...makeColorProps(),
 	...makeDisabledProps(),
 	...makeHighlightedProps(),
 	...makeSelectedProps(),

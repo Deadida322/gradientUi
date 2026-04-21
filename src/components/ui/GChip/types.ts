@@ -14,6 +14,8 @@ export interface GChipProps {
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
+	activeColor?: string;
+	activeState?: GGradienStates;
 	activeVariant?: GChipVariants;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
