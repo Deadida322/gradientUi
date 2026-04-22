@@ -1,4 +1,8 @@
-import type { CheckValueComparator, SelectionGroupProps } from '@/use/check';
+import type {
+	CheckIndicatorView,
+	CheckValueComparator,
+	SelectionGroupProps
+} from '@/use/check';
 import type {
 	SelectionValue,
 	SelectLabelKey,
@@ -16,6 +20,7 @@ export interface GCheckboxGroupProps<
 	labelKey?: SelectLabelKey<T>;
 	valueKey?: SelectValueKey<T, V>;
 	returnObject?: ReturnObject;
+	indicatorView?: CheckIndicatorView;
 	valueComparator?: CheckValueComparator<
 		SelectionValue<T, V, true, ReturnObject>
 	>;

@@ -1,4 +1,5 @@
 import type {
+	CheckIndicatorView,
 	CheckValueComparator,
 	SelectionGroupProps
 } from '@/use/check';
@@ -19,6 +20,7 @@ export interface GRadioProps<
 	labelKey?: SelectLabelKey<T>;
 	valueKey?: SelectValueKey<T, V>;
 	returnObject?: ReturnObject;
+	indicatorView?: CheckIndicatorView;
 	valueComparator?: CheckValueComparator<
 		SelectionValue<T, V, false, ReturnObject>
 	>;

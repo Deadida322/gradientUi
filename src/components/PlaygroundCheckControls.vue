@@ -54,6 +54,14 @@
 	const colorRadio = ref<'red' | 'teal' | 'purple'>('teal');
 	const squircleCheckbox = ref(true);
 	const squircleRadio = ref<'compact' | 'expressive' | 'dense'>('compact');
+	const diamondCheckbox = ref(true);
+	const softCheckbox = ref(true);
+	const blobCheckbox = ref(true);
+	const cutCornerCheckbox = ref(true);
+	const diamondRadio = ref<'one' | 'two' | 'three'>('two');
+	const softRadio = ref<'alpha' | 'beta' | 'gamma'>('beta');
+	const blobRadio = ref<'north' | 'south' | 'west'>('south');
+	const cutCornerRadio = ref<'draft' | 'ship' | 'hold'>('ship');
 	const selectedFeatures = ref<string[]>(['analytics']);
 	const validatedFeatures = ref<string[]>([]);
 	const accessLevel = ref<AccessLevel | null>('editor');
@@ -331,6 +339,59 @@
 				indicator-view="squircle"
 				label="Squircle radio"
 				:options="['compact', 'expressive', 'dense']" />
+		</div>
+
+		<div class="row row_four">
+			<g-checkbox
+				v-model="diamondCheckbox"
+				color="orange40"
+				indicator-view="diamond"
+				label="Diamond" />
+			<g-checkbox
+				v-model="softCheckbox"
+				color="teal40"
+				indicator-view="soft"
+				label="Soft" />
+			<g-radio
+				v-model="diamondRadio"
+				color="red40"
+				indicator-view="diamond"
+				label="Diamond radio"
+				:options="['one', 'two', 'three']" />
+			<g-radio
+				v-model="softRadio"
+				color="green40"
+				indicator-view="soft"
+				label="Soft radio"
+				:options="['alpha', 'beta', 'gamma']" />
+		</div>
+
+		<div class="row row_two">
+			<g-checkbox
+				v-model="blobCheckbox"
+				color="deep-purple-40"
+				indicator-view="blob"
+				label="Blob checkbox" />
+			<g-radio
+				v-model="blobRadio"
+				color="pink40"
+				indicator-view="blob"
+				label="Blob radio"
+				:options="['north', 'south', 'west']" />
+		</div>
+
+		<div class="row row_two">
+			<g-checkbox
+				v-model="cutCornerCheckbox"
+				color="blue-grey-40"
+				indicator-view="cut-corner"
+				label="Cut-corner checkbox" />
+			<g-radio
+				v-model="cutCornerRadio"
+				color="amber40"
+				indicator-view="cut-corner"
+				label="Cut-corner radio"
+				:options="['draft', 'ship', 'hold']" />
 		</div>
 
 		<div class="squircle-demo">

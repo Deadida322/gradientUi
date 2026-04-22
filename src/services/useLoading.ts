@@ -4,7 +4,6 @@ import {
 	type App,
 	ref,
 	onUnmounted,
-	watch,
 	type ComponentPublicInstance
 } from 'vue';
 import GLoading from '@/components/ui/GLoading/GLoading.vue';
@@ -15,7 +14,6 @@ interface LoadingInstance {
 	container: HTMLElement;
 	target: HTMLElement;
 	originalPosition: string;
-	originalOverflow: string;
 	componentInstance: ComponentPublicInstance<typeof GLoading> | null;
 }
 
@@ -32,32 +30,37 @@ export function useLoading() {
 		hide();
 		const target = resolveTarget(options.target);
 		const originalPosition = target.style.position;
-		const originalOverflow = target.style.overflow;
 
 		if (!hasValidPosition(target)) {
 			target.style.position = 'relative';
 		}
 		const container = document.createElement('div');
+		container.className = 'g-loading__container';
 		target.appendChild(container);
-		target.style.overflow = 'hidden';
+		const instance = {} as LoadingInstance;
 
 		const app = createApp(GLoading, {
 			text: options.text,
 			noText: options.noText,
+			color: options.color,
+			dark: options.dark,
+			opacity: options.opacity,
+			blur: options.blur,
+			progressView: options.progressView,
 			onClose: () => {
-				unmountComponent();
+				unmountComponent(instance);
 			}
 		});
 		const componentInstance: ComponentPublicInstance<typeof GLoading> =
 			app.mount(container);
-		currentInstance.value = {
+		Object.assign(instance, {
 			app,
 			container,
 			target,
-			originalOverflow,
 			originalPosition,
 			componentInstance
-		};
+		});
+		currentInstance.value = instance;
 
 		componentInstance.show();
 		visible.value = true;
@@ -81,18 +84,24 @@ export function useLoading() {
 
 	const hasValidPosition = (element: HTMLElement): boolean => {
 		const position = window.getComputedStyle(element).position;
-		return ['relative', 'absolute', 'fixed'].includes(position);
+		return ['relative', 'absolute', 'fixed', 'sticky'].includes(position);
 	};
 
-	const unmountComponent = () => {
-		if (!currentInstance.value) return;
-		const { app, container, target, originalPosition, originalOverflow } =
-			currentInstance.value;
+	const unmountComponent = (instance = currentInstance.value) => {
+		if (!instance) return;
+
+		const isCurrentInstance = currentInstance.value === instance;
+		const { app, container, target, originalPosition } = instance;
 
 		app.unmount();
+
+		if (container.parentElement === target) {
+			target.removeChild(container);
+		}
+
+		if (!isCurrentInstance) return;
+
 		target.style.position = originalPosition;
-		target.style.overflow = originalOverflow;
-		target.removeChild(container);
 		currentInstance.value = null;
 		visible.value = false;
 	};

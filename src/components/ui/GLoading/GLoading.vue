@@ -1,40 +1,56 @@
 <script setup lang="ts">
-	import type { GLoadingProps } from './types';
-	import GProgress from '../GProgress/GProgress.vue';
 	import { computed, ref } from 'vue';
 	import TransitionScale from '@/components/transitions/TransitionScale.vue';
-	const props = withDefaults(defineProps<GLoadingProps>(), {
-		text: 'Загрузка...',
-		noText: false,
-		show: false,
-		onClose: () => {}
-	});
+	import GProgress from '@/components/ui/GProgress/GProgress.vue';
+	import { makeLoadingProps } from './types';
+
+	const props = defineProps(
+		makeLoadingProps({
+			text: 'Loading...',
+			noText: false,
+			show: false,
+			color: 'primary',
+			dark: false,
+			opacity: undefined,
+			blur: undefined,
+			progressView: 'glow',
+			onClose: undefined
+		})
+	);
 
 	const emit = defineEmits<{
-		(e: 'close'): void;
+		close: [];
+	}>();
+
+	defineSlots<{
+		default?: () => unknown;
 	}>();
 
 	const visible = ref(false);
-	const _slots = defineSlots<{
-		default: () => unknown;
-	}>();
+	const isVisible = computed(() => props.show || visible.value);
+	const loadingStyles = computed(() => ({
+		'--g-loading-overlay-opacity':
+			props.opacity !== undefined ? String(props.opacity) : undefined,
+		'--g-loading-overlay-blur':
+			props.blur !== undefined ? toCssSize(props.blur) : undefined
+	}));
 
-	const show = () => {
+	function toCssSize(value: number | string) {
+		return typeof value === 'number' ? `${value}px` : value;
+	}
+
+	function show() {
 		visible.value = true;
-	};
+	}
 
-	const hide = () => {
+	function hide() {
 		visible.value = false;
-	};
+	}
 
-	const isVisible = computed(() => {
-		return props.show || visible.value;
-	});
-
-	const close = () => {
+	function close() {
 		props.onClose?.();
 		emit('close');
-	};
+	}
 
 	defineExpose({
 		hide,
@@ -47,20 +63,26 @@
 	<transition-scale @leave="close">
 		<div
 			v-if="isVisible"
-			class="g-loading">
+			class="g-loading"
+			:class="{ 'g-loading_dark': props.dark }"
+			:style="loadingStyles"
+			aria-live="polite"
+			aria-busy="true">
 			<div class="g-loading__body">
 				<div
-					v-if="!noText"
+					v-if="!props.noText"
 					class="g-loading__text">
-					<slot>{{ text }}</slot>
+					<slot>{{ props.text }}</slot>
 				</div>
+
 				<div class="g-loading__progress">
 					<g-progress
 						no-label
-						size="s"
 						indeterminate
-						:model-value="100">
-					</g-progress>
+						:model-value="100"
+						:color="props.color"
+						:view="props.progressView"
+						size="s" />
 				</div>
 			</div>
 		</div>
@@ -68,52 +90,65 @@
 </template>
 
 <style lang="scss">
-	.g-loading-fade-enter-active,
-	.g-loading-fade-leave-active {
-		transition: opacity 0.3s ease !important;
-	}
+	.g-loading__container {
+		pointer-events: auto;
 
-	.g-loading-fade-enter-from,
-	.g-loading-fade-leave-to {
-		opacity: 0;
+		position: absolute;
+		z-index: var(--g-loading-z-index, 20);
+		inset: 0;
+
+		overflow: hidden;
+
+		border-radius: inherit;
 	}
 
 	.g-loading {
 		position: absolute;
-		z-index: 1;
-		top: 0;
-		left: 0;
+		inset: 0;
 
 		display: flex;
+		align-items: center;
 		justify-content: center;
 
 		width: 100%;
 		height: 100%;
 
-		opacity: 1;
-		background-color: rgb(238 232 255 / 75%);
-		backdrop-filter: blur(0.7px);
+		color: var(--g-token-color-on-surface);
+
+		background: rgb(
+			var(--g-theme-surface) / var(--g-loading-overlay-opacity, 0.72)
+		);
+		backdrop-filter: blur(var(--g-loading-overlay-blur, 4px));
+
+		&_dark {
+			color: rgb(var(--g-theme-surface));
+			background: rgb(
+				var(--g-theme-on-surface) /
+					var(--g-loading-overlay-opacity, 0.64)
+			);
+		}
 
 		&__body {
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
+			gap: var(--g-token-space-3);
 			align-items: center;
 			justify-content: center;
 
-			width: 100%;
+			width: min(220px, 80%);
 		}
 
 		&__text {
-			font-size: 16px;
-			line-height: 20px;
-			color: var(--g-text-primary);
+			font-size: var(--g-token-font-size-md);
+			font-weight: var(--g-token-font-weight-medium);
+			line-height: var(--g-token-line-height-md);
+			color: currentcolor;
+			text-align: center;
 		}
 
 		&__progress {
-			align-items: center;
 			width: 150px;
-			max-width: 90%;
+			max-width: 100%;
 		}
 	}
 </style>

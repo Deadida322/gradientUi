@@ -118,15 +118,25 @@
 
 			<g-expansion
 				v-model="standaloneOpen"
-				title="What does standalone mode cover?"
-				text="The item manages its own boolean state without a parent group.">
+				title="Controlled standalone"
+				text="This item is tied to an external boolean model.">
 				<div class="expansion-playground__body-copy">
-					Use this when you need just one collapsible region tied to a
-					local boolean model.
+					Use this when another part of the app should read or write
+					the open state.
 				</div>
 			</g-expansion>
 
 			<div class="value-line">standalone: {{ standaloneOpen }}</div>
+
+			<g-expansion
+				default-open
+				title="Uncontrolled standalone"
+				text="This item owns its open state internally.">
+				<div class="expansion-playground__body-copy">
+					Use this when you only need a collapsible region and do not
+					want to manage a boolean model outside.
+				</div>
+			</g-expansion>
 		</div>
 
 		<div class="expansion-playground__section">

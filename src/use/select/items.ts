@@ -25,7 +25,11 @@ export function useItems<T, V = unknown>(options: UseItemsOptions<T, V>) {
 			return String(item[labelKey]);
 		}
 
-		return String((item as Record<string, unknown>).label ?? '');
+		if (isRecord(item) && 'label' in item) {
+			return String(item.label);
+		}
+
+		return String(item);
 	}
 
 	function resolveValue(item: T): V {
@@ -39,7 +43,11 @@ export function useItems<T, V = unknown>(options: UseItemsOptions<T, V>) {
 			return item[valueKey] as V;
 		}
 
-		return (item as Record<string, unknown>).value as V;
+		if (isRecord(item) && 'value' in item) {
+			return item.value as V;
+		}
+
+		return item as unknown as V;
 	}
 
 	function normalize(item: T): InternalItem<T, V> {
@@ -76,4 +84,8 @@ export function useItems<T, V = unknown>(options: UseItemsOptions<T, V>) {
 		resolveLabel,
 		resolveValue
 	};
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null;
 }

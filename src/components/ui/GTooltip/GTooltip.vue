@@ -47,8 +47,10 @@
 			class="g-tooltip"
 			v-bind="floatingAttrs"
 			role="tooltip">
-			{{ props.content }}
 			<div class="g-tooltip__underlay"></div>
+			<span class="g-tooltip__content">
+				{{ props.content }}
+			</span>
 		</div>
 	</base-floating>
 </template>
@@ -59,6 +61,9 @@
 	.g-tooltip {
 		pointer-events: none;
 
+		position: relative;
+		z-index: 8;
+
 		overflow: hidden;
 
 		padding: var(--g-token-tooltip-padding-y)
@@ -68,21 +73,26 @@
 		font-size: var(--g-token-tooltip-font-size);
 		color: var(--g-token-tooltip-color);
 
-		background-color: var(--g-token-tooltip-surface);
+		background: transparent;
 		backdrop-filter: blur(var(--g-token-tooltip-backdrop-blur));
+		box-shadow: var(--g-token-overlay-shadow);
 
 		@include truncate.truncate;
 
+		&__content {
+			position: relative;
+			z-index: 1;
+		}
+
 		&__underlay {
 			position: absolute;
-			z-index: -1;
-			top: 0;
-			left: 0;
+			z-index: 0;
+			inset: 0;
 
-			width: 100%;
-			height: 100%;
+			border-radius: inherit;
 
-			background-color: var(--g-token-tooltip-surface-underlay);
+			opacity: var(--g-token-tooltip-opacity);
+			background: var(--g-token-color-primary);
 		}
 
 		&__trigger {

@@ -41,22 +41,37 @@ html.g-theme--dark {
 	color-scheme: dark;
 }
 
-.ripple-effect {
+.g-ripple__container {
 	pointer-events: none;
+
+	position: absolute;
+	inset: 0;
+
+	overflow: hidden;
+
+	border-radius: inherit;
+
+	color: inherit;
+}
+
+.g-ripple__animation {
+	will-change: transform, opacity;
 
 	position: absolute;
 	transform: scale(0);
 
 	border-radius: 50%;
 
-	opacity: 0.1;
+	opacity: var(--g-ripple-opacity, 0.16);
+	background: var(--g-ripple-color, currentcolor);
 
-	animation: ripple-animation 0.6s linear;
+	animation: g-ripple-animation var(--g-ripple-duration, 520ms)
+		var(--g-token-easing-standard);
 }
 
-@keyframes ripple-animation {
+@keyframes g-ripple-animation {
 	to {
-		transform: scale(4);
+		transform: scale(1);
 		opacity: 0;
 	}
 }

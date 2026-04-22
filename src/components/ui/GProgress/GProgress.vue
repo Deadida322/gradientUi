@@ -1,17 +1,10 @@
 <script setup lang="ts">
 	import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-	import type { GProgressProps } from './types';
+	import { makeProgressProps } from './types';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useSurfaceLayers } from '@/use/surface';
 
-	const props = withDefaults(defineProps<GProgressProps>(), {
-		noLabel: false,
-		size: 'm',
-		color: 'primary',
-		modelValue: 0,
-		label: undefined,
-		state: undefined
-	});
+	const props = defineProps(makeProgressProps({ color: 'primary' }));
 	const { gradientStyles } = useSurfaceColor(props);
 	const width = ref(0);
 	const parentRef = ref<Element | null>(null);
@@ -21,10 +14,21 @@
 		Math.min(100, Math.max(0, props.modelValue))
 	);
 	const computedWidth = computed(() => `${width.value}px`);
+	const segmentCount = computed(() =>
+		Math.max(2, Math.round(props.segments))
+	);
+	const segmentDividers = computed(() =>
+		Array.from({ length: segmentCount.value - 1 }, (_, index) => index)
+	);
 	const percentage = computed(() => `${normalizedValue.value}%`);
 	const displayLabel = computed(
 		() => props.label ?? `${Math.round(normalizedValue.value)}%`
 	);
+	const getSegmentDividerStyles = (index: number) => ({
+		'--g-progress-segment-position': `${
+			((index + 1) / segmentCount.value) * 100
+		}%`
+	});
 	const progressStyles = computed(() => ({
 		...gradientStyles.value,
 		'--g-progress-value': percentage.value,
@@ -57,34 +61,48 @@
 
 <template>
 	<div
-		ref="parentRef"
 		class="g-progress"
-		role="progressbar"
-		:aria-valuemin="0"
-		:aria-valuemax="100"
-		:aria-valuenow="indeterminate ? undefined : normalizedValue"
 		:class="{
-			'g-progress_rounded': rounded,
-			'g-progress_indeterminate': indeterminate,
-			'g-progress_no-label': noLabel,
-			[`g-progress_${size}`]: true
+			'g-progress_rounded': props.rounded,
+			'g-progress_indeterminate': props.indeterminate,
+			'g-progress_no-label': props.noLabel,
+			[`g-progress_${props.size}`]: true,
+			[`g-progress_label-${props.labelAlign}`]: true,
+			[`g-progress_view-${props.view}`]: true
 		}"
 		:style="progressStyles">
-		<span :class="surfaceUnderlayClasses"></span>
-		<span :class="surfaceOverlayClasses"></span>
 		<div
-			class="g-progress__surface-content"
-			:class="surfaceContentClasses">
+			v-if="!props.noLabel"
+			class="g-progress__label">
+			<slot>{{ displayLabel }}</slot>
+		</div>
+
+		<div
+			ref="parentRef"
+			class="g-progress__track"
+			role="progressbar"
+			:aria-valuemin="0"
+			:aria-valuemax="100"
+			:aria-valuenow="props.indeterminate ? undefined : normalizedValue"
+			:aria-valuetext="props.indeterminate ? undefined : displayLabel">
+			<span :class="surfaceUnderlayClasses"></span>
+			<span :class="surfaceOverlayClasses"></span>
 			<div
-				v-if="!noLabel"
-				class="g-progress__label">
-				<slot>{{ displayLabel }}</slot>
-			</div>
-			<div class="g-progress__bar">
-				<div class="g-progress__active">
-					<div class="g-progress__overlay"></div>
+				class="g-progress__surface-content"
+				:class="surfaceContentClasses">
+				<div class="g-progress__bar">
+					<div class="g-progress__active">
+						<div class="g-progress__overlay"></div>
+					</div>
 				</div>
 			</div>
+			<template v-if="props.view === 'segmented'">
+				<span
+					v-for="index in segmentDividers"
+					:key="index"
+					class="g-progress__segment-divider"
+					:style="getSegmentDividerStyles(index)"></span>
+			</template>
 		</div>
 	</div>
 </template>
@@ -99,20 +117,29 @@
 		--g-surface-underlay-opacity: 1;
 		--g-surface-overlay-color: var(--g-color);
 		--g-surface-overlay-opacity: var(--g-token-state-tonal-opacity);
+		--g-progress-label-align: center;
+		--g-progress-segment-gap: 3px;
+		--g-progress-segment-position: 0%;
+		--g-progress-label-color: color-mix(
+			in srgb,
+			var(--g-color) 72%,
+			var(--g-on-surface-color)
+		);
 
 		position: relative;
 
-		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: var(--g-token-space-1);
 
 		width: 100%;
-		height: var(--g-progress-height);
-		border-radius: var(--g-progress-radius);
 
 		color: var(--g-color);
 
 		&_s {
 			--g-progress-height: var(--g-token-space-2);
 			--g-progress-radius: var(--g-token-radius-xs);
+			--g-progress-segment-gap: 2px;
 		}
 
 		&_l {
@@ -125,31 +152,46 @@
 			--g-progress-radius: var(--g-token-radius-md);
 		}
 
+		&__track {
+			position: relative;
+
+			overflow: hidden;
+
+			width: 100%;
+			height: var(--g-progress-height);
+			border-radius: var(--g-progress-radius);
+		}
+
+		&__segment-divider {
+			pointer-events: none;
+
+			position: absolute;
+			z-index: 3;
+			top: 0;
+			bottom: 0;
+			left: var(--g-progress-segment-position);
+			transform: translateX(-50%);
+
+			width: var(--g-progress-segment-gap);
+
+			background: var(--g-surface-color);
+		}
+
 		&__surface-content {
 			width: 100%;
 			height: 100%;
 		}
 
 		&__label {
-			position: absolute;
-			z-index: 2;
-			top: 0;
-			left: 0;
+			overflow: hidden;
 
-			display: block;
-
-			width: 100%;
-			height: 100%;
-
-			font-size: 12px;
-			line-height: var(--g-progress-height);
-			color: color-mix(
-				in srgb,
-				var(--g-color) 76%,
-				var(--g-on-surface-color)
-			);
-			text-align: center;
-			text-shadow: 0 1px 1px var(--g-surface-color);
+			font-size: var(--g-token-font-size-xs);
+			font-weight: 650;
+			line-height: 1.25;
+			color: var(--g-progress-label-color);
+			text-align: var(--g-progress-label-align);
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		&__bar {
@@ -200,17 +242,73 @@
 		&_rounded {
 			--g-progress-radius: 999px;
 
-			.g-progress__active {
-				border-radius: var(--g-progress-radius);
-			}
-
+			.g-progress__active,
 			.g-progress__overlay {
 				border-radius: var(--g-progress-radius);
 			}
 		}
+
+		&_label-start {
+			--g-progress-label-align: left;
+		}
+
+		&_label-end {
+			--g-progress-label-align: right;
+		}
+
+		&_view-striped {
+			.g-progress__overlay::after {
+				content: '';
+
+				position: absolute;
+				inset: 0;
+
+				opacity: 0.72;
+				background-image: repeating-linear-gradient(
+					-45deg,
+					rgb(255 255 255 / 16%) 0,
+					rgb(255 255 255 / 16%) 4px,
+					transparent 4px,
+					transparent 10px
+				);
+				background-size: 14px 14px;
+
+				animation: progress-stripes 1.1s linear infinite;
+			}
+		}
+
+		&_view-segmented {
+			--g-surface-overlay-opacity: calc(
+				var(--g-token-state-tonal-opacity) * 0.72
+			);
+
+			.g-progress__active,
+			.g-progress__overlay {
+				border-radius: 0;
+			}
+		}
+
+		&_view-glow {
+			--g-surface-overlay-opacity: calc(
+				var(--g-token-state-tonal-opacity) * 0.72
+			);
+
+			.g-progress__track {
+				box-shadow:
+					inset 0 0 0 1px
+						color-mix(in srgb, var(--g-color) 16%, transparent),
+					0 0 18px color-mix(in srgb, var(--g-color) 18%, transparent);
+			}
+
+			.g-progress__active {
+				box-shadow:
+					0 0 12px color-mix(in srgb, var(--g-color) 34%, transparent),
+					0 0 28px color-mix(in srgb, var(--g-color) 18%, transparent);
+			}
+		}
 	}
 
-	@include actionSurface.action-surface-layers('g-progress', true);
+	@include actionSurface.action-surface-layers('g-progress');
 
 	@keyframes loading-animation {
 		0% {
@@ -230,6 +328,12 @@
 
 		100% {
 			opacity: 0;
+		}
+	}
+
+	@keyframes progress-stripes {
+		to {
+			background-position: 14px 0;
 		}
 	}
 </style>

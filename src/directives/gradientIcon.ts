@@ -1,25 +1,10 @@
-import type { DirectiveBinding } from 'vue';
+import {
+	createGradientTextDirective,
+	type GradientTextBindingValue
+} from './gradientText';
 
-export default (el: HTMLElement, binding: DirectiveBinding) => {
-	const state = binding.value?.state || 'main';
-	const gradients = {
-		main: 'var(--g-gradient-main)',
-		error: 'var(--g-gradient-error)',
-		warning: 'var(--g-gradient-warning'
-	};
+export type GradientIconBindingValue = GradientTextBindingValue;
 
-	const setGradient = (el: HTMLElement) => {
-		if (!el) return;
-		el.style['-webkit-text-fill-color'] = 'transparent';
-		el.style.background = gradients[state];
-		el.style['background-clip'] = 'text';
-	};
-	if (el.classList.contains('mdi')) {
-		setGradient(el);
-	} else {
-		const elements = Array.from(el.querySelectorAll('.mdi'));
-		for (const element of elements) {
-			setGradient(element as HTMLElement);
-		}
-	}
-};
+const gradientIcon = createGradientTextDirective('.mdi');
+
+export default gradientIcon;

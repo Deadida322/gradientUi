@@ -48,7 +48,11 @@ export const makeExpansionProps = propsFactory({
 	...makeColorProps(),
 	title: String,
 	text: String,
-	modelValue: Boolean,
+	modelValue: {
+		type: Boolean as PropType<boolean | undefined>,
+		default: undefined
+	},
+	defaultOpen: Boolean,
 	value: {
 		type: [
 			String,

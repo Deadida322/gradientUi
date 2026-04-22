@@ -1,5 +1,5 @@
 <script setup generic="T" lang="ts">
-	import { computed } from 'vue';
+	import { computed, ref } from 'vue';
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import TransitionExpansion from '@/components/transitions/TransitionExpansion.vue';
@@ -23,10 +23,10 @@
 			disabled: false,
 			rounded: false,
 			size: 'm',
-			modelValue: false,
+			defaultOpen: false,
 			readonly: false,
 			hideActions: false,
-			openedIcon: 'chevron-up',
+			openedIcon: 'chevron-down',
 			closedIcon: 'chevron-down',
 			eager: false,
 			borderWidth: 0,
@@ -35,6 +35,7 @@
 			shadow: false,
 			placement: 'center',
 			variant: 'text',
+			color: undefined,
 			activeBorderWidth: undefined,
 			activeGlow: undefined,
 			activeAnimateGlow: undefined,
@@ -51,8 +52,16 @@
 	const isInGroup = computed(
 		() => group !== null && props.value !== undefined
 	);
+	const standaloneExpanded = ref(props.defaultOpen);
+	const isControlled = computed(
+		() => !isInGroup.value && props.modelValue !== undefined
+	);
 	const expanded = computed(() =>
-		isInGroup.value ? group!.isSelected(props.value as T) : props.modelValue
+		isInGroup.value
+			? group!.isSelected(props.value as T)
+			: isControlled.value
+				? props.modelValue === true
+				: standaloneExpanded.value
 	);
 	const resolvedDisabled = computed(
 		() =>
@@ -80,8 +89,15 @@
 		surfaceUnderlayClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers('g-expansion');
+	const expansionColor = computed(() => {
+		if (props.color !== undefined) {
+			return props.color;
+		}
+
+		return props.variant === 'text' ? 'on-surface' : undefined;
+	});
 	const { resolvedColor, resolvedState, colorStyles } = useSurfaceColor({
-		color: () => props.color,
+		color: () => expansionColor.value,
 		state: () => props.state,
 		active: () => expanded.value,
 		activeState: () => props.activeState
@@ -116,6 +132,9 @@
 		expanded.value && props.activePlacement !== undefined
 			? props.activePlacement
 			: props.placement
+	);
+	const actionIcon = computed(() =>
+		expanded.value ? props.openedIcon : props.closedIcon
 	);
 	const hasGradientSurface = computed(() => {
 		const borderWidth = resolvedGradientBorderWidth.value;
@@ -172,7 +191,13 @@
 			return;
 		}
 
-		emit('update:modelValue', !props.modelValue);
+		const nextValue = !expanded.value;
+
+		if (!isControlled.value) {
+			standaloneExpanded.value = nextValue;
+		}
+
+		emit('update:modelValue', nextValue);
 	}
 
 	function onHeaderClick(event: MouseEvent) {
@@ -242,12 +267,7 @@
 						<slot
 							name="actions"
 							v-bind="slotProps">
-							<g-icon
-								:icon="
-									expanded
-										? props.openedIcon
-										: props.closedIcon
-								" />
+							<g-icon :icon="actionIcon" />
 						</slot>
 					</span>
 				</button>
@@ -362,6 +382,16 @@
 			height: var(--g-token-expansion-icon-size);
 
 			color: var(--g-token-expansion-actions-color);
+
+			transition:
+				color var(--g-token-duration-base)
+					var(--g-token-easing-standard),
+				transform var(--g-token-duration-base)
+					var(--g-token-easing-standard);
+
+			&_expanded {
+				transform: rotate(180deg);
+			}
 		}
 
 		&__body {

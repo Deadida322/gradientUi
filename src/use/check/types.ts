@@ -25,7 +25,13 @@ export interface CheckFieldProps {
 	inline?: boolean;
 }
 
-export type CheckIndicatorView = 'default' | 'squircle';
+export type CheckIndicatorView =
+	| 'default'
+	| 'squircle'
+	| 'diamond'
+	| 'soft'
+	| 'blob'
+	| 'cut-corner';
 
 export interface CheckOption<T> {
 	label: string;
