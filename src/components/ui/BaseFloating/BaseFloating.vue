@@ -1,39 +1,34 @@
 <script lang="ts" setup>
-	import { computed, ref, toRef, watch } from 'vue';
+	import { computed, toRef, watch } from 'vue';
 
 	import { makeFloatingProps } from '@/use/floating';
 	import { useFloatingLayer } from '@/use/floatingLayer';
 
-	import { useZIndex } from '@/use/zIndex';
+	import { useAppendTarget } from '@/use/appendTarget';
+	import { useControllableOpen } from '@/use/controllableOpen';
 	import { useDismiss } from '@/use/floatingDismiss';
-	import TransitionScale from '@/components/transitions/TransitionScale.vue';
+	import { useLayerStack } from '@/use/layerStack';
+	import { GTransition } from '@/components/transitions';
 	import type { MaybeElement, ReferenceElement } from '@floating-ui/vue';
 
 	const props = defineProps(makeFloatingProps());
 	const referenceProp = toRef(props, 'reference');
-	const emit = defineEmits(['update:modelValue']);
-
-	const localOpen = ref(props.defaultOpen ?? false);
-
-	const open = computed({
-		get() {
-			return props.modelValue ?? localOpen.value;
-		},
-		set(value: boolean) {
-			if (props.modelValue !== undefined) {
-				emit('update:modelValue', value);
-			} else {
-				localOpen.value = value;
-			}
-		}
-	});
+	const emit = defineEmits<{
+		'update:modelValue': [value: boolean];
+	}>();
+	const { open } = useControllableOpen(props, emit);
+	const { hasAppendTarget, appendTarget } = useAppendTarget(props.appendTo);
 
 	const { reference, floating, x, y, strategy, update } =
 		useFloatingLayer(props);
 
 	useDismiss({ open, reference, floating });
 
-	const { zIndex } = useZIndex({ open, base: props.zIndexBase });
+	const { zIndex } = useLayerStack({
+		open,
+		base: props.zIndexBase,
+		kind: 'floating'
+	});
 
 	const floatingStyle = computed(() => ({
 		position: strategy.value,
@@ -76,23 +71,30 @@
 	</div>
 
 	<teleport
-		v-if="props.appendTo && props.appendTo"
-		:to="appendTo">
-		<div
-			v-show="open"
-			ref="floating"
-			:style="floatingStyle">
-			<slot />
-		</div>
+		v-if="hasAppendTarget"
+		:to="appendTarget">
+		<g-transition
+			:transition="props.transition"
+			name="scale">
+			<div
+				v-show="open"
+				ref="floating"
+				:style="floatingStyle">
+				<slot />
+			</div>
+		</g-transition>
 	</teleport>
-	<transition-scale v-else>
+	<g-transition
+		v-else
+		:transition="props.transition"
+		name="scale">
 		<div
 			v-show="open"
 			ref="floating"
 			:style="floatingStyle">
 			<slot />
 		</div>
-	</transition-scale>
+	</g-transition>
 </template>
 
 <style lang="scss" scoped>

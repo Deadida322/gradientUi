@@ -5,6 +5,8 @@
 	import PlaygroundDropdown from './PlaygroundDropdown.vue';
 	import PlaygroundCheckControls from './PlaygroundCheckControls.vue';
 	import PlaygroundChip from './PlaygroundChip.vue';
+	import PlaygroundNavigation from './PlaygroundNavigation.vue';
+	import PlaygroundModal from './PlaygroundModal.vue';
 	import PlaygroundExpansion from './PlaygroundExpansion.vue';
 	import PlaygroundInput from './PlaygroundInput.vue';
 	import PlaygroundTextarea from './PlaygroundTextarea.vue';
@@ -18,6 +20,8 @@
 		<playground-buttons></playground-buttons>
 		<playground-tooltip></playground-tooltip>
 		<playground-dropdown></playground-dropdown>
+		<playground-navigation></playground-navigation>
+		<playground-modal></playground-modal>
 		<playground-chip></playground-chip>
 		<playground-expansion></playground-expansion>
 		<playground-input></playground-input>

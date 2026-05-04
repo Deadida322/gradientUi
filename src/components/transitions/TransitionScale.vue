@@ -17,24 +17,26 @@
 	};
 
 	const getEnterDuration = () =>
-		readDuration('--g-token-duration-enter', 0.22);
+		readDuration('--g-token-duration-enter', 0.28);
 
 	const getLeaveDuration = () =>
-		readDuration('--g-token-duration-leave', 0.18);
+		readDuration('--g-token-duration-leave', 0.22);
 
 	const onBeforeEnterRotate = (el) => {
 		gsap.from(el, {
-			transform: 'scale(0)',
+			opacity: 0,
+			transform: 'scale(0.94)',
 			duration: getEnterDuration(),
-			ease: 'back.out'
+			ease: 'power2.out'
 		});
 	};
 
 	const onEnterRotate = (el) => {
 		gsap.to(el, {
+			opacity: 1,
 			transform: 'scale(1)',
 			duration: getEnterDuration(),
-			ease: 'ease.out'
+			ease: 'power2.out'
 		});
 	};
 
@@ -42,8 +44,9 @@
 		await gsap.to(el, {
 			duration: getLeaveDuration(),
 			onComplete: done,
-			ease: 'ease.out',
-			transform: 'scale(0)'
+			ease: 'power1.out',
+			opacity: 0,
+			transform: 'scale(0.985)'
 		});
 		emit('leave');
 	};

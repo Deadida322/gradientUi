@@ -1,9 +1,11 @@
 import type { GColor } from '@/use/color';
 import type { GProgressView } from '@/components/ui/GProgress/types';
+import { makeTransitionProps } from '@/use/transition';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
 
 export const makeLoadingProps = propsFactory({
+	...makeTransitionProps(),
 	text: String,
 	noText: Boolean,
 	show: Boolean,

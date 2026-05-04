@@ -1,8 +1,8 @@
 <script setup generic="T" lang="ts">
-	import { computed, ref } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
-	import TransitionExpansion from '@/components/transitions/TransitionExpansion.vue';
+	import { GExpandTransition } from '@/components/transitions';
 	import { useExpansionGroupInject } from '@/use/expansion';
 	import { useRounded } from '@/use/rounded';
 	import { useSelected } from '@/use/selected';
@@ -41,7 +41,8 @@
 			activeAnimateGlow: undefined,
 			activeShadow: undefined,
 			activeState: undefined,
-			activePlacement: undefined
+			activePlacement: undefined,
+			transition: 'expand'
 		})
 	);
 
@@ -73,7 +74,10 @@
 			props.readonly ||
 			(isInGroup.value && group ? group.readonly : false)
 	);
-	const contentMounted = computed(() => props.eager || expanded.value);
+	const contentMounted = ref(props.eager || expanded.value);
+	const shouldRenderContent = computed(
+		() => props.eager || contentMounted.value
+	);
 	const sizeClass = useSize(props, 'g-expansion');
 	const variantClass = useVariant(props, 'g-expansion');
 	const disabledClass = computed(() =>
@@ -204,6 +208,21 @@
 		toggle();
 		emit('click', event);
 	}
+
+	function onContentAfterLeave() {
+		if (props.eager) return;
+		contentMounted.value = false;
+	}
+
+	watch(
+		expanded,
+		(value) => {
+			if (value) {
+				contentMounted.value = true;
+			}
+		},
+		{ immediate: true }
+	);
 </script>
 
 <template>
@@ -272,9 +291,12 @@
 					</span>
 				</button>
 
-				<transition-expansion :duration="0.24">
+				<g-expand-transition
+					:transition="props.transition"
+					:duration="240"
+					@after-leave="onContentAfterLeave">
 					<div
-						v-if="contentMounted"
+						v-if="shouldRenderContent"
 						v-show="expanded"
 						:id="contentId"
 						:aria-labelledby="headerId"
@@ -284,7 +306,7 @@
 							<slot v-bind="slotProps" />
 						</div>
 					</div>
-				</transition-expansion>
+				</g-expand-transition>
 			</div>
 		</article>
 	</component>

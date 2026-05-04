@@ -1,4 +1,9 @@
 export { default as GText } from '@/components/ui/GText/GText.vue';
+export {
+	GTransition,
+	GTransitionGroup,
+	GExpandTransition
+} from '@/components/transitions';
 export { default as GGradient } from '@/components/ui/GGradient/GGradient.vue';
 export { default as GButton } from '@/components/ui/GButton/GButton.vue';
 export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
@@ -9,8 +14,18 @@ export { default as GFABGroup } from '@/components/ui/GFABGroup/GFABGroup.vue';
 export { default as GProgress } from '@/components/ui/GProgress/GProgress.vue';
 export { default as GRadio } from '@/components/ui/GRadio/GRadio.vue';
 export { default as GAlert } from '@/components/ui/GAlert/GAlert.vue';
+export { GModal } from '@/components/ui/GModal';
 export { default as GExpansion } from '@/components/ui/GExpansion/GExpansion.vue';
 export { default as GExpansionGroup } from '@/components/ui/GExpansionGroup/GExpansionGroup.vue';
+export { default as GDropdownGroup } from '@/components/ui/GDropdownGroup';
+export { BaseOverlay } from '@/components/ui/BaseOverlay';
+export {
+	GNavbar,
+	GNavbarItem,
+	GNavbarGroup,
+	GNavbarSubItem
+} from '@/components/ui/GNavbar';
+export { GAside, GAsideGroup, GAsideItem } from '@/components/ui/GAside';
 export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';

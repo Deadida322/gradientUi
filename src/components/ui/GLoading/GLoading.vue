@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
-	import TransitionScale from '@/components/transitions/TransitionScale.vue';
+	import { GTransition } from '@/components/transitions';
 	import GProgress from '@/components/ui/GProgress/GProgress.vue';
 	import { makeLoadingProps } from './types';
 
@@ -14,6 +14,7 @@
 			opacity: undefined,
 			blur: undefined,
 			progressView: 'glow',
+			transition: 'scale',
 			onClose: undefined
 		})
 	);
@@ -60,7 +61,10 @@
 </script>
 
 <template>
-	<transition-scale @leave="close">
+	<g-transition
+		:transition="props.transition"
+		name="scale"
+		@after-leave="close">
 		<div
 			v-if="isVisible"
 			class="g-loading"
@@ -86,7 +90,7 @@
 				</div>
 			</div>
 		</div>
-	</transition-scale>
+	</g-transition>
 </template>
 
 <style lang="scss">

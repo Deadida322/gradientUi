@@ -5,9 +5,11 @@ import type {
 	Strategy
 } from '@floating-ui/vue';
 import { propsFactory } from '@/utils/propsFactory';
+import { makeTransitionProps } from '@/use/transition';
 import type { ExtractPropTypes, PropType } from 'vue';
 
 export const makeFloatingProps = propsFactory({
+	...makeTransitionProps(),
 	modelValue: {
 		type: Boolean,
 		default: undefined

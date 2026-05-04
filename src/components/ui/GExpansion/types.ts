@@ -7,6 +7,7 @@ import type {
 } from '@/components/ui/GGradient/types';
 import { makeRoundedProps } from '@/use/rounded';
 import { makeSizeProps } from '@/use/size';
+import { makeTransitionProps } from '@/use/transition';
 import { makeVariantProps } from '@/use/variant';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
@@ -46,6 +47,7 @@ export const makeExpansionProps = propsFactory({
 	...makeSizeProps(),
 	...makeVariantProps(),
 	...makeColorProps(),
+	...makeTransitionProps(),
 	title: String,
 	text: String,
 	modelValue: {

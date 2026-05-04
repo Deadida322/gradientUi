@@ -1,0 +1,301 @@
+<script setup lang="ts" generic="T extends NavbarValue = NavbarValue">
+	import {
+		computed,
+		nextTick,
+		onBeforeUnmount,
+		onMounted,
+		ref,
+		watch
+	} from 'vue';
+	import GDropdown from '@/components/ui/GDropdown/GDropdown.vue';
+	import GIcon from '@/components/ui/GIcon/GIcon.vue';
+	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { provideNavbarGroup } from './groupContext';
+	import { useNavbarInject } from './context';
+	import {
+		makeNavbarGroupProps,
+		type GNavbarGroupSlots,
+		type GNavbarItemSlotProps,
+		type NavbarValue
+	} from './types';
+
+	const props = defineProps(makeNavbarGroupProps());
+	const slots = defineSlots<GNavbarGroupSlots<T>>();
+	const emit = defineEmits<{
+		click: [event: MouseEvent];
+	}>();
+
+	const navbar = useNavbarInject<T>();
+	const rootRef = ref<HTMLElement | null>(null);
+	const dropdownOpen = ref(false);
+	const ownedValues = new Set<T | undefined>();
+	const selected = computed(() =>
+		navbar
+			? navbar.isSelected(props.value as T | undefined) ||
+				navbar.isElementSelected(rootRef.value)
+			: false
+	);
+	const resolvedColor = computed(
+		() =>
+			(selected.value
+				? navbar?.activeColor.value
+				: navbar?.color.value) ?? 'primary'
+	);
+	const { colorStyles } = useSurfaceColor({
+		color: () => resolvedColor.value
+	});
+	const itemStyles = computed(() => colorStyles.value);
+	const slotProps = computed<GNavbarItemSlotProps<T>>(() => ({
+		selected: selected.value,
+		disabled: props.disabled,
+		value: props.value as T | undefined,
+		modelValue: navbar?.modelValue.value,
+		isSelected,
+		select,
+		closeDropdown
+	}));
+	const actionIcon = computed(() =>
+		dropdownOpen.value ? props.openedIcon : props.closedIcon
+	);
+
+	function registerOwnValue(value: T | undefined) {
+		if (!navbar || !rootRef.value || value === undefined) return;
+
+		ownedValues.add(value);
+		navbar.register(value, rootRef.value);
+	}
+
+	function unregisterOwnValue(value: T | undefined) {
+		if (!navbar || !rootRef.value || value === undefined) return;
+
+		ownedValues.delete(value);
+		navbar.unregister(value, rootRef.value);
+	}
+
+	function register() {
+		registerOwnValue(props.value as T | undefined);
+	}
+
+	function unregister() {
+		if (!navbar || !rootRef.value) return;
+
+		navbar.unregisterElement(rootRef.value);
+		ownedValues.clear();
+	}
+
+	function refresh() {
+		navbar?.refreshIndicator();
+	}
+
+	function isSelected(value: T | undefined) {
+		return navbar ? navbar.isSelected(value) : false;
+	}
+
+	function closeDropdown() {
+		dropdownOpen.value = false;
+	}
+
+	function select(value: T | undefined, event?: Event) {
+		registerOwnValue(value);
+		navbar?.select(value, event);
+
+		if (props.closeOnSelect) {
+			closeDropdown();
+		}
+
+		void nextTick(refresh);
+	}
+
+	function onClick(event: MouseEvent) {
+		if (props.disabled) {
+			event.preventDefault();
+			return;
+		}
+
+		select(props.value as T | undefined, event);
+		emit('click', event);
+	}
+
+	provideNavbarGroup({
+		registerValue: registerOwnValue,
+		unregisterValue: unregisterOwnValue,
+		select,
+		isSelected
+	});
+
+	onMounted(register);
+	onBeforeUnmount(unregister);
+
+	watch(
+		() => props.value,
+		(_value, oldValue) => {
+			unregisterOwnValue(oldValue as T | undefined);
+			register();
+		}
+	);
+
+	watch(resolvedColor, refresh);
+</script>
+
+<template>
+	<li
+		ref="rootRef"
+		class="g-navbar-group"
+		:class="{
+			'g-navbar-group_selected': selected,
+			'g-navbar-group_disabled': props.disabled,
+			'g-navbar-group_open': dropdownOpen
+		}"
+		:style="itemStyles"
+		role="none">
+		<g-dropdown
+			v-model="dropdownOpen"
+			close-on-content-click
+			append-to="body"
+			open-on-hover
+			open-on-focus
+			:open-on-click="false"
+			:offset="0"
+			placement="bottom-start">
+			<template #activator="{ activatorAttrs, activatorRef }">
+				<button
+					:ref="activatorRef"
+					v-ripple
+					class="g-navbar-group__action"
+					type="button"
+					role="menuitem"
+					:aria-current="selected ? 'page' : undefined"
+					:aria-haspopup="true"
+					:aria-expanded="dropdownOpen"
+					:disabled="props.disabled"
+					v-bind="activatorAttrs"
+					@click="onClick">
+					<span
+						v-if="slots.prepend || props.prependIcon"
+						class="g-navbar-group__prepend">
+						<slot
+							name="prepend"
+							v-bind="slotProps">
+							<g-icon :icon="props.prependIcon" />
+						</slot>
+					</span>
+
+					<span class="g-navbar-group__label">
+						<slot v-bind="slotProps">{{ props.label }}</slot>
+					</span>
+
+					<span class="g-navbar-group__append">
+						<slot
+							name="append"
+							v-bind="slotProps">
+							<g-icon :icon="props.appendIcon ?? actionIcon" />
+						</slot>
+					</span>
+				</button>
+			</template>
+
+			<div class="g-navbar-group__dropdown">
+				<slot
+					name="dropdown"
+					v-bind="slotProps" />
+			</div>
+		</g-dropdown>
+	</li>
+</template>
+
+<style scoped lang="scss">
+	.g-navbar-group {
+		position: relative;
+
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: stretch;
+
+		height: var(--g-navbar-height, 56px);
+
+		color: var(--g-token-color-on-surface);
+		list-style: none;
+
+		:deep(.base-floating__reference) {
+			display: flex;
+			height: 100%;
+		}
+
+		&__action {
+			cursor: pointer;
+
+			position: relative;
+
+			display: inline-flex;
+			gap: var(--g-token-space-2);
+			align-items: center;
+			justify-content: center;
+
+			min-width: 0;
+			height: 100%;
+			padding: 0 var(--g-token-space-3);
+			border: 0;
+			border-radius: var(--g-token-radius-md);
+
+			font: inherit;
+			font-size: var(--g-token-font-size-sm);
+			font-weight: var(--g-token-font-weight-medium);
+			line-height: var(--g-token-line-height-sm);
+			color: inherit;
+
+			background: transparent;
+
+			transition:
+				background-color var(--g-token-duration-hover)
+					var(--g-token-easing-standard),
+				color var(--g-token-duration-hover)
+					var(--g-token-easing-standard);
+
+			&:hover {
+				background: color-mix(in srgb, var(--g-color) 10%, transparent);
+			}
+
+			&:focus-visible {
+				outline: var(--g-token-state-focus-ring-width) solid
+					color-mix(in srgb, var(--g-color) 70%, transparent);
+				outline-offset: 2px;
+			}
+		}
+
+		&__label {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		&__prepend,
+		&__append {
+			display: inline-flex;
+			flex: 0 0 auto;
+			align-items: center;
+			color: currentcolor;
+		}
+
+		&__append {
+			transition: transform var(--g-token-duration-base)
+				var(--g-token-easing-standard);
+		}
+
+		&__dropdown {
+			min-width: 220px;
+		}
+
+		&_selected {
+			color: var(--g-color);
+		}
+
+		&_open &__append {
+			transform: rotate(180deg);
+		}
+
+		&_disabled {
+			pointer-events: none;
+			opacity: var(--g-token-opacity-disabled);
+		}
+	}
+</style>

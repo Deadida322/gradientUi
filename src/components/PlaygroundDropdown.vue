@@ -3,8 +3,10 @@
 	import GText from './ui/GText/GText.vue';
 	import GButton from './ui/GButton/GButton.vue';
 	import GDropdown from './ui/GDropdown/GDropdown.vue';
+	import GDropdownGroup from './ui/GDropdownGroup/GDropdownGroup.vue';
 	import GDropdownSelect from './ui/GDropdownSelect/GDropdownSelect.vue';
 	import GMenu from './ui/GMenu/GMenu.vue';
+	import GMenuItem from './ui/GMenuItem/GMenuItem.vue';
 
 	type MenuItem = {
 		label: string;
@@ -37,6 +39,7 @@
 	const multipleValue = ref<string[]>([]);
 	const usersValue = ref<User[]>([]);
 	const nestedDropdown = ref({});
+	const groupedDropdownValue = ref('color');
 	const users: User[] = [
 		{ id: 1, fullName: 'Alice Johnson', email: 'alice@test.dev' },
 		{ id: 2, fullName: 'Bob Wilson', email: 'bob@test.dev' },
@@ -51,13 +54,13 @@
 
 		return `Selected: ${multipleValue.value.join(', ')}`;
 	});
-	const usersLabel = computed(() => {
-		if (!usersValue.value.length) {
-			return 'Select users (returnObject)';
-		}
+	const groupedDropdownLabel = computed(
+		() => `Grouped: ${groupedDropdownValue.value}`
+	);
 
-		return `Selected: ${usersValue.value.map((user) => user.fullName).join(', ')}`;
-	});
+	function selectGroupedDropdown(value: string) {
+		groupedDropdownValue.value = value;
+	}
 </script>
 
 <template>
@@ -86,6 +89,74 @@
 				@select="nestedDropdown = $event"></g-menu>
 		</g-dropdown>
 		{{ nestedDropdown }}
+	</div>
+
+	<g-text
+		type="h-5"
+		label="Dropdown groups">
+	</g-text>
+
+	<div class="col">
+		<g-dropdown close-on-content-click>
+			<template #activator="{ activatorAttrs, activatorRef }">
+				<g-button
+					:ref="activatorRef"
+					v-bind="activatorAttrs"
+					variant="tonal"
+					color="teal40"
+					:label="groupedDropdownLabel">
+				</g-button>
+			</template>
+
+			<div class="grouped-dropdown-demo">
+				<g-dropdown-group label="Theme">
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'color'"
+						@click="selectGroupedDropdown('color')">
+						Color
+					</g-menu-item>
+				</g-dropdown-group>
+
+				<g-dropdown-group label="Layout">
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'grid'"
+						@click="selectGroupedDropdown('grid')">
+						Grid
+					</g-menu-item>
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'spacing'"
+						@click="selectGroupedDropdown('spacing')">
+						Spacing
+					</g-menu-item>
+				</g-dropdown-group>
+
+				<g-dropdown-group label="Components">
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'button'"
+						@click="selectGroupedDropdown('button')">
+						Button
+					</g-menu-item>
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'alert'"
+						@click="selectGroupedDropdown('alert')">
+						Alert
+					</g-menu-item>
+					<g-menu-item
+						color="teal40"
+						:selected="groupedDropdownValue === 'loading'"
+						@click="selectGroupedDropdown('loading')">
+						Loading
+					</g-menu-item>
+				</g-dropdown-group>
+			</div>
+		</g-dropdown>
+
+		<div class="value-line">grouped: {{ groupedDropdownValue }}</div>
 	</div>
 
 	<g-text
@@ -169,5 +240,10 @@
 	.value-line {
 		font-size: 14px;
 		color: rgba(var(--g-theme-on-surface), 0.75);
+	}
+
+	.grouped-dropdown-demo {
+		min-width: 220px;
+		padding-block: var(--g-token-space-2);
 	}
 </style>
