@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { computed, toRef, watch } from 'vue';
+	import { computed, ref, toRef, watch } from 'vue';
 
 	import { makeFloatingProps } from '@/use/floating';
 	import { useFloatingLayer } from '@/use/floatingLayer';
@@ -18,6 +18,8 @@
 	}>();
 	const { open } = useControllableOpen(props, emit);
 	const { hasAppendTarget, appendTarget } = useAppendTarget(props.appendTo);
+	const leaving = ref(false);
+	const layerOpen = computed(() => open.value || leaving.value);
 
 	const { reference, floating, x, y, strategy, update } =
 		useFloatingLayer(props);
@@ -25,7 +27,7 @@
 	useDismiss({ open, reference, floating });
 
 	const { zIndex } = useLayerStack({
-		open,
+		open: layerOpen,
 		base: props.zIndexBase,
 		kind: 'floating'
 	});
@@ -48,6 +50,18 @@
 			reference.value = props.reference;
 			update();
 		}
+	}
+
+	function onBeforeLeave() {
+		leaving.value = true;
+	}
+
+	function onAfterLeave() {
+		leaving.value = false;
+	}
+
+	function onLeaveCancelled() {
+		leaving.value = false;
 	}
 
 	watch(
@@ -75,7 +89,10 @@
 		:to="appendTarget">
 		<g-transition
 			:transition="props.transition"
-			name="scale">
+			name="scale"
+			@before-leave="onBeforeLeave"
+			@after-leave="onAfterLeave"
+			@leave-cancelled="onLeaveCancelled">
 			<div
 				v-show="open"
 				ref="floating"
@@ -87,7 +104,10 @@
 	<g-transition
 		v-else
 		:transition="props.transition"
-		name="scale">
+		name="scale"
+		@before-leave="onBeforeLeave"
+		@after-leave="onAfterLeave"
+		@leave-cancelled="onLeaveCancelled">
 		<div
 			v-show="open"
 			ref="floating"

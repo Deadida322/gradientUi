@@ -1,22 +1,42 @@
 export { default as GText } from '@/components/ui/GText/GText.vue';
 export {
+	GTabs,
+	GTabList,
+	GTab,
+	GTabPanels,
+	GTabPanel
+} from '@/components/ui/GTabs';
+export {
 	GTransition,
 	GTransitionGroup,
 	GExpandTransition
 } from '@/components/transitions';
 export { default as GGradient } from '@/components/ui/GGradient/GGradient.vue';
 export { default as GButton } from '@/components/ui/GButton/GButton.vue';
+export { default as GChip } from '@/components/ui/GChip/GChip.vue';
 export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
 export { default as GCheckboxGroup } from '@/components/ui/GCheckboxGroup/GCheckboxGroup.vue';
 export { default as GSquircle } from '@/components/ui/GSquircle/GSquircle.vue';
 export { default as GFAB } from '@/components/ui/GFAB/GFAB.vue';
-export { default as GFABGroup } from '@/components/ui/GFABGroup/GFABGroup.vue';
+export { GQuickActions } from '@/components/ui/GQuickActions';
 export { default as GProgress } from '@/components/ui/GProgress/GProgress.vue';
+export { default as GLoading } from '@/components/ui/GLoading/GLoading.vue';
+export { useLoading } from '@/services/useLoading';
+export {
+	vGradientIcon,
+	vGradientText,
+	vLoading,
+	vRipple,
+	vTooltip
+} from '@/directives';
 export { default as GRadio } from '@/components/ui/GRadio/GRadio.vue';
 export { default as GAlert } from '@/components/ui/GAlert/GAlert.vue';
 export { GModal } from '@/components/ui/GModal';
+export { GDrawer } from '@/components/ui/GDrawer';
 export { default as GExpansion } from '@/components/ui/GExpansion/GExpansion.vue';
 export { default as GExpansionGroup } from '@/components/ui/GExpansionGroup/GExpansionGroup.vue';
+export { default as GTooltip } from '@/components/ui/GTooltip/GTooltip.vue';
+export { GMenu } from '@/components/ui/GMenu';
 export { default as GDropdownGroup } from '@/components/ui/GDropdownGroup';
 export { BaseOverlay } from '@/components/ui/BaseOverlay';
 export {

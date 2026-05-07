@@ -37,30 +37,23 @@
 
 	const modalStyle = computed(() => ({
 		width: props.fullscreen
-			? 'min(100% - 32px, 100%)'
+			? 'calc(100vw - (var(--g-modal-fullscreen-inset) * 2))'
 			: toUnit(props.width),
 		maxWidth: props.fullscreen
-			? 'calc(100vw - 32px)'
+			? 'calc(100vw - (var(--g-modal-fullscreen-inset) * 2))'
 			: toUnit(props.maxWidth),
-		height: props.fullscreen ? 'calc(100% - 32px)' : undefined,
-		maxHeight: props.fullscreen ? 'calc(100vh - 32px)' : 'min(88vh, 960px)'
+		height: props.fullscreen
+			? 'calc(100vh - (var(--g-modal-fullscreen-inset) * 2))'
+			: undefined,
+		maxHeight: props.fullscreen
+			? 'calc(100vh - (var(--g-modal-fullscreen-inset) * 2))'
+			: 'min(88vh, 960px)'
 	}));
 </script>
 
 <template>
 	<base-overlay
-		:model-value="props.modelValue"
-		:default-open="props.defaultOpen"
-		:append-to="props.appendTo"
-		:z-index-base="props.zIndexBase"
-		:position="props.position"
-		:placement="props.fullscreen ? 'fullscreen' : props.placement"
-		:persistent="props.persistent"
-		:close-on-esc="props.closeOnEsc"
-		:close-on-outside="props.closeOnOutside"
-		:lock-scroll="props.lockScroll"
-		:scrim="props.scrim"
-		:disabled="props.disabled"
+		v-bind="props"
 		@update:model-value="emit('update:modelValue', $event)">
 		<template #default="{ close, dismiss }">
 			<section
@@ -107,7 +100,7 @@
 						size="s"
 						variant="text"
 						color="blue-grey-40"
-						prepend="close"
+						icon-button="close"
 						class="g-modal__close"
 						aria-label="Close modal"
 						@click="dismiss" />
@@ -141,12 +134,17 @@
 
 <style scoped lang="scss">
 	@use '@/styles/mixins/overlay-surface' as overlaySurface;
+	@use '@/styles/mixins/scrollbar' as scrollbar;
 
 	.g-modal {
+		--g-modal-fullscreen-inset: var(--g-token-space-4);
+		--g-token-overlay-padding: var(--g-token-space-5);
+
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 
+		box-sizing: border-box;
 		border-radius: calc(var(--g-token-overlay-radius) + 10px);
 
 		color: var(--g-token-color-on-surface);
@@ -199,7 +197,10 @@
 
 		&_scrollable &__body {
 			overflow: auto;
+			overscroll-behavior: contain;
 			padding-right: 2px;
+
+			@include scrollbar.tonal-scrollbar;
 		}
 
 		&__footer {

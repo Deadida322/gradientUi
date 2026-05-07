@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { ref } from 'vue';
+	import { computed, ref } from 'vue';
 	import { BaseFloating } from '../BaseFloating';
 	import { makeTooltipProps } from './types';
 	import { useTriggerFactory } from '@/use/floatingTrigger';
@@ -7,6 +7,9 @@
 	const props = defineProps(makeTooltipProps());
 
 	const open = ref(false);
+	const tooltipTransition = computed(
+		() => props.transition ?? { name: 'scale-only', scale: 0.96 }
+	);
 
 	const { triggerAttrs, floatingAttrs } = useTriggerFactory(open, {
 		hover: {
@@ -30,7 +33,8 @@
 <template>
 	<base-floating
 		v-bind="props"
-		v-model:model-value="open">
+		v-model:model-value="open"
+		:transition="tooltipTransition">
 		<template
 			v-if="$slots.default"
 			#reference="{ ref: baseRef }">

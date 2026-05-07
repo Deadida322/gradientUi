@@ -14,7 +14,7 @@
 			opacity: undefined,
 			blur: undefined,
 			progressView: 'glow',
-			transition: 'scale',
+			transition: () => ({ name: 'fade', duration: 220 }),
 			onClose: undefined
 		})
 	);
@@ -125,11 +125,8 @@
 		backdrop-filter: blur(var(--g-loading-overlay-blur, 4px));
 
 		&_dark {
-			color: rgb(var(--g-theme-surface));
-			background: rgb(
-				var(--g-theme-on-surface) /
-					var(--g-loading-overlay-opacity, 0.64)
-			);
+			color: var(--g-token-color-surface);
+			background: rgb(12 12 16 / var(--g-loading-overlay-opacity, 0.72));
 		}
 
 		&__body {

@@ -1,0 +1,40 @@
+@mixin tonal-scrollbar(
+	$width: 4px,
+	$color: var(--g-color, var(--g-token-color-primary)),
+	$tone: 18%,
+	$hover-tone: 28%
+) {
+	scrollbar-color: color-mix(
+			in srgb,
+			#{$color} #{$tone},
+			var(--g-token-color-surface)
+		)
+		transparent;
+	scrollbar-width: thin;
+
+	&::-webkit-scrollbar {
+		width: $width;
+		height: $width;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: var(--g-token-radius-pill);
+		background: color-mix(
+			in srgb,
+			#{$color} #{$tone},
+			var(--g-token-color-surface)
+		);
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		background: color-mix(
+			in srgb,
+			#{$color} #{$hover-tone},
+			var(--g-token-color-surface)
+		);
+	}
+}

@@ -12,6 +12,7 @@
 	import PlaygroundTextarea from './PlaygroundTextarea.vue';
 	import PlaygroundSelect from './PlaygroundSelect.vue';
 	import PlaygroundDesignSystem from './PlaygroundDesignSystem.vue';
+	import PlaygroundTabs from './PlaygroundTabs.vue';
 </script>
 
 <template>
@@ -21,6 +22,7 @@
 		<playground-tooltip></playground-tooltip>
 		<playground-dropdown></playground-dropdown>
 		<playground-navigation></playground-navigation>
+		<playground-tabs></playground-tabs>
 		<playground-modal></playground-modal>
 		<playground-chip></playground-chip>
 		<playground-expansion></playground-expansion>

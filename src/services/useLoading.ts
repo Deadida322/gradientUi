@@ -3,6 +3,7 @@ import {
 	createApp,
 	type App,
 	ref,
+	shallowRef,
 	onUnmounted,
 	type ComponentPublicInstance
 } from 'vue';
@@ -18,7 +19,7 @@ interface LoadingInstance {
 }
 
 export function useLoading() {
-	const currentInstance = ref<LoadingInstance | null>(null);
+	const currentInstance = shallowRef<LoadingInstance | null>(null);
 	const visible = ref(false);
 	const show = (
 		options: Partial<

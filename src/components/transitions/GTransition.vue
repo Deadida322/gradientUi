@@ -10,6 +10,7 @@
 		makeGTransitionProps,
 		resolveTransitionName,
 		resolveTransitionOptions,
+		toTransitionDurationMs,
 		toTransitionCssDuration,
 		toTransitionCssSize,
 		useReducedMotion,
@@ -60,6 +61,29 @@
 	const transitionCss = computed(
 		() => !isDisabled.value && resolvedTransition.value.css !== false
 	);
+	const overlayTintLeaveDelay = 80;
+	const explicitDuration = computed(() => {
+		if (!isOverlayTransition.value || isDisabled.value) return undefined;
+
+		const transition = resolvedTransition.value;
+
+		return {
+			enter: toTransitionDurationMs(
+				transition.enterDuration ?? transition.duration,
+				220
+			),
+			leave:
+				toTransitionDurationMs(
+					transition.leaveDuration ?? transition.duration,
+					180
+				) + overlayTintLeaveDelay
+		};
+	});
+	const isOverlayTransition = computed(
+		() =>
+			resolvedTransition.value.name === 'overlay' ||
+			resolvedName.value === 'g-overlay-transition'
+	);
 	const defaultTransition = computed<GTransitionOptions>(() => ({
 		name: props.name,
 		appear: props.appear,
@@ -73,6 +97,7 @@
 		leaveEasing: props.leaveEasing,
 		distance: props.distance,
 		scale: props.scale,
+		opacity: props.opacity,
 		leaveAbsolute: props.leaveAbsolute,
 		hideOnLeave: props.hideOnLeave,
 		css: props.css
@@ -96,7 +121,9 @@
 			'--g-transition-scale':
 				transition.scale === undefined
 					? undefined
-					: String(transition.scale)
+					: String(transition.scale),
+			'--g-transition-opacity-from':
+				transition.opacity === false ? '1' : undefined
 		};
 	});
 
@@ -211,6 +238,7 @@
 		:name="resolvedName"
 		:css="transitionCss"
 		:appear="resolvedTransition.appear"
+		:duration="explicitDuration"
 		:mode="transitionMode"
 		:tag="props.group ? props.tag : undefined"
 		@before-enter="onBeforeEnter"

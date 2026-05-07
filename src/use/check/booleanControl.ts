@@ -29,6 +29,9 @@ export function useCheckBooleanControl(
 			rules: computed(() => props.rules),
 			message: computed(() => props.message)
 		});
+	const validationState = computed(() =>
+		$v.value.$errors.modelValue?.length ? 'error' : props.state
+	);
 
 	const controlProps = computed(() => ({
 		...props,
@@ -36,7 +39,8 @@ export function useCheckBooleanControl(
 		inputType: 'checkbox' as const,
 		message: computedMessage.value,
 		checked: modelValue.value,
-		focused: focused.value
+		focused: focused.value,
+		state: validationState.value
 	}));
 
 	const indicatorProps = computed(() => ({

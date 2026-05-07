@@ -34,6 +34,7 @@
 - Keep changes scoped to the requested behavior. Do not rewrite unrelated files or refactor broadly unless asked.
 - Use propsFactory to make default component props
 - Use strong TS-types
+- Use arrow functions
 
 ## Styling
 
@@ -73,3 +74,8 @@
 - Never revert or overwrite unrelated user changes.
 - Before editing files, inspect the relevant current code and work with it.
 - Avoid destructive git commands unless the user explicitly requests them.
+
+## References
+
+* Architecture reference is vuetify and shadcn/vue
+* Design reference is material you, gradients, Vuesax/alpha

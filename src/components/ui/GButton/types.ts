@@ -1,4 +1,5 @@
 import type { MdiIcon, Sizes } from '@/types/CommonTypes';
+import type { RippleBindingValue } from '@/directives';
 import { makeActionSurfaceProps } from '@/use/actionSurface';
 import { makeGradientProps } from '@/use/gradient';
 import { makePLAProps } from '@/use/PLA';
@@ -22,6 +23,7 @@ export interface GButtonProps {
 	activeState?: GGradienStates;
 	activeVariant?: GButtonVariants;
 	isIconButton?: boolean;
+	ripple?: RippleBindingValue;
 }
 
 export type GButtonVariants =
@@ -36,5 +38,9 @@ export const makeButtonProps = propsFactory({
 	...makePLAProps(),
 	...makeGradientProps(),
 	isIconButton: Boolean as PropType<boolean>,
-	iconButton: String as PropType<MdiIcon>
+	iconButton: String as PropType<MdiIcon>,
+	ripple: {
+		type: [Boolean, String, Object] as PropType<RippleBindingValue>,
+		default: true
+	}
 });

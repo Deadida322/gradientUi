@@ -30,6 +30,22 @@ type LoadingElement = HTMLElement & {
 	__gLoading__?: LoadingState;
 };
 
+function getExposedVisibility(
+	component?: ComponentPublicInstance<typeof GLoading>
+) {
+	const exposedVisibility = component?.isVisible;
+
+	if (
+		typeof exposedVisibility === 'object' &&
+		exposedVisibility !== null &&
+		'value' in exposedVisibility
+	) {
+		return Boolean(exposedVisibility.value);
+	}
+
+	return Boolean(exposedVisibility);
+}
+
 const DEFAULT_OPTIONS: LoadingOptions = {
 	active: false,
 	text: 'Loading...',
@@ -130,7 +146,7 @@ function show(el: LoadingElement, options: LoadingOptions) {
 		blur: options.blur,
 		progressView: options.progressView,
 		onClose: () => {
-			if (state.component?.isVisible) return;
+			if (getExposedVisibility(state.component)) return;
 			destroy(el);
 		}
 	});

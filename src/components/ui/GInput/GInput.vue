@@ -32,17 +32,7 @@
 		handleClear
 	} = useTextFieldControl({
 		id,
-		props: {
-			label: props.label,
-			color: props.color,
-			state: props.state,
-			disabled: props.disabled,
-			clearable: props.clearable,
-			size: props.size,
-			message: props.message,
-			prependIcon: props.prependIcon,
-			appendIcon: props.appendIcon
-		},
+		props,
 		modelValue,
 		rules: toRef(props, 'rules'),
 		message: toRef(props, 'message'),

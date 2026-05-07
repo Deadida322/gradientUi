@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
@@ -16,6 +17,17 @@
 	);
 
 	const computedBorderRadius = usePx(props.borderRadius);
+	const computedRipple = computed(() => {
+		if (props.disabled || props.ripple === false) return false;
+		if (typeof props.ripple === 'object') {
+			return {
+				...props.ripple,
+				disabled: props.ripple.disabled || props.disabled
+			};
+		}
+
+		return props.ripple;
+	});
 	const {
 		actionSurfaceClasses,
 		resolvedColor,
@@ -37,7 +49,7 @@
 			state: resolvedState
 		}">
 		<div
-			v-ripple
+			v-ripple="computedRipple"
 			class="g-button"
 			:class="[
 				actionSurfaceClasses,

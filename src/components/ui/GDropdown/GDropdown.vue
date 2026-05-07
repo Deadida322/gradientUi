@@ -88,11 +88,21 @@
 
 <style scoped lang="scss">
 	@use '@/styles/mixins/overlay-surface' as overlaySurface;
+	@use '@/styles/mixins/scrollbar' as scrollbar;
 
 	.g-dropdown {
 		pointer-events: auto;
+
+		overflow: hidden auto;
+		overscroll-behavior: contain;
+
 		min-width: fit-content;
+		max-height: min(
+			var(--g-dropdown-max-height, 640px),
+			calc(100vh - var(--g-navbar-height, 56px) - var(--g-token-space-5))
+		);
 
 		@include overlaySurface.overlay-surface;
+		@include scrollbar.tonal-scrollbar;
 	}
 </style>

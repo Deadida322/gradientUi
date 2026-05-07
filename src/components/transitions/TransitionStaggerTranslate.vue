@@ -1,38 +1,98 @@
-<script setup>
+<script setup lang="ts">
 	import { useAttrs } from 'vue';
 	import gsap from 'gsap';
 
 	const attrs = useAttrs();
-	function onBeforeEnter(el) {
-		gsap.from(el, {
-			opacity: 0,
-			height: 0,
-			duration: 0.2
-		});
-	}
+	const leaveCounts = new WeakMap<HTMLElement, number>();
 
-	function onEnter(el, done) {
+	const getIndex = (el: Element) =>
+		Number((el as HTMLElement).dataset.index ?? 0);
+	const getDelay = (el: Element) => getIndex(el) * 0.055;
+	const lockParent = (el: Element) => {
+		const parent = el.parentElement;
+
+		if (!parent) return undefined;
+
+		if (!leaveCounts.has(parent)) {
+			gsap.set(parent, {
+				width: parent.offsetWidth,
+				height: parent.offsetHeight
+			});
+			leaveCounts.set(parent, 0);
+		}
+
+		leaveCounts.set(parent, (leaveCounts.get(parent) ?? 0) + 1);
+
+		return parent;
+	};
+	const releaseParent = (parent?: HTMLElement) => {
+		if (!parent) return;
+
+		const nextCount = (leaveCounts.get(parent) ?? 1) - 1;
+
+		if (nextCount > 0) {
+			leaveCounts.set(parent, nextCount);
+			return;
+		}
+
+		leaveCounts.delete(parent);
+		gsap.set(parent, {
+			clearProps: 'width,height'
+		});
+	};
+	const lockPosition = (el: Element) => {
+		const element = el as HTMLElement;
+		const { offsetHeight, offsetLeft, offsetTop, offsetWidth } = element;
+
+		gsap.set(element, {
+			position: 'absolute',
+			top: offsetTop,
+			left: offsetLeft,
+			width: offsetWidth,
+			height: offsetHeight
+		});
+	};
+
+	const onBeforeEnter = (el: Element) => {
+		gsap.killTweensOf(el);
+		gsap.set(el, {
+			opacity: 0,
+			y: 10,
+			scale: 0.96,
+			transformOrigin: '100% 100%'
+		});
+	};
+
+	const onEnter = (el: Element, done: () => void) => {
 		gsap.to(el, {
 			opacity: 1,
-			height: 'auto',
+			y: 0,
+			scale: 1,
 			onComplete: done,
-			rotation: 0,
-			duration: 0.2,
-			delay: el.dataset.index * 0.1,
-			ease: 'ease-in-out.out'
+			duration: 0.24,
+			delay: getDelay(el),
+			ease: 'power2.out'
 		});
-	}
+	};
 
-	function onLeave(el, done) {
+	const onLeave = (el: Element, done: () => void) => {
+		const parent = lockParent(el);
+
+		gsap.killTweensOf(el);
+		lockPosition(el);
 		gsap.to(el, {
 			opacity: 0,
-			height: 0,
-			duration: 0.2,
-			onComplete: done,
-			delay: el.dataset.index * 0.1,
-			ease: 'ease-in-out.in'
+			y: 10,
+			scale: 0.96,
+			duration: 0.24,
+			onComplete: () => {
+				releaseParent(parent);
+				done();
+			},
+			delay: getDelay(el),
+			ease: 'power2.out'
 		});
-	}
+	};
 </script>
 
 <template>

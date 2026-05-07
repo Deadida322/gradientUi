@@ -1,27 +1,85 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import DocsLayout from '@/docs/DocsLayout.vue';
+import DocsGetStarted from '@/docs/views/DocsGetStarted.vue';
 
 const routes = [
 	{
 		path: '/',
-		name: 'home',
-		component: HomeView
+		redirect: '/docs/get-started'
+	},
+	{
+		path: '/docs',
+		component: DocsLayout,
+		children: [
+			{
+				path: '',
+				redirect: '/docs/get-started'
+			},
+			{
+				path: 'get-started',
+				name: 'docs-get-started',
+				component: DocsGetStarted
+			},
+			{
+				path: 'base-conception',
+				redirect: '/docs/core-conceptions'
+			},
+			{
+				path: 'core-conceptions',
+				name: 'docs-core-conceptions',
+				component: () => import('@/docs/views/DocsCoreConceptions.vue')
+			},
+			{
+				path: 'design-tokens',
+				name: 'docs-design-tokens',
+				component: () => import('@/docs/views/DocsDesignTokens.vue')
+			},
+			{
+				path: 'components',
+				name: 'docs-components',
+				component: () => import('@/docs/views/DocsComponents.vue')
+			},
+			{
+				path: 'forms',
+				name: 'docs-forms',
+				component: () => import('@/docs/views/DocsForms.vue')
+			},
+			{
+				path: 'directives',
+				name: 'docs-directives',
+				component: () => import('@/docs/views/DocsDirectives.vue')
+			},
+			{
+				path: 'css-helpers',
+				name: 'docs-css-helpers',
+				component: () => import('@/docs/views/DocsCssHelpers.vue')
+			},
+			{
+				path: 'components/:componentId',
+				name: 'docs-component-detail',
+				component: () => import('@/docs/views/DocsComponentDetail.vue')
+			}
+		]
+	},
+	{
+		path: '/playground',
+		name: 'playground',
+		component: () => import('../views/HomeView.vue')
 	},
 	{
 		path: '/about',
 		name: 'about',
-
-		component: function () {
-			return import('../views/AboutView.vue');
-		}
+		component: () => import('../views/AboutView.vue')
 	},
 	{
 		path: '/validation',
 		name: 'validation',
-
-		component: function () {
-			return import('../views/ValidationView.vue');
-		}
+		component: () => import('../views/ValidationView.vue')
+	},
+	{
+		path: '/:pathMatch(.*)*',
+		name: 'docs-not-found',
+		component: () => import('@/docs/views/DocsNotFound.vue')
 	}
 ];
 

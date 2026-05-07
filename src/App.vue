@@ -4,23 +4,11 @@
 
 <style>
 	#app {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
+		min-height: 100vh;
+
+		font-family: var(--g-token-font-family-base);
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		color: rgb(44 62 80);
-		text-align: center;
-	}
-
-	nav {
-		padding: 30px;
-	}
-
-	nav a {
-		font-weight: bold;
-		color: rgb(44 62 80);
-	}
-
-	nav a.router-link-exact-active {
-		color: rgb(66 185 131);
+		color: var(--g-token-color-on-surface);
 	}
 </style>

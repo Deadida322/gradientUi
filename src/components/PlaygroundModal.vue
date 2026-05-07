@@ -39,8 +39,8 @@
 			<template #default>
 				<div class="modal-playground__body">
 					<p>
-						This is the first working `GModal` built on top of the new
-						`BaseOverlay`.
+						This is the first working `GModal` built on top of the
+						new `BaseOverlay`.
 					</p>
 					<p>
 						The surface uses overlay tokens, supports scrim, outside
@@ -71,8 +71,8 @@
 			<template #default="{ close }">
 				<div class="modal-playground__body">
 					<p>
-						Use `close()` for explicit programmatic dismissal even when
-						the modal is persistent.
+						Use `close()` for explicit programmatic dismissal even
+						when the modal is persistent.
 					</p>
 					<g-button
 						label="Close explicitly"

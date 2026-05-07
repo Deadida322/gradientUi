@@ -4,6 +4,7 @@ import { propsFactory } from '@/utils/propsFactory';
 export type GTransitionPreset =
 	| 'fade'
 	| 'scale'
+	| 'scale-only'
 	| 'slide-x'
 	| 'slide-x-reverse'
 	| 'slide-y'
@@ -28,6 +29,7 @@ export interface GTransitionOptions {
 	leaveEasing?: string;
 	distance?: number | string;
 	scale?: number | string;
+	opacity?: boolean;
 	leaveAbsolute?: boolean;
 	hideOnLeave?: boolean;
 	css?: boolean;
@@ -42,6 +44,7 @@ export type GTransitionValue =
 export const transitionPresetNames: Record<GTransitionPreset, string> = {
 	fade: 'g-fade-transition',
 	scale: 'g-scale-transition',
+	'scale-only': 'g-scale-only-transition',
 	'slide-x': 'g-slide-x-transition',
 	'slide-x-reverse': 'g-slide-x-reverse-transition',
 	'slide-y': 'g-slide-y-transition',
@@ -79,6 +82,10 @@ export const makeGTransitionProps = propsFactory(
 		leaveEasing: String,
 		distance: [Number, String],
 		scale: [Number, String],
+		opacity: {
+			type: Boolean as PropType<boolean | undefined>,
+			default: undefined
+		},
 		leaveAbsolute: Boolean,
 		hideOnLeave: Boolean,
 		css: {
@@ -105,6 +112,27 @@ export function toTransitionCssDuration(value: number | string | undefined) {
 	if (value === undefined || value === '') return undefined;
 
 	return typeof value === 'number' ? `${value}ms` : value;
+}
+
+export function toTransitionDurationMs(
+	value: number | string | undefined,
+	fallback: number
+) {
+	if (value === undefined || value === '') return fallback;
+	if (typeof value === 'number') return value;
+
+	const normalizedValue = value.trim();
+
+	if (normalizedValue.endsWith('ms')) {
+		return Number.parseFloat(normalizedValue);
+	}
+
+	if (normalizedValue.endsWith('s')) {
+		return Number.parseFloat(normalizedValue) * 1000;
+	}
+
+	const parsed = Number.parseFloat(normalizedValue);
+	return Number.isNaN(parsed) ? fallback : parsed;
 }
 
 export function resolveTransitionOptions(

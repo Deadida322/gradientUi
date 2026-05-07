@@ -3,6 +3,7 @@
 	import { makeProgressProps } from './types';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useSurfaceLayers } from '@/use/surface';
+	import usePx from '@/use/px';
 
 	const props = defineProps(makeProgressProps({ color: 'primary' }));
 	const { gradientStyles } = useSurfaceColor(props);
@@ -13,7 +14,7 @@
 	const normalizedValue = computed(() =>
 		Math.min(100, Math.max(0, props.modelValue))
 	);
-	const computedWidth = computed(() => `${width.value}px`);
+	const computedWidth = usePx(width);
 	const segmentCount = computed(() =>
 		Math.max(2, Math.round(props.segments))
 	);

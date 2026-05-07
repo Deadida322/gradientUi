@@ -28,6 +28,9 @@
 	const localValue = ref<T | undefined>(props.defaultValue as T | undefined);
 	const hidden = ref(false);
 	const lastScrollY = ref(0);
+	const scrollThreshold = 8;
+	const topRevealOffset = 16;
+	let scrollRaf = 0;
 	const registry = new Map<T | undefined, Set<HTMLElement>>();
 	const indicator = ref({
 		left: 0,
@@ -162,14 +165,34 @@
 		};
 	}
 
-	function onScroll() {
-		if (!props.hideOnScroll) return;
+	function updateScrollState() {
+		scrollRaf = 0;
 
-		const currentY = window.scrollY;
+		if (!props.hideOnScroll) {
+			hidden.value = false;
+			lastScrollY.value = Math.max(0, window.scrollY);
+			return;
+		}
+
+		const currentY = Math.max(0, window.scrollY);
 		const delta = currentY - lastScrollY.value;
 
-		hidden.value = currentY > 24 && delta > 3;
-		lastScrollY.value = Math.max(0, currentY);
+		if (currentY <= topRevealOffset) {
+			hidden.value = false;
+			lastScrollY.value = currentY;
+			return;
+		}
+
+		if (Math.abs(delta) >= scrollThreshold) {
+			hidden.value = delta > 0;
+			lastScrollY.value = currentY;
+		}
+	}
+
+	function onScroll() {
+		if (scrollRaf) return;
+
+		scrollRaf = window.requestAnimationFrame(updateScrollState);
 	}
 
 	provideNavbar({
@@ -198,6 +221,10 @@
 	});
 
 	onBeforeUnmount(() => {
+		if (scrollRaf) {
+			window.cancelAnimationFrame(scrollRaf);
+		}
+
 		window.removeEventListener('resize', queueIndicatorRefresh);
 		window.removeEventListener('scroll', onScroll);
 	});
