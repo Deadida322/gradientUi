@@ -42,9 +42,7 @@ export interface GNavbarItemSlots<T = NavbarValue> {
 	append?: (props: GNavbarItemSlotProps<T>) => unknown;
 }
 
-export interface GNavbarGroupSlots<
-	T = NavbarValue
-> extends GNavbarItemSlots<T> {
+export interface GNavbarMenuSlots<T = NavbarValue> extends GNavbarItemSlots<T> {
 	dropdown?: (props: GNavbarItemSlotProps<T>) => unknown;
 }
 
@@ -105,7 +103,7 @@ export const makeNavbarItemProps = propsFactory({
 	exact: Boolean
 });
 
-export const makeNavbarGroupProps = propsFactory({
+export const makeNavbarMenuProps = propsFactory({
 	...makeNavbarItemProps(),
 	closeOnSelect: {
 		type: Boolean,
@@ -133,8 +131,8 @@ export type GNavbarProps = ExtractPropTypes<ReturnType<typeof makeNavbarProps>>;
 export type GNavbarItemProps = ExtractPropTypes<
 	ReturnType<typeof makeNavbarItemProps>
 >;
-export type GNavbarGroupProps = ExtractPropTypes<
-	ReturnType<typeof makeNavbarGroupProps>
+export type GNavbarMenuProps = ExtractPropTypes<
+	ReturnType<typeof makeNavbarMenuProps>
 >;
 export type GNavbarSubItemProps = ExtractPropTypes<
 	ReturnType<typeof makeNavbarSubItemProps>

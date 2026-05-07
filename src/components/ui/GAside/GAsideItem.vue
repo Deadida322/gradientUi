@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T extends AsideValue = AsideValue">
 	import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
+	import { RouterLink } from 'vue-router';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useAsideInject } from './context';
@@ -42,23 +43,32 @@
 		isSelected,
 		select
 	}));
+	const isRouterLink = computed(() => Boolean(props.to) && !props.disabled);
 	const isLink = computed(() => Boolean(props.href) && !props.disabled);
-	const actionTag = computed(() => (isLink.value ? 'a' : 'button'));
+	const actionTag = computed(() => {
+		if (isRouterLink.value) return RouterLink;
+
+		return isLink.value ? 'a' : 'button';
+	});
 	const actionAttrs = computed(() =>
-		isLink.value
+		isRouterLink.value
 			? {
-					href: props.href,
-					target: props.target,
-					rel:
-						props.rel ??
-						(props.target === '_blank'
-							? 'noopener noreferrer'
-							: undefined)
+					to: props.to
 				}
-			: {
-					type: 'button',
-					disabled: props.disabled
-				}
+			: isLink.value
+				? {
+						href: props.href,
+						target: props.target,
+						rel:
+							props.rel ??
+							(props.target === '_blank'
+								? 'noopener noreferrer'
+								: undefined)
+					}
+				: {
+						type: 'button',
+						disabled: props.disabled
+					}
 	);
 
 	function isSelected(value: T | undefined) {

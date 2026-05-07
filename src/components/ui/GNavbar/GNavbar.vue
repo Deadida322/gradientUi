@@ -31,6 +31,8 @@
 	const scrollThreshold = 8;
 	const topRevealOffset = 16;
 	let scrollRaf = 0;
+	let indicatorRaf = 0;
+	let resizeObserver: ResizeObserver | undefined;
 	const registry = new Map<T | undefined, Set<HTMLElement>>();
 	const indicator = ref({
 		left: 0,
@@ -97,6 +99,7 @@
 		const bucket = registry.get(value) ?? new Set<HTMLElement>();
 		bucket.add(el);
 		registry.set(value, bucket);
+		resizeObserver?.observe(el);
 		queueIndicatorRefresh();
 	}
 
@@ -106,6 +109,7 @@
 		if (!bucket) return;
 
 		bucket.delete(el);
+		resizeObserver?.unobserve(el);
 
 		if (!bucket.size) {
 			registry.delete(value);
@@ -117,6 +121,7 @@
 	function unregisterElement(el: HTMLElement) {
 		for (const [value, bucket] of registry) {
 			bucket.delete(el);
+			resizeObserver?.unobserve(el);
 
 			if (!bucket.size) {
 				registry.delete(value);
@@ -135,7 +140,16 @@
 	}
 
 	function queueIndicatorRefresh() {
-		void nextTick(refreshIndicator);
+		void nextTick(() => {
+			if (indicatorRaf) {
+				window.cancelAnimationFrame(indicatorRaf);
+			}
+
+			indicatorRaf = window.requestAnimationFrame(() => {
+				indicatorRaf = 0;
+				refreshIndicator();
+			});
+		});
 	}
 
 	function refreshIndicator() {
@@ -215,7 +229,21 @@
 
 	onMounted(() => {
 		lastScrollY.value = window.scrollY;
+		resizeObserver = new ResizeObserver(queueIndicatorRefresh);
+		if (itemsRef.value) {
+			resizeObserver.observe(itemsRef.value);
+		}
+
+		for (const bucket of registry.values()) {
+			for (const item of bucket) {
+				resizeObserver.observe(item);
+			}
+		}
+
 		queueIndicatorRefresh();
+		window.setTimeout(queueIndicatorRefresh, 60);
+		window.setTimeout(queueIndicatorRefresh, 240);
+		void document.fonts?.ready.then(queueIndicatorRefresh);
 		window.addEventListener('resize', queueIndicatorRefresh);
 		window.addEventListener('scroll', onScroll, { passive: true });
 	});
@@ -224,6 +252,11 @@
 		if (scrollRaf) {
 			window.cancelAnimationFrame(scrollRaf);
 		}
+		if (indicatorRaf) {
+			window.cancelAnimationFrame(indicatorRaf);
+		}
+
+		resizeObserver?.disconnect();
 
 		window.removeEventListener('resize', queueIndicatorRefresh);
 		window.removeEventListener('scroll', onScroll);
@@ -341,6 +374,10 @@
 			&::-webkit-scrollbar {
 				display: none;
 			}
+		}
+
+		&__append {
+			margin-left: auto;
 		}
 
 		&__indicator {

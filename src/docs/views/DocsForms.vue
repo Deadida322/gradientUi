@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import DocsCode from '@/docs/components/DocsCode.vue';
+	import DocsPropsTable from '@/docs/components/DocsPropsTable.vue';
+	import type { DocsPropRow } from '@/docs/types';
 
 	const scriptClose = '<' + '/script>';
 
@@ -63,6 +65,51 @@
 		}
 	];
 
+	const validationApiRows: DocsPropRow[] = [
+		{
+			name: 'useValidation',
+			type: '(state, rules, name?) => ValidationResult',
+			defaultValue: '-',
+			description:
+				'Creates validation state for a reactive object. Optional name registers it for access through useNamedValidation.'
+		},
+		{
+			name: '$validate',
+			type: '() => Promise<boolean>',
+			defaultValue: '-',
+			description:
+				'Touches fields, runs async rules and returns whether the current validation tree is valid.'
+		},
+		{
+			name: '$message',
+			type: 'Record<field, string>',
+			defaultValue: '{}',
+			description:
+				'First visible error message per touched field. Bind it to Gradient UI message props.'
+		},
+		{
+			name: '$errors',
+			type: 'Record<field, string[]>',
+			defaultValue: '{}',
+			description:
+				'Visible errors for touched fields. Use it to derive error visual state.'
+		},
+		{
+			name: '$pending',
+			type: 'boolean',
+			defaultValue: 'false',
+			description:
+				'True while async rules are running, including nested validation children.'
+		},
+		{
+			name: '$setExternalErrors',
+			type: '(errors) => void',
+			defaultValue: '-',
+			description:
+				'Adds server-side errors to the same message and error pipeline as local rules.'
+		}
+	];
+
 	const installCode = `npm install gradient-ui gib-validate`;
 
 	const validationCode = `
@@ -85,16 +132,16 @@
 		]
 	});
 
-	const emailRules = computed(() => [
-		() => v$.value.$errors.email?.[0] || true
-	]);
-	const passwordRules = computed(() => [
-		() => v$.value.$errors.password?.[0] || true
-	]);
+	const emailState = computed(() =>
+		v$.value.$errors.email ? 'error' : undefined
+	);
+	const passwordState = computed(() =>
+		v$.value.$errors.password ? 'error' : undefined
+	);
 
-	function submit() {
-		v$.value.$touch();
-		if (v$.value.$errors.email || v$.value.$errors.password) return;
+	async function submit() {
+		const valid = await v$.value.$validate();
+		if (!valid) return;
 		// send form
 	}
 ${scriptClose}
@@ -104,12 +151,14 @@ ${scriptClose}
 		<g-input
 			v-model="form.email"
 			label="Email"
-			:rules="emailRules" />
+			:message="v$.$message.email"
+			:state="emailState" />
 		<g-input
 			v-model="form.password"
 			type="password"
 			label="Password"
-			:rules="passwordRules" />
+			:message="v$.$message.password"
+			:state="passwordState" />
 		<g-textarea
 			v-model="form.bio"
 			label="Bio"
@@ -117,6 +166,7 @@ ${scriptClose}
 		<g-button
 			type="submit"
 			label="Create account"
+			:disabled="v$.$pending"
 			variant="filled" />
 	</form>
 </template>`;
@@ -135,6 +185,47 @@ ${scriptClose}
 	<g-input
 		label="Name"
 		:rules="nameRules" />
+</template>`;
+
+	const serverErrorsCode = `
+<script setup lang="ts">
+	import { reactive } from 'vue';
+	import { required, useValidation } from 'gib-validate';
+
+	const form = reactive({
+		email: ''
+	});
+
+	const v$ = useValidation(form, {
+		email: [required('Email is required')]
+	});
+
+	async function submit() {
+		v$.value.$clearExternalErrors();
+
+		const valid = await v$.value.$validate();
+		if (!valid) return;
+
+		try {
+			// send form to your API
+			await createAccount(form);
+		} catch {
+			v$.value.$setExternalErrors({
+				email: ['This email is already registered']
+			});
+			v$.value.$touchField('email');
+		}
+	}
+${scriptClose}
+
+<template>
+	<form @submit.prevent="submit">
+		<g-input
+			v-model="form.email"
+			label="Email"
+			:message="v$.$message.email"
+			:state="v$.$errors.email ? 'error' : undefined" />
+	</form>
 </template>`;
 </script>
 
@@ -202,9 +293,9 @@ ${scriptClose}
 			<h2>Validation</h2>
 			<p>
 				Validation is designed around <code>gib-validate</code>, a small
-				Vue 3 validation package. Install it next to Gradient UI and
-				pass rules into form components through the
-				<code>rules</code> prop.
+				Vue 3 validation package. Install it next to Gradient UI and use
+				it as the canonical state for form submit, async rules, touched
+				fields and server errors.
 			</p>
 			<docs-code
 				:code="installCode"
@@ -212,12 +303,14 @@ ${scriptClose}
 				title="Install" />
 
 			<div class="docs-forms__callout">
-				<strong>Public direction</strong>
+				<strong>Validation package</strong>
 				<p>
-					Gradient UI currently has an internal validation helper with
-					the same mental model, but documentation and future examples
-					should point to <code>gib-validate</code>. The internal
-					helper is implementation detail and can be removed later.
+					Gradient UI uses the same rule contract as
+					<code>gib-validate</code>: return <code>true</code> for a
+					valid value or a string message for an invalid one. Use
+					component <code>rules</code> for compact field-level checks,
+					and <code>useValidation</code> when a form needs submit
+					validation, named validation or nested sections.
 				</p>
 			</div>
 		</section>
@@ -239,18 +332,50 @@ ${scriptClose}
 
 		<section class="docs-page__section">
 			<span
+				id="validation-api"
+				class="docs-page__anchor"></span>
+			<h2>Validation API</h2>
+			<p>
+				<code>gib-validate</code> exposes a Vuelidate-like state object
+				with explicit submit validation, async pending state, nested
+				children and external errors for backend responses.
+			</p>
+			<docs-props-table
+				:rows="validationApiRows"
+				name-label="API"
+				default-label="Default" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
 				id="form-example"
 				class="docs-page__anchor"></span>
 			<h2>Form example</h2>
 			<p>
 				For complete forms, keep the canonical validation state in
-				<code>gib-validate</code>, then map visible field errors into
-				component rules. This keeps submit validation, touched state and
-				field messages in one place.
+				<code>gib-validate</code>, then bind <code>$message</code> and
+				<code>$errors</code> to Gradient UI fields. This keeps submit
+				validation, touched state and field messages in one place.
 			</p>
 			<docs-code
 				:code="validationCode"
 				title="AccountForm.vue" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
+				id="server-errors"
+				class="docs-page__anchor"></span>
+			<h2>Server errors</h2>
+			<p>
+				Use <code>$setExternalErrors</code> when the backend rejects a
+				valid-looking form. External errors flow through the same
+				<code>$message</code> and <code>$errors</code> bindings as local
+				rules, so fields do not need a separate error API.
+			</p>
+			<docs-code
+				:code="serverErrorsCode"
+				title="Server errors" />
 		</section>
 	</article>
 </template>

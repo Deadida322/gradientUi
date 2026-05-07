@@ -209,6 +209,14 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		to: '/docs/components/alert'
 	},
 	{
+		id: 'snackbar',
+		title: 'GSnackbar',
+		group: 'feedback',
+		description:
+			'Short-lived feedback surface with optional action and service API.',
+		to: '/docs/components/snackbar'
+	},
+	{
 		id: 'progress',
 		title: 'GProgress',
 		group: 'feedback',
@@ -577,6 +585,28 @@ export const componentApiEmits: Record<string, DocsPropRow[]> = {
 			type: '() => void',
 			description: 'Emitted after the leave transition completes.'
 		}
+	],
+	snackbar: [
+		{
+			name: 'update:modelValue',
+			type: '(value: boolean) => void',
+			description: 'Emitted when controlled open state changes.'
+		},
+		{
+			name: 'action',
+			type: '(value: unknown) => void',
+			description: 'Emitted when the snackbar action is clicked.'
+		},
+		{
+			name: 'close',
+			type: "(reason: 'manual' | 'timeout' | 'action' | 'dismiss') => void",
+			description: 'Emitted when the snackbar starts closing.'
+		},
+		{
+			name: 'after-close',
+			type: "(reason: 'manual' | 'timeout' | 'action' | 'dismiss') => void",
+			description: 'Emitted after the leave transition completes.'
+		}
 	]
 };
 
@@ -592,6 +622,28 @@ export const componentApiCssVariables: Record<string, DocsPropRow[]> = {
 		}
 	],
 	alert: surfaceCssVariables,
+	snackbar: [
+		...surfaceCssVariables,
+		{
+			name: '--g-snackbar-offset',
+			type: 'CSS length',
+			defaultValue: '24px',
+			description:
+				'Distance from the viewport or positioned container edge.'
+		},
+		{
+			name: '--g-snackbar-max-width',
+			type: 'CSS length',
+			defaultValue: '520px',
+			description: 'Maximum snackbar width before text wraps.'
+		},
+		{
+			name: '--g-snackbar-z-index',
+			type: 'number',
+			defaultValue: '2600',
+			description: 'Stacking level for fixed and service snackbars.'
+		}
+	],
 	expansion: [
 		...surfaceCssVariables,
 		{
@@ -1615,6 +1667,25 @@ export const componentApi: DocsComponentApi[] = [
 				type: 'boolean',
 				defaultValue: 'false',
 				description: 'Shows the clear action when the field has value.'
+			},
+			{
+				name: 'mask',
+				type: 'string | string[]',
+				description:
+					'Input mask pattern. Built-in tokens are # for digits, S for letters, X for alphanumeric, A for uppercase letters and a for lowercase letters.'
+			},
+			{
+				name: 'maskTokens',
+				type: 'Record<string, GMaskToken>',
+				description:
+					'Extends or overrides mask tokens with custom RegExp patterns and optional transforms.'
+			},
+			{
+				name: 'returnMaskedValue',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Controls v-model output. True returns the visible masked value, false returns the unmasked value.'
 			},
 			{
 				name: 'rules',
@@ -3058,6 +3129,150 @@ export const componentApi: DocsComponentApi[] = [
 		icon="check-circle-outline"
 		title="Saved"
 		text="Your changes were synced." />
+</template>`
+			}
+		]
+	},
+	{
+		id: 'snackbar',
+		title: 'GSnackbar',
+		group: 'feedback',
+		description:
+			'Short-lived feedback surface for confirmations, undo flows, background status and lightweight errors.',
+		props: [
+			{
+				name: 'modelValue',
+				type: 'boolean',
+				description: 'Controlled open state used by v-model.'
+			},
+			{
+				name: 'defaultOpen',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Initial open state for uncontrolled usage.'
+			},
+			{
+				name: 'title',
+				type: 'string',
+				description: 'Optional title rendered above the message.'
+			},
+			{
+				name: 'text',
+				type: 'string',
+				description:
+					'Message rendered when the default slot is not provided.'
+			},
+			{
+				name: 'icon',
+				type: 'MdiIcon',
+				description: 'Icon rendered in the prepend area.'
+			},
+			{
+				name: 'variant',
+				type: "'filled' | 'tonal' | 'outlined'",
+				defaultValue: "'tonal'",
+				description: 'Visual emphasis of the snackbar surface.'
+			},
+			{
+				name: 'color',
+				type: 'string',
+				defaultValue: "'primary'",
+				description: 'Theme color or custom color seed.'
+			},
+			{
+				name: 'state',
+				type: "'warning' | 'success' | 'error'",
+				description:
+					'Semantic state that switches the snackbar surface color.'
+			},
+			{
+				name: 'location',
+				type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+				defaultValue: "'bottom-center'",
+				description:
+					'Screen or container position used by fixed and absolute snackbars.'
+			},
+			{
+				name: 'position',
+				type: "'static' | 'absolute' | 'fixed'",
+				defaultValue: "'fixed'",
+				description:
+					'Positioning mode. Use static for inline docs/examples and fixed for app-level feedback.'
+			},
+			{
+				name: 'timeout',
+				type: 'number',
+				defaultValue: '5000',
+				description:
+					'Auto-dismiss delay in milliseconds. Set 0 or persistent to keep it open.'
+			},
+			{
+				name: 'persistent',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Disables auto-dismiss timeout.'
+			},
+			{
+				name: 'closeable',
+				type: 'boolean',
+				defaultValue: 'true',
+				description: 'Shows a dismiss button.'
+			},
+			{
+				name: 'action',
+				type: 'GSnackbarAction',
+				description:
+					'Action object with label, value and optional closeOnClick override.'
+			},
+			{
+				name: 'actionText',
+				type: 'string',
+				description: 'Shortcut label for a simple action button.'
+			},
+			{
+				name: 'multiline',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Aligns content for longer messages with title or custom slots.'
+			}
+		],
+		slots: [
+			{
+				name: 'default',
+				type: 'slot',
+				scope: '-',
+				description: 'Message body content.'
+			},
+			{
+				name: 'title',
+				type: 'slot',
+				scope: '-',
+				description: 'Custom title content.'
+			},
+			{
+				name: 'prepend',
+				type: 'slot',
+				scope: '-',
+				description: 'Custom leading content, usually an icon.'
+			},
+			{
+				name: 'action',
+				type: 'slot',
+				scope: '{ close }',
+				description: 'Custom action area.'
+			}
+		],
+		examples: [
+			{
+				id: 'snackbar-basic',
+				label: 'Basic',
+				code: `
+<template>
+	<g-snackbar
+		default-open
+		text="Project saved"
+		action-text="Undo" />
 </template>`
 			}
 		]

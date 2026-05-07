@@ -3,6 +3,7 @@ import type { GColor } from '@/use/color';
 import { makeColorProps } from '@/use/color';
 import { makeDisabledProps } from '@/use/disabled';
 import { propsFactory } from '@/utils/propsFactory';
+import type { RouteLocationRaw } from 'vue-router';
 import type { ExtractPropTypes, PropType } from 'vue';
 
 export type AsideValue =
@@ -124,6 +125,7 @@ export const makeAsideItemProps = propsFactory({
 		>,
 		default: undefined
 	},
+	to: [String, Object] as PropType<RouteLocationRaw>,
 	href: String,
 	target: String,
 	rel: String,

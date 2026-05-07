@@ -1,7 +1,7 @@
 import type { PLASlots } from '@/types/CommonTypes';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
-import type { ValidationRule } from '@/use/validation';
+import type { ValidationRule } from 'gib-validate';
 import type { GColor } from '@/use/color';
 import type { GGradienStates } from '../GGradient/types';
 import type {

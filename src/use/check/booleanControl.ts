@@ -49,7 +49,7 @@ export function useCheckBooleanControl(
 		disabled: props.disabled,
 		size: props.size,
 		color: props.color,
-		state: props.state,
+		state: validationState.value,
 		view: props.indicatorView
 	}));
 

@@ -76,7 +76,7 @@
 							{{ label }}
 						</template>
 						<g-icon
-							v-else
+							v-else-if="iconButton"
 							:icon="iconButton">
 						</g-icon>
 					</slot>

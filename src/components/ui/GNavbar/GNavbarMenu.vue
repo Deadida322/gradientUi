@@ -5,34 +5,35 @@
 		onBeforeUnmount,
 		onMounted,
 		ref,
-		watch
+		watch,
+		type ComponentPublicInstance
 	} from 'vue';
 	import GDropdown from '@/components/ui/GDropdown/GDropdown.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
-	import { provideNavbarGroup } from './groupContext';
+	import { provideNavbarMenu } from './menuContext';
 	import { useNavbarInject } from './context';
 	import {
-		makeNavbarGroupProps,
-		type GNavbarGroupSlots,
+		makeNavbarMenuProps,
 		type GNavbarItemSlotProps,
+		type GNavbarMenuSlots,
 		type NavbarValue
 	} from './types';
 
-	const props = defineProps(makeNavbarGroupProps());
-	const slots = defineSlots<GNavbarGroupSlots<T>>();
+	const props = defineProps(makeNavbarMenuProps());
+	const slots = defineSlots<GNavbarMenuSlots<T>>();
 	const emit = defineEmits<{
 		click: [event: MouseEvent];
 	}>();
 
 	const navbar = useNavbarInject<T>();
-	const rootRef = ref<HTMLElement | null>(null);
+	const actionRef = ref<HTMLElement | null>(null);
 	const dropdownOpen = ref(false);
 	const ownedValues = new Set<T | undefined>();
 	const selected = computed(() =>
 		navbar
 			? navbar.isSelected(props.value as T | undefined) ||
-				navbar.isElementSelected(rootRef.value)
+				navbar.isElementSelected(actionRef.value)
 			: false
 	);
 	const resolvedColor = computed(
@@ -59,17 +60,17 @@
 	);
 
 	function registerOwnValue(value: T | undefined) {
-		if (!navbar || !rootRef.value || value === undefined) return;
+		if (!navbar || !actionRef.value || value === undefined) return;
 
 		ownedValues.add(value);
-		navbar.register(value, rootRef.value);
+		navbar.register(value, actionRef.value);
 	}
 
 	function unregisterOwnValue(value: T | undefined) {
-		if (!navbar || !rootRef.value || value === undefined) return;
+		if (!navbar || !actionRef.value || value === undefined) return;
 
 		ownedValues.delete(value);
-		navbar.unregister(value, rootRef.value);
+		navbar.unregister(value, actionRef.value);
 	}
 
 	function register() {
@@ -77,9 +78,9 @@
 	}
 
 	function unregister() {
-		if (!navbar || !rootRef.value) return;
+		if (!navbar || !actionRef.value) return;
 
-		navbar.unregisterElement(rootRef.value);
+		navbar.unregisterElement(actionRef.value);
 		ownedValues.clear();
 	}
 
@@ -116,7 +117,15 @@
 		emit('click', event);
 	}
 
-	provideNavbarGroup({
+	function setActionElement(
+		el: Element | ComponentPublicInstance | null,
+		setActivatorRef: (el: Element | ComponentPublicInstance | null) => void
+	) {
+		setActivatorRef(el);
+		actionRef.value = el instanceof HTMLElement ? el : null;
+	}
+
+	provideNavbarMenu({
 		registerValue: registerOwnValue,
 		unregisterValue: unregisterOwnValue,
 		select,
@@ -139,12 +148,11 @@
 
 <template>
 	<li
-		ref="rootRef"
-		class="g-navbar-group"
+		class="g-navbar-menu"
 		:class="{
-			'g-navbar-group_selected': selected,
-			'g-navbar-group_disabled': props.disabled,
-			'g-navbar-group_open': dropdownOpen
+			'g-navbar-menu_selected': selected,
+			'g-navbar-menu_disabled': props.disabled,
+			'g-navbar-menu_open': dropdownOpen
 		}"
 		:style="itemStyles"
 		role="none">
@@ -159,9 +167,9 @@
 			placement="bottom-start">
 			<template #activator="{ activatorAttrs, activatorRef }">
 				<button
-					:ref="activatorRef"
+					:ref="(el) => setActionElement(el, activatorRef)"
 					v-ripple
-					class="g-navbar-group__action"
+					class="g-navbar-menu__action"
 					type="button"
 					role="menuitem"
 					:aria-current="selected ? 'page' : undefined"
@@ -172,7 +180,7 @@
 					@click="onClick">
 					<span
 						v-if="slots.prepend || props.prependIcon"
-						class="g-navbar-group__prepend">
+						class="g-navbar-menu__prepend">
 						<slot
 							name="prepend"
 							v-bind="slotProps">
@@ -180,11 +188,11 @@
 						</slot>
 					</span>
 
-					<span class="g-navbar-group__label">
+					<span class="g-navbar-menu__label">
 						<slot v-bind="slotProps">{{ props.label }}</slot>
 					</span>
 
-					<span class="g-navbar-group__append">
+					<span class="g-navbar-menu__append">
 						<slot
 							name="append"
 							v-bind="slotProps">
@@ -194,7 +202,7 @@
 				</button>
 			</template>
 
-			<div class="g-navbar-group__dropdown">
+			<div class="g-navbar-menu__dropdown">
 				<slot
 					name="dropdown"
 					v-bind="slotProps" />
@@ -204,7 +212,7 @@
 </template>
 
 <style scoped lang="scss">
-	.g-navbar-group {
+	.g-navbar-menu {
 		position: relative;
 
 		display: inline-flex;

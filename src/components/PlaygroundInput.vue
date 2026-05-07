@@ -2,7 +2,7 @@
 	import { ref } from 'vue';
 	import GText from './ui/GText/GText.vue';
 	import GInput from './ui/GInput/GInput.vue';
-	import { minLength, required } from '@/use/validation/rules';
+	import { minLength, required } from 'gib-validate';
 
 	const basicValue = ref('');
 	const passwordValue = ref('');

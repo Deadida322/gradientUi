@@ -1,9 +1,12 @@
-import { useValidation, type ValidationRule } from '@/use/validation';
+import {
+	useValidation,
+	type Validatable,
+	type ValidationRule
+} from 'gib-validate';
 import {
 	computed,
 	type ComputedRef,
 	type MaybeRefOrGetter,
-	reactive,
 	ref,
 	toValue
 } from 'vue';
@@ -17,33 +20,41 @@ export interface UseFormControlOptions<T> {
 export function useFormControl<T>(options: UseFormControlOptions<T>) {
 	const focused = ref(false);
 
-	const validatable = reactive({
-		modelValue: computed(() => toValue(options.modelValue))
-	});
+	const validationState = computed(() => ({
+		modelValue: toValue(options.modelValue) as Validatable
+	}));
 
-	const $v = useValidation<{ modelValue: T }>(validatable, {
+	const validationRules = computed(() => ({
 		modelValue: [
-			async (value) => {
+			async (value: Validatable) => {
 				const rules = toValue(options.rules) ?? [];
 
 				for (const rule of rules) {
-					const result = await rule(value);
+					const typedValue = value as T;
+					const result = await rule(typedValue, {
+						modelValue: typedValue
+					});
 					if (typeof result === 'string') return result;
 				}
 
 				return true;
 			}
 		]
-	});
+	}));
+
+	const $v = useValidation<{ modelValue: Validatable }>(
+		validationState,
+		validationRules
+	);
 
 	const computedMessage = computed(() => {
-		return (
-			$v.value.$errors.modelValue?.[0] ?? toValue(options.message) ?? ''
-		);
+		return $v.value.$message.modelValue ?? toValue(options.message) ?? '';
 	}) as ComputedRef<string>;
+	const hasValidationError = computed(() =>
+		Boolean($v.value.$errors.modelValue?.length)
+	);
 
 	function onFocus() {
-		$v.value.$reset();
 		focused.value = true;
 	}
 
@@ -56,6 +67,7 @@ export function useFormControl<T>(options: UseFormControlOptions<T>) {
 		focused,
 		$v,
 		computedMessage,
+		hasValidationError,
 		onFocus,
 		onBlur
 	};

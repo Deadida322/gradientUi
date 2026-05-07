@@ -226,17 +226,11 @@
 
 		&_left &__items {
 			align-items: flex-start;
-		}
-
-		&_right &__items {
-			align-items: flex-end;
-		}
-
-		&_left &__items {
 			padding-inline: 14px 0;
 		}
 
 		&_right &__items {
+			align-items: flex-end;
 			padding-inline: 0 14px;
 		}
 

@@ -1,0 +1,35 @@
+{
+	"extends": "./tsconfig.json",
+	"include": [
+		"src/index.ts",
+		"src/components/**/*.ts",
+		"src/components/**/*.vue",
+		"src/components/transitions/**/*.ts",
+		"src/components/transitions/**/*.vue",
+		"src/directives/**/*.ts",
+		"src/services/**/*.ts",
+		"src/theme/**/*.ts",
+		"src/types/**/*.ts",
+		"src/use/**/*.ts",
+		"src/utils/**/*.ts"
+	],
+	"exclude": [
+		"src/docs/**",
+		"src/views/**",
+		"src/components/Playground*.vue",
+		"src/App.vue",
+		"src/main.ts",
+		"src/router/**"
+	],
+	"compilerOptions": {
+		"composite": false,
+		"declaration": true,
+		"declarationDir": "dist/types",
+		"emitDeclarationOnly": true,
+		"noEmit": false,
+		"outDir": "dist/types",
+		"rootDir": "src",
+		"tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo"
+	},
+	"references": []
+}

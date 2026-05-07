@@ -517,6 +517,8 @@
 		&__fab-placement,
 		&__quick-actions-stage,
 		&__badge-stage,
+		&__snackbar-stage,
+		&__snackbar-row,
 		&__feedback-stack,
 		&__loading-stage,
 		&__loading-grid {
@@ -588,7 +590,8 @@
 		}
 
 		&__fab-placement,
-		&__quick-actions-stage {
+		&__quick-actions-stage,
+		&__snackbar-stage {
 			position: relative;
 			min-height: 260px;
 			background:
@@ -607,6 +610,20 @@
 
 		&__quick-actions-stage {
 			overflow: hidden;
+		}
+
+		&__snackbar-stage {
+			overflow: hidden;
+			min-height: 220px;
+
+			&_tall {
+				min-height: 360px;
+			}
+		}
+
+		&__snackbar-row {
+			display: flex;
+			justify-content: flex-start;
 		}
 
 		&__inline-demo {

@@ -4,6 +4,8 @@ import States from './states.vue';
 import statesCode from './states.vue?raw';
 import Validation from './validation.vue';
 import validationCode from './validation.vue?raw';
+import Mask from './mask.vue';
+import maskCode from './mask.vue?raw';
 import Slots from './slots.vue';
 import slotsCode from './slots.vue?raw';
 import type { DocsLiveExample } from '@/docs/types';
@@ -28,6 +30,12 @@ export const inputExamples: DocsLiveExample[] = [
 		label: 'Validation',
 		component: Validation,
 		code: toPublicExampleCode(validationCode)
+	},
+	{
+		id: 'mask',
+		label: 'Mask',
+		component: Mask,
+		code: toPublicExampleCode(maskCode)
 	},
 	{
 		id: 'slots',

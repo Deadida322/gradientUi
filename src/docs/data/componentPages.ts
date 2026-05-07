@@ -34,6 +34,10 @@ import {
 } from '@/docs/examples/quick-actions';
 import { radioExamples, radioUsageExample } from '@/docs/examples/radio';
 import { selectExamples, selectUsageExample } from '@/docs/examples/select';
+import {
+	snackbarExamples,
+	snackbarUsageExample
+} from '@/docs/examples/snackbar';
 import { switchExamples, switchUsageExample } from '@/docs/examples/switch';
 import {
 	textareaExamples,
@@ -189,7 +193,7 @@ export const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Input examples cover validation states, field rules and custom prepend, append and message slots.',
+				'Input examples cover validation states, field rules, masks and custom prepend, append and message slots.',
 			items: inputExamples
 		}
 	},
@@ -219,7 +223,7 @@ export const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Select examples cover multiple values, return-object models and item slots for richer option rows.',
+				'Select examples cover multiple values, return-object models, validation and item slots for richer option rows.',
 			items: selectExamples
 		}
 	},
@@ -356,6 +360,21 @@ export const componentPages: DocsComponentPage[] = [
 			description:
 				'Loading examples cover progress views, text visibility, opacity, blur, dark mode, transition options, the v-loading directive and the service pattern.',
 			items: loadingExamples
+		}
+	},
+	{
+		id: 'snackbar',
+		usage: {
+			title: 'Usage',
+			description:
+				'GSnackbar shows short-lived feedback above the current page. Use it for save confirmations, undo actions, background status and lightweight errors that do not need a modal.',
+			example: snackbarUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Snackbar examples cover variants, semantic states, locations, standalone component layering, transitions, app-level service usage and composed actions.',
+			items: snackbarExamples
 		}
 	}
 ];

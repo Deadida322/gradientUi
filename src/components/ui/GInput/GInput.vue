@@ -6,6 +6,7 @@
 	import { GInputEmits, makeInputProps, useInputControl } from '@/use/input';
 	import { useTextFieldComponent } from '@/use/form/textFieldComponent';
 	import { useTextFieldControl } from '@/use/form/textFieldControl';
+	import { useMask } from '@/use/mask';
 
 	defineOptions({
 		inheritAttrs: false
@@ -21,10 +22,16 @@
 		useInputControl({
 			type: toRef(props, 'type')
 		});
+	const mask = useMask({
+		mask: toRef(props, 'mask'),
+		tokens: toRef(props, 'maskTokens'),
+		returnMaskedValue: toRef(props, 'returnMaskedValue')
+	});
 
 	const {
 		$v,
 		fieldProps,
+		inputValue,
 		handleInput,
 		handleChange,
 		handleFocus,
@@ -37,6 +44,9 @@
 		rules: toRef(props, 'rules'),
 		message: toRef(props, 'message'),
 		multiline: false,
+		displayValue: () => mask.toDisplayValue(modelValue.value),
+		toModelValue: mask.toModelValue,
+		toDisplayValue: mask.toDisplayValue,
 		extraFieldProps: () => ({
 			type: computedType.value
 		}),
@@ -67,7 +77,7 @@
 			<input
 				v-bind="attrs"
 				:id="id"
-				:value="modelValue"
+				:value="inputValue"
 				:type="computedType"
 				:name="id"
 				:disabled="props.disabled"

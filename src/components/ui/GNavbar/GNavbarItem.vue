@@ -18,10 +18,11 @@
 
 	const navbar = useNavbarInject<T>();
 	const rootRef = ref<HTMLElement | null>(null);
+	const actionRef = ref<HTMLElement | null>(null);
 	const selected = computed(() =>
 		navbar
 			? navbar.isSelected(props.value as T | undefined) ||
-				navbar.isElementSelected(rootRef.value)
+				navbar.isElementSelected(actionRef.value)
 			: false
 	);
 	const resolvedColor = computed(
@@ -63,15 +64,15 @@
 	);
 
 	function register() {
-		if (!navbar || !rootRef.value) return;
+		if (!navbar || !actionRef.value) return;
 
-		navbar.register(props.value as T | undefined, rootRef.value);
+		navbar.register(props.value as T | undefined, actionRef.value);
 	}
 
 	function unregister() {
-		if (!navbar || !rootRef.value) return;
+		if (!navbar || !actionRef.value) return;
 
-		navbar.unregisterElement(rootRef.value);
+		navbar.unregisterElement(actionRef.value);
 	}
 
 	function refresh() {
@@ -107,8 +108,8 @@
 	watch(
 		() => props.value,
 		(_value, oldValue) => {
-			if (navbar && rootRef.value) {
-				navbar.unregister(oldValue as T | undefined, rootRef.value);
+			if (navbar && actionRef.value) {
+				navbar.unregister(oldValue as T | undefined, actionRef.value);
 			}
 
 			register();
@@ -130,6 +131,7 @@
 		role="none">
 		<component
 			:is="actionTag"
+			ref="actionRef"
 			v-ripple
 			class="g-navbar-item__action"
 			role="menuitem"

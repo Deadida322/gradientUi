@@ -7,8 +7,8 @@
 	import GAsideGroup from './ui/GAside/GAsideGroup.vue';
 	import GAsideItem from './ui/GAside/GAsideItem.vue';
 	import GNavbar from './ui/GNavbar/GNavbar.vue';
-	import GNavbarGroup from './ui/GNavbar/GNavbarGroup.vue';
 	import GNavbarItem from './ui/GNavbar/GNavbarItem.vue';
+	import GNavbarMenu from './ui/GNavbar/GNavbarMenu.vue';
 	import GNavbarSubItem from './ui/GNavbar/GNavbarSubItem.vue';
 	import GText from './ui/GText/GText.vue';
 
@@ -78,7 +78,7 @@
 				label="Overview"
 				prepend-icon="view-dashboard-outline" />
 
-			<g-navbar-group
+			<g-navbar-menu
 				value="products"
 				label="Products">
 				<template #dropdown>
@@ -117,7 +117,7 @@
 						</g-dropdown-group>
 					</div>
 				</template>
-			</g-navbar-group>
+			</g-navbar-menu>
 
 			<g-navbar-item
 				value="analytics"

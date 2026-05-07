@@ -3,6 +3,8 @@
 	import DocsPropsTable from '@/docs/components/DocsPropsTable.vue';
 	import type { DocsPropRow } from '@/docs/types';
 
+	const scriptCloseTag = '<' + '/script>';
+
 	const spacingCode = `<template>
 	<section class="d-grid gap-4 p-5 rounded-md elevation-1">
 		<header class="d-flex justify-between align-center gap-3">
@@ -23,6 +25,37 @@
 		<main class="flex-1">Results</main>
 	</div>
 </template>`;
+
+	const breakpointsCode = `<script setup lang="ts">
+	import { useBreakpoints } from 'gradient-ui';
+
+	const display = useBreakpoints();
+	const drawerAvailable = display.down('md');
+	const wideContent = display.up('lg');
+${scriptCloseTag}
+
+<template>
+	<g-button
+		v-if="drawerAvailable"
+		icon-button="menu"
+		aria-label="Open menu" />
+
+	<section :class="{ 'docs-shell_wide': wideContent }">
+		<slot />
+	</section>
+</template>`;
+
+	const customBreakpointsCode = `<script setup lang="ts">
+	import { useBreakpoints } from 'gradient-ui';
+
+	const display = useBreakpoints({
+		phone: 0,
+		tablet: 768,
+		desktop: 1200
+	});
+
+	const desktop = display.up('desktop');
+${scriptCloseTag}`;
 
 	const helperRows: DocsPropRow[] = [
 		{
@@ -79,6 +112,13 @@
 			defaultValue: '1-3',
 			description:
 				'Elevation helpers mapped to Gradient UI elevation tokens.'
+		},
+		{
+			name: 'useBreakpoints',
+			type: 'composable',
+			defaultValue: 'sm: 600, md: 900, lg: 1200, xl: 1536',
+			description:
+				'Reactive viewport helper for JS-driven responsive behavior: up, down, between, name, width and height.'
 		}
 	];
 </script>
@@ -200,6 +240,55 @@
 
 		<section class="docs-page__section">
 			<span
+				id="breakpoints"
+				class="docs-page__anchor"></span>
+			<h2>Breakpoints composable</h2>
+			<p>
+				CSS helpers are enough for most layout shifts, but some
+				interfaces need responsive logic in Vue: opening a drawer only
+				on mobile, hiding expensive content below desktop, or switching
+				component variants. Use <code>useBreakpoints</code> for that.
+			</p>
+
+			<div class="docs-css-helpers__breakpoint-grid">
+				<div class="docs-css-helpers__breakpoint-card">
+					<code>display.width</code>
+					<span>Current viewport width.</span>
+				</div>
+				<div class="docs-css-helpers__breakpoint-card">
+					<code>display.name</code>
+					<span>Current matched breakpoint name.</span>
+				</div>
+				<div class="docs-css-helpers__breakpoint-card">
+					<code>display.up('lg')</code>
+					<span>True at and above the target width.</span>
+				</div>
+				<div class="docs-css-helpers__breakpoint-card">
+					<code>display.down('md')</code>
+					<span>True at and below the target width.</span>
+				</div>
+				<div class="docs-css-helpers__breakpoint-card">
+					<code>display.between('sm', 'lg')</code>
+					<span>True inside a width range.</span>
+				</div>
+			</div>
+
+			<docs-code
+				:code="breakpointsCode"
+				title="Responsive component logic" />
+
+			<p>
+				Projects can pass their own map when the app uses product
+				breakpoints instead of Gradient UI defaults.
+			</p>
+
+			<docs-code
+				:code="customBreakpointsCode"
+				title="Custom breakpoint map" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
 				id="api"
 				class="docs-page__anchor"></span>
 			<h2>API</h2>
@@ -295,6 +384,29 @@
 
 			&_6 {
 				--docs-helper-space: var(--g-token-space-6);
+			}
+		}
+
+		&__breakpoint-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+			gap: var(--g-token-space-3);
+		}
+
+		&__breakpoint-card {
+			display: grid;
+			gap: var(--g-token-space-2);
+
+			padding: var(--g-token-space-4);
+			border: 1px solid var(--g-token-border-subtle);
+			border-radius: var(--g-token-radius-md);
+
+			background: rgba(var(--g-theme-surface), 0.72);
+
+			span {
+				font-size: var(--g-token-font-size-sm);
+				line-height: var(--g-token-line-height-md);
+				color: var(--g-token-text-soft);
 			}
 		}
 	}

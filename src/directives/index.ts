@@ -7,3 +7,5 @@ export type { LoadingBindingValue } from './loading';
 export { ripple as vRipple } from './ripple';
 export type { RippleBindingValue } from './ripple';
 export { vTooltip } from './tooltip';
+export { default as vMask } from './mask';
+export type { MaskBindingValue, MaskDirectiveOptions } from './mask';

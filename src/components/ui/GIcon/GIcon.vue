@@ -4,7 +4,7 @@
 	import { useIcon } from '@/use/icon';
 	const props = defineProps(makeIconProps());
 
-	const resolvedIcon = useIcon(() => props.icon!);
+	const resolvedIcon = useIcon(() => props.icon);
 	const iconSize = computed(() =>
 		props.size == null
 			? 'var(--g-token-icon-size-m)'
@@ -17,6 +17,7 @@
 <template>
 	<component
 		:is="resolvedIcon.component"
+		v-if="resolvedIcon.icon"
 		:icon="resolvedIcon.icon"
 		:tag="props.tag"
 		class="g-icon"

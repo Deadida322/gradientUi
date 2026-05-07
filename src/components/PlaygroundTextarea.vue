@@ -2,7 +2,7 @@
 	import { ref } from 'vue';
 	import GText from './ui/GText/GText.vue';
 	import GTextarea from './ui/GTextarea/GTextarea.vue';
-	import { minLength, required } from '@/use/validation/rules';
+	import { minLength, required } from 'gib-validate';
 
 	const basicValue = ref('Base textarea value');
 	const sizedS = ref('Small');

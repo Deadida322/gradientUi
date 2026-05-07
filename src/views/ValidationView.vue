@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 	import { reactive } from 'vue';
 	import { GInput, GButton } from '@/components';
-	import { useValidation } from '@/use/validation';
-	import { required } from '@/use/validation/rules';
+	import { required, useValidation } from 'gib-validate';
 	const value = defineModel<string>({ default: '2' });
 	const form = reactive({
 		value

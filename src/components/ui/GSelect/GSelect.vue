@@ -65,12 +65,18 @@
 	);
 	const { getSlotItem } = useSelectMenuSlot<T, V>(resolveMenuItem);
 
-	const { focused, $v, computedMessage, onFocus, onBlur } =
-		useFormControl<ModelValue>({
-			modelValue: computed(() => props.modelValue),
-			rules: computed(() => props.rules),
-			message: computed(() => props.message)
-		});
+	const {
+		focused,
+		$v,
+		computedMessage,
+		hasValidationError,
+		onFocus,
+		onBlur
+	} = useFormControl<ModelValue>({
+		modelValue: computed(() => props.modelValue),
+		rules: computed(() => props.rules),
+		message: computed(() => props.message)
+	});
 
 	function onSelect(item: Parameters<typeof handleSelect>[0]) {
 		handleSelect(item, () => {
@@ -99,7 +105,7 @@
 		id,
 		label: props.label,
 		color: props.color,
-		state: props.state,
+		state: hasValidationError.value ? 'error' : props.state,
 		disabled: props.disabled,
 		clearable: props.clearable,
 		size: props.size,

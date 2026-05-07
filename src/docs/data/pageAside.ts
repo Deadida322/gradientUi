@@ -36,13 +36,16 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Field model', href: '#field-model' },
 		{ label: 'Validation', href: '#validation' },
 		{ label: 'Rules', href: '#rules' },
-		{ label: 'Form example', href: '#form-example' }
+		{ label: 'Validation API', href: '#validation-api' },
+		{ label: 'Form example', href: '#form-example' },
+		{ label: 'Server errors', href: '#server-errors' }
 	],
 	'/docs/directives': [
 		{ label: 'When to use', href: '#when-to-use' },
 		{ label: 'Registration', href: '#registration' },
 		{ label: 'Loading', href: '#loading' },
 		{ label: 'Tooltip', href: '#tooltip' },
+		{ label: 'Mask', href: '#mask' },
 		{ label: 'Gradient text', href: '#gradient-text' },
 		{ label: 'Ripple', href: '#ripple' },
 		{ label: 'API', href: '#api' }
@@ -53,6 +56,7 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Spacing', href: '#spacing' },
 		{ label: 'Text and color', href: '#text-and-color' },
 		{ label: 'Responsive', href: '#responsive' },
+		{ label: 'Breakpoints', href: '#breakpoints' },
 		{ label: 'API', href: '#api' }
 	]
 };

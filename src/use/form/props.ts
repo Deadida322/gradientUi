@@ -1,6 +1,6 @@
 import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { MdiIcon } from '@/types/CommonTypes';
-import type { ValidationRule } from '@/use/validation';
+import type { ValidationRule } from 'gib-validate';
 import { makeColorProps } from '@/use/color';
 import { makeSizeProps } from '@/use/size';
 import { propsFactory } from '@/utils/propsFactory';

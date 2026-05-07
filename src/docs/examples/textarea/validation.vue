@@ -5,6 +5,7 @@
 
 	const notes = ref('');
 	const noteRules = [
+		(value: string) => Boolean(value.trim()) || 'Release note is required',
 		(value: string) => value.length <= 140 || 'Keep it under 140 characters'
 	];
 </script>

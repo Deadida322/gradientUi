@@ -67,11 +67,11 @@ export function useIcons() {
 	return inject(IconsSymbol, defaultIcons);
 }
 
-export function useIcon(icon: () => string) {
+export function useIcon(icon: () => string | null | undefined) {
 	const icons = useIcons();
 
 	return computed<ResolvedIcon>(() => {
-		let iconValue = icon();
+		let iconValue = icon() ?? '';
 
 		if (iconValue.startsWith('$')) {
 			const alias = iconValue.slice(1);

@@ -7,16 +7,25 @@
 		GButton,
 		GDrawer,
 		GNavbar,
-		GNavbarGroup,
-		GNavbarItem
+		GNavbarItem,
+		GNavbarMenu,
+		GNavGroup,
+		GNavItem,
+		GNavList,
+		useBreakpoints
 	} from '@/components';
-	import { componentApi } from '@/docs/data/componentApi';
+	import {
+		componentCatalog,
+		componentGroups
+	} from '@/docs/data/componentApi';
 	import { docsNavigation } from '@/docs/data/navigation';
 	import { docsPageAside } from '@/docs/data/pageAside';
 
 	const route = useRoute();
 	const router = useRouter();
 	const drawerOpen = ref(false);
+	const display = useBreakpoints();
+	const drawerAvailable = display.down(1024);
 	const navbarItems = computed(() =>
 		docsNavigation
 			.flatMap((group) => group.items)
@@ -26,6 +35,22 @@
 		route.path.startsWith('/docs/components')
 			? route.path
 			: '/docs/components'
+	);
+	const groupedComponentMenu = computed(() =>
+		componentGroups
+			.map((group) => ({
+				...group,
+				items: componentCatalog
+					.filter(
+						(component) =>
+							component.group === group.id && component.to
+					)
+					.map((component) => ({
+						...component,
+						to: component.to as string
+					}))
+			}))
+			.filter((group) => group.items.length)
 	);
 	const pageAsideItems = computed(() => docsPageAside[route.path] ?? []);
 	const resolvedPageAsideItems = computed(() => {
@@ -53,6 +78,8 @@
 	});
 
 	const openDrawer = () => {
+		if (!drawerAvailable.value) return;
+
 		drawerOpen.value = true;
 	};
 
@@ -66,6 +93,12 @@
 			drawerOpen.value = false;
 		}
 	);
+
+	watch(drawerAvailable, (available) => {
+		if (!available) {
+			drawerOpen.value = false;
+		}
+	});
 </script>
 
 <template>
@@ -92,7 +125,7 @@
 				:value="item.to"
 				@click="navigate(item.to)" />
 
-			<g-navbar-group
+			<g-navbar-menu
 				label="Components"
 				:value="componentsGroupValue"
 				@click="navigate('/docs/components')">
@@ -104,20 +137,27 @@
 							<span>Overview</span>
 							<small>Groups, anatomy and usage</small>
 						</router-link>
-						<router-link
-							v-for="component in componentApi"
-							:key="component.id"
-							class="docs-layout__components-link"
-							:to="`/docs/components/${component.id}`">
-							<span>{{ component.title }}</span>
-							<small>{{ component.description }}</small>
-						</router-link>
+						<section
+							v-for="group in groupedComponentMenu"
+							:key="group.id"
+							class="docs-layout__components-group">
+							<h2>{{ group.title }}</h2>
+							<router-link
+								v-for="component in group.items"
+								:key="component.id"
+								class="docs-layout__components-link"
+								:to="component.to">
+								<span>{{ component.title }}</span>
+								<small>{{ component.description }}</small>
+							</router-link>
+						</section>
 					</div>
 				</template>
-			</g-navbar-group>
+			</g-navbar-menu>
 
 			<template #append>
 				<g-button
+					v-if="drawerAvailable"
 					class="docs-layout__menu-button"
 					size="s"
 					variant="text"
@@ -128,6 +168,7 @@
 		</g-navbar>
 
 		<g-drawer
+			v-if="drawerAvailable"
 			v-model="drawerOpen"
 			class="docs-layout__drawer"
 			placement="left"
@@ -135,23 +176,46 @@
 			text="Documentation"
 			:width="320"
 			:hide-close="false">
-			<nav
-				class="docs-layout__nav docs-layout__nav_drawer"
+			<g-nav-list
+				class="docs-layout__drawer-menu"
+				:model-value="route.path"
+				placement="left"
+				align="start"
+				indicator="line"
+				surface="transparent"
+				:width="'100%'"
 				aria-label="Mobile documentation">
-				<section
+				<g-nav-group
 					v-for="group in docsNavigation"
 					:key="group.title"
-					class="docs-layout__nav-group">
-					<h2>{{ group.title }}</h2>
-					<router-link
+					:label="group.title">
+					<g-nav-item
 						v-for="item in group.items"
 						:key="item.to"
-						class="docs-layout__nav-link"
-						:to="item.to">
-						{{ item.label }}
-					</router-link>
-				</section>
-			</nav>
+						:label="item.label"
+						:value="item.to"
+						:to="item.to" />
+				</g-nav-group>
+
+				<g-nav-group label="Components">
+					<g-nav-item
+						label="Overview"
+						value="/docs/components"
+						to="/docs/components" />
+				</g-nav-group>
+
+				<g-nav-group
+					v-for="group in groupedComponentMenu"
+					:key="group.id"
+					:label="group.title">
+					<g-nav-item
+						v-for="component in group.items"
+						:key="component.id"
+						:label="component.title"
+						:value="component.to"
+						:to="component.to" />
+				</g-nav-group>
+			</g-nav-list>
 		</g-drawer>
 
 		<main class="docs-layout__main">
@@ -240,49 +304,10 @@
 			box-shadow: var(--g-token-elevation-2);
 		}
 
-		&__nav {
-			display: grid;
-			gap: var(--g-token-space-5);
-
-			&_drawer {
-				padding-top: var(--g-token-space-2);
-			}
-		}
-
-		&__nav-group {
-			display: grid;
-			gap: var(--g-token-space-1);
-
-			h2 {
-				margin: 0 0 var(--g-token-space-2);
-
-				font-size: var(--g-token-font-size-xs);
-				font-weight: var(--g-token-font-weight-bold);
-				color: var(--g-token-text-muted);
-				text-transform: uppercase;
-			}
-		}
-
-		&__nav-link {
-			padding: var(--g-token-space-2) var(--g-token-space-3);
-			border-radius: var(--g-token-radius-sm);
-
-			font-size: var(--g-token-font-size-sm);
-			font-weight: var(--g-token-font-weight-medium);
-			color: var(--g-token-text-soft);
-			text-decoration: none;
-
-			&:hover,
-			&.router-link-active {
-				color: var(--g-token-color-primary);
-				background: rgba(var(--g-theme-primary), 0.08);
-			}
-
-			&:focus-visible {
-				outline: var(--g-token-state-focus-ring-width) solid
-					var(--g-token-focus-ring);
-				outline-offset: 2px;
-			}
+		&__drawer-menu {
+			box-sizing: border-box;
+			width: 100%;
+			padding: var(--g-token-space-2) 0 0;
 		}
 
 		&__main {
@@ -323,16 +348,31 @@
 		}
 
 		&__menu-button {
-			display: inline-flex;
+			display: none;
 		}
 
 		&__components-menu {
 			display: grid;
-			gap: var(--g-token-space-1);
+			gap: var(--g-token-space-3);
 
 			width: min(320px, calc(100vw - var(--g-token-space-6)));
 			max-width: 100%;
 			padding: var(--g-token-space-2);
+		}
+
+		&__components-group {
+			display: grid;
+			gap: var(--g-token-space-1);
+
+			h2 {
+				margin: var(--g-token-space-1) var(--g-token-space-3);
+
+				font-size: var(--g-token-font-size-xs);
+				font-weight: var(--g-token-font-weight-bold);
+				line-height: var(--g-token-line-height-xs);
+				color: var(--g-token-text-muted);
+				text-transform: uppercase;
+			}
 		}
 
 		&__components-link {
@@ -522,7 +562,7 @@
 		}
 	}
 
-	@media (width <= 780px) {
+	@media (width <= 1024px) {
 		.docs-layout {
 			grid-template:
 				'navbar' auto
@@ -530,7 +570,7 @@
 				/ minmax(0, 1fr);
 
 			&__navbar {
-				:deep(.g-navbar__items) {
+				.g-navbar__items {
 					display: none;
 				}
 			}
@@ -545,6 +585,24 @@
 
 			&__page-aside {
 				display: none;
+			}
+		}
+	}
+
+	@media (width <= 560px) {
+		.docs-layout {
+			&__brand {
+				gap: var(--g-token-space-2);
+				font-size: var(--g-token-font-size-md);
+			}
+
+			&__brand-mark {
+				width: 24px;
+				height: 24px;
+			}
+
+			&__main {
+				padding: var(--g-token-space-3);
 			}
 		}
 	}

@@ -3,7 +3,7 @@
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useNavbarInject } from './context';
-	import { useNavbarGroupInject } from './groupContext';
+	import { useNavbarMenuInject } from './menuContext';
 	import {
 		makeNavbarSubItemProps,
 		type GNavbarItemSlotProps,
@@ -18,9 +18,9 @@
 	}>();
 
 	const navbar = useNavbarInject<T>();
-	const group = useNavbarGroupInject<T>();
+	const menu = useNavbarMenuInject<T>();
 	const selected = computed(() =>
-		group ? group.isSelected(props.value as T | undefined) : false
+		menu ? menu.isSelected(props.value as T | undefined) : false
 	);
 	const { colorStyles } = useSurfaceColor({
 		color: () =>
@@ -33,9 +33,9 @@
 		disabled: props.disabled,
 		value: props.value as T | undefined,
 		modelValue: navbar?.modelValue.value,
-		isSelected: (value) => group?.isSelected(value) ?? false,
-		select: (value, event) => group?.select(value, event),
-		closeDropdown: () => group?.select(undefined)
+		isSelected: (value) => menu?.isSelected(value) ?? false,
+		select: (value, event) => menu?.select(value, event),
+		closeDropdown: () => menu?.select(undefined)
 	}));
 	const isLink = computed(() => Boolean(props.href) && !props.disabled);
 	const actionTag = computed(() => (isLink.value ? 'a' : 'button'));
@@ -62,15 +62,15 @@
 			return;
 		}
 
-		group?.select(props.value as T | undefined, event);
+		menu?.select(props.value as T | undefined, event);
 	}
 
 	onMounted(() => {
-		group?.registerValue(props.value as T | undefined);
+		menu?.registerValue(props.value as T | undefined);
 	});
 
 	onBeforeUnmount(() => {
-		group?.unregisterValue(props.value as T | undefined);
+		menu?.unregisterValue(props.value as T | undefined);
 	});
 </script>
 

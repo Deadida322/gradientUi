@@ -22,10 +22,13 @@ export { GQuickActions } from '@/components/ui/GQuickActions';
 export { default as GProgress } from '@/components/ui/GProgress/GProgress.vue';
 export { default as GLoading } from '@/components/ui/GLoading/GLoading.vue';
 export { useLoading } from '@/services/useLoading';
+export { GSnackbar } from '@/components/ui/GSnackbar';
+export { useSnackbar } from '@/services/useSnackbar';
 export {
 	vGradientIcon,
 	vGradientText,
 	vLoading,
+	vMask,
 	vRipple,
 	vTooltip
 } from '@/directives';
@@ -42,13 +45,29 @@ export { BaseOverlay } from '@/components/ui/BaseOverlay';
 export {
 	GNavbar,
 	GNavbarItem,
-	GNavbarGroup,
+	GNavbarMenu,
 	GNavbarSubItem
 } from '@/components/ui/GNavbar';
+export { GNavGroup, GNavItem, GNavList } from '@/components/ui/GNavList';
 export { GAside, GAsideGroup, GAsideItem } from '@/components/ui/GAside';
 export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';
+export {
+	applyMask,
+	defaultMaskTokens,
+	unmaskValue,
+	useMask,
+	type GMaskToken,
+	type GMaskTokens,
+	type GMaskValue
+} from '@/use/mask';
+export { defaultBreakpoints, useBreakpoints } from '@/use/breakpoints';
+export type {
+	BreakpointMap,
+	BreakpointName,
+	BreakpointTarget
+} from '@/use/breakpoints';
 export { default as GTextarea } from '@/components/ui/GTextarea/GTextarea.vue';
 export { default as GSelect } from '@/components/ui/GSelect/GSelect.vue';
 export { default as GSwitch } from '@/components/ui/GSwitch/GSwitch.vue';

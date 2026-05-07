@@ -1,6 +1,6 @@
 import { computed, type MaybeRefOrGetter, type Ref, toValue } from 'vue';
 import { useFormControl } from './control';
-import type { ValidationRule } from '@/use/validation';
+import type { ValidationRule } from 'gib-validate';
 import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
@@ -34,11 +34,21 @@ export interface UseTextFieldControlOptions {
 	message: MaybeRefOrGetter<string | undefined>;
 	multiline: boolean;
 	extraFieldProps?: MaybeRefOrGetter<Record<string, unknown>>;
+	displayValue?: MaybeRefOrGetter<string | undefined>;
+	toModelValue?: (value: string) => string;
+	toDisplayValue?: (value: string) => string;
 	emitters: FieldEmitters;
 }
 
 export function useTextFieldControl(options: UseTextFieldControlOptions) {
-	const { focused, $v, computedMessage, onFocus, onBlur } = useFormControl({
+	const {
+		focused,
+		$v,
+		computedMessage,
+		hasValidationError,
+		onFocus,
+		onBlur
+	} = useFormControl({
 		modelValue: options.modelValue,
 		rules: options.rules,
 		message: options.message
@@ -49,22 +59,43 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 		id: options.id,
 		focused: focused.value,
 		message: computedMessage.value,
+		state: hasValidationError.value ? 'error' : options.props.state,
 		hasValue: Boolean(options.modelValue.value),
 		multiline: options.multiline,
 		...(toValue(options.extraFieldProps) ?? {})
 	}));
+	const inputValue = computed(
+		() => toValue(options.displayValue) ?? options.modelValue.value
+	);
+
+	function updateModelValue(value: string) {
+		const nextValue = options.toModelValue?.(value) ?? value;
+		options.modelValue.value = nextValue;
+
+		return nextValue;
+	}
+
+	function syncDisplayValue(event: Event, value: string) {
+		if (!options.toDisplayValue) return;
+
+		const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+		target.value = options.toDisplayValue(value);
+	}
 
 	function handleInput(event: Event) {
 		const value = (event.target as HTMLInputElement | HTMLTextAreaElement)
 			.value;
-		options.modelValue.value = value;
-		options.emitters.input(value, event);
+		const nextValue = updateModelValue(value);
+		syncDisplayValue(event, nextValue);
+		options.emitters.input(nextValue, event);
 	}
 
 	function handleChange(event: Event) {
 		const value = (event.target as HTMLInputElement | HTMLTextAreaElement)
 			.value;
-		options.emitters.change(value, event);
+		const nextValue = updateModelValue(value);
+		syncDisplayValue(event, nextValue);
+		options.emitters.change(nextValue, event);
 	}
 
 	function handleFocus(event: FocusEvent) {
@@ -85,6 +116,7 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 	return {
 		$v,
 		fieldProps,
+		inputValue,
 		handleInput,
 		handleChange,
 		handleFocus,

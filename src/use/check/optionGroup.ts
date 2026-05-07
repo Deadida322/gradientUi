@@ -32,12 +32,18 @@ export function useCheckOptionGroup<
 			`${options.namePrefix}-${Math.random().toString(36).slice(2, 10)}`
 	);
 
-	const { focused, $v, computedMessage, onFocus, onBlur } =
-		useFormControl<ModelValue>({
-			modelValue: computed(() => props.modelValue),
-			rules: computed(() => props.rules),
-			message: computed(() => props.message)
-		});
+	const {
+		focused,
+		$v,
+		computedMessage,
+		hasValidationError,
+		onFocus,
+		onBlur
+	} = useFormControl<ModelValue>({
+		modelValue: computed(() => props.modelValue),
+		rules: computed(() => props.rules),
+		message: computed(() => props.message)
+	});
 
 	const valueComparator = computed<
 		CheckValueComparator<ModelValue> | undefined
@@ -79,7 +85,7 @@ export function useCheckOptionGroup<
 		color: props.color,
 		disabled: props.disabled,
 		size: props.size,
-		state: props.state,
+		state: hasValidationError.value ? 'error' : props.state,
 		indicatorView: props.indicatorView,
 		vertical: props.vertical,
 		focused: focused.value

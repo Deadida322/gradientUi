@@ -7,7 +7,7 @@ import type {
 	SelectLabelKey,
 	SelectValueKey
 } from '@/use/select/types';
-import type { ValidationRule } from '@/use/validation';
+import type { ValidationRule } from 'gib-validate';
 import { makeColorProps, type GColor } from '@/use/color';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';

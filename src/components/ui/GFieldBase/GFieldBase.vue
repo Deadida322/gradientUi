@@ -312,7 +312,7 @@
 		}
 
 		&__helper {
-			z-index: -1;
+			z-index: 0;
 			transform: translateY(
 				calc(-100% - var(--g-token-field-helper-offset))
 			);
@@ -329,6 +329,7 @@
 				var(--g-token-easing-emphasized);
 
 			&_visible {
+				z-index: 1;
 				transform: translateY(
 					var(--g-token-field-helper-visible-translate-y)
 				);

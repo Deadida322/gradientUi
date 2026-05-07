@@ -12,6 +12,10 @@ import LoadingBoolean from './loading-boolean.vue';
 import loadingBooleanCode from './loading-boolean.vue?raw';
 import LoadingDark from './loading-dark.vue';
 import loadingDarkCode from './loading-dark.vue?raw';
+import Mask from './mask.vue';
+import maskCode from './mask.vue?raw';
+import MaskCustom from './mask-custom.vue';
+import maskCustomCode from './mask-custom.vue?raw';
 import Ripple from './ripple.vue';
 import rippleCode from './ripple.vue?raw';
 import RippleDisabled from './ripple-disabled.vue';
@@ -66,6 +70,21 @@ export const tooltipDirectiveExamples: DocsLiveExample[] = [
 		label: 'Focus',
 		component: TooltipFocus,
 		code: toPublicExampleCode(tooltipFocusCode)
+	}
+];
+
+export const maskDirectiveExamples: DocsLiveExample[] = [
+	{
+		id: 'mask-basic',
+		label: 'Basic',
+		component: Mask,
+		code: toPublicExampleCode(maskCode)
+	},
+	{
+		id: 'mask-custom',
+		label: 'Custom tokens',
+		component: MaskCustom,
+		code: toPublicExampleCode(maskCustomCode)
 	}
 ];
 

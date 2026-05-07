@@ -5,6 +5,7 @@
 	import {
 		gradientDirectiveExamples,
 		loadingDirectiveExamples,
+		maskDirectiveExamples,
 		rippleDirectiveExamples,
 		tooltipDirectiveExamples
 	} from '@/docs/examples/directives';
@@ -14,6 +15,7 @@
 import {
 	vGradientText,
 	vLoading,
+	vMask,
 	vRipple,
 	vTooltip
 } from 'gradient-ui';
@@ -23,6 +25,7 @@ const app = createApp(App);
 
 app.directive('gradient-text', vGradientText);
 app.directive('loading', vLoading);
+app.directive('mask', vMask);
 app.directive('ripple', vRipple);
 app.directive('tooltip', vTooltip);
 
@@ -42,6 +45,13 @@ app.mount('#app');`;
 			defaultValue: '-',
 			description:
 				'Attaches a GTooltip to the element for hover and focus. Object syntax supports content, placement and offset.'
+		},
+		{
+			name: 'v-mask',
+			type: 'string | string[] | MaskOptions',
+			defaultValue: '-',
+			description:
+				'Formats native input and textarea values with #, X, S, A and a tokens. Object syntax supports custom tokens.'
 		},
 		{
 			name: 'v-gradient-text',
@@ -108,6 +118,13 @@ app.mount('#app');`;
 					</p>
 				</section>
 				<section class="docs-page__tile">
+					<h3>Input formatting</h3>
+					<p>
+						<code>v-mask</code> formats native inputs when you do
+						not need the full <code>GInput</code> field shell.
+					</p>
+				</section>
+				<section class="docs-page__tile">
 					<h3>Visual accents</h3>
 					<p>
 						<code>v-gradient-text</code> and
@@ -162,6 +179,22 @@ app.mount('#app');`;
 			<docs-live-example-tabs
 				label="Tooltip directive examples"
 				:examples="tooltipDirectiveExamples" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
+				id="mask"
+				class="docs-page__anchor"></span>
+			<h2>Mask</h2>
+			<p>
+				<code>v-mask</code> is the directive layer for simple native
+				fields. Use the <code>mask</code> prop on <code>GInput</code>
+				when you need Gradient UI field styling, validation and raw
+				model output.
+			</p>
+			<docs-live-example-tabs
+				label="Mask directive examples"
+				:examples="maskDirectiveExamples" />
 		</section>
 
 		<section class="docs-page__section">
