@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
 import { useAttrs } from 'vue';
 import { useVisibleProps } from '@/use/visibleProps';
+import { createId } from '@/utils/createId';
 
 const textFieldSlotNames = ['default', 'prepend', 'append', 'message'] as const;
 
@@ -15,7 +15,7 @@ export function useTextFieldComponent<TSlots extends TextFieldSlotsShape>(
 	slots: TSlots
 ) {
 	const attrs = useAttrs();
-	const id = uuidv4();
+	const id = createId('g-field');
 	const visibleSlotNames = useVisibleProps(slots, textFieldSlotNames);
 
 	return {

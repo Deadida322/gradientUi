@@ -1,107 +1,59 @@
 <script setup lang="ts">
 	import { useAttrs } from 'vue';
-	import gsap from 'gsap';
+
+	defineOptions({ inheritAttrs: false });
 
 	const attrs = useAttrs();
-	const leaveCounts = new WeakMap<HTMLElement, number>();
 
 	const getIndex = (el: Element) =>
 		Number((el as HTMLElement).dataset.index ?? 0);
-	const getDelay = (el: Element) => getIndex(el) * 0.055;
-	const lockParent = (el: Element) => {
-		const parent = el.parentElement;
-
-		if (!parent) return undefined;
-
-		if (!leaveCounts.has(parent)) {
-			gsap.set(parent, {
-				width: parent.offsetWidth,
-				height: parent.offsetHeight
-			});
-			leaveCounts.set(parent, 0);
-		}
-
-		leaveCounts.set(parent, (leaveCounts.get(parent) ?? 0) + 1);
-
-		return parent;
-	};
-	const releaseParent = (parent?: HTMLElement) => {
-		if (!parent) return;
-
-		const nextCount = (leaveCounts.get(parent) ?? 1) - 1;
-
-		if (nextCount > 0) {
-			leaveCounts.set(parent, nextCount);
-			return;
-		}
-
-		leaveCounts.delete(parent);
-		gsap.set(parent, {
-			clearProps: 'width,height'
-		});
-	};
-	const lockPosition = (el: Element) => {
-		const element = el as HTMLElement;
-		const { offsetHeight, offsetLeft, offsetTop, offsetWidth } = element;
-
-		gsap.set(element, {
-			position: 'absolute',
-			top: offsetTop,
-			left: offsetLeft,
-			width: offsetWidth,
-			height: offsetHeight
-		});
-	};
 
 	const onBeforeEnter = (el: Element) => {
-		gsap.killTweensOf(el);
-		gsap.set(el, {
-			opacity: 0,
-			y: 10,
-			scale: 0.96,
-			transformOrigin: '100% 100%'
-		});
+		if (!(el instanceof HTMLElement)) return;
+
+		el.style.setProperty(
+			'--g-stagger-transition-delay',
+			`${getIndex(el) * 55}ms`
+		);
 	};
 
-	const onEnter = (el: Element, done: () => void) => {
-		gsap.to(el, {
-			opacity: 1,
-			y: 0,
-			scale: 1,
-			onComplete: done,
-			duration: 0.24,
-			delay: getDelay(el),
-			ease: 'power2.out'
-		});
-	};
+	const onAfterEnter = (el: Element) => {
+		if (!(el instanceof HTMLElement)) return;
 
-	const onLeave = (el: Element, done: () => void) => {
-		const parent = lockParent(el);
-
-		gsap.killTweensOf(el);
-		lockPosition(el);
-		gsap.to(el, {
-			opacity: 0,
-			y: 10,
-			scale: 0.96,
-			duration: 0.24,
-			onComplete: () => {
-				releaseParent(parent);
-				done();
-			},
-			delay: getDelay(el),
-			ease: 'power2.out'
-		});
+		el.style.removeProperty('--g-stagger-transition-delay');
 	};
 </script>
 
 <template>
 	<TransitionGroup
-		:css="false"
+		name="g-stagger-translate-transition"
 		v-bind="attrs"
 		@before-enter="onBeforeEnter"
-		@enter="onEnter"
-		@leave="onLeave">
+		@after-enter="onAfterEnter">
 		<slot></slot>
 	</TransitionGroup>
 </template>
+
+<style scoped lang="scss">
+	.g-stagger-translate-transition-enter-active,
+	.g-stagger-translate-transition-leave-active {
+		transition:
+			opacity 240ms var(--g-token-easing-standard),
+			transform 240ms var(--g-token-easing-emphasized);
+		transition-delay: var(--g-stagger-transition-delay, 0ms);
+	}
+
+	.g-stagger-translate-transition-move {
+		transition: transform 240ms var(--g-token-easing-emphasized);
+	}
+
+	.g-stagger-translate-transition-leave-active {
+		position: absolute;
+	}
+
+	.g-stagger-translate-transition-enter-from,
+	.g-stagger-translate-transition-leave-to {
+		transform: translateY(10px) scale(0.96);
+		opacity: 0;
+	}
+</style>

@@ -1,62 +1,50 @@
-<script setup>
+<script setup lang="ts">
 	import { useAttrs } from 'vue';
-	import gsap from 'gsap';
+
+	defineOptions({ inheritAttrs: false });
 
 	const attrs = useAttrs();
-	const emit = defineEmits(['leave']);
+	const emit = defineEmits<{
+		leave: [];
+	}>();
 
-	const getRootStyles = () => getComputedStyle(document.documentElement);
-
-	const readDuration = (token, fallback) => {
-		const raw = getRootStyles().getPropertyValue(token).trim();
-		if (!raw) return fallback;
-		if (raw.endsWith('ms')) return Number.parseFloat(raw) / 1000;
-		if (raw.endsWith('s')) return Number.parseFloat(raw);
-		const parsed = Number.parseFloat(raw);
-		return Number.isNaN(parsed) ? fallback : parsed;
-	};
-
-	const getEnterDuration = () =>
-		readDuration('--g-token-duration-enter', 0.28);
-
-	const getLeaveDuration = () =>
-		readDuration('--g-token-duration-leave', 0.22);
-
-	const onBeforeEnterRotate = (el) => {
-		gsap.from(el, {
-			opacity: 0,
-			transform: 'scale(0.94)',
-			duration: getEnterDuration(),
-			ease: 'power2.out'
-		});
-	};
-
-	const onEnterRotate = (el) => {
-		gsap.to(el, {
-			opacity: 1,
-			transform: 'scale(1)',
-			duration: getEnterDuration(),
-			ease: 'power2.out'
-		});
-	};
-
-	const onLeaveRotate = async (el, done) => {
-		await gsap.to(el, {
-			duration: getLeaveDuration(),
-			onComplete: done,
-			ease: 'power1.out',
-			opacity: 0,
-			transform: 'scale(0.985)'
-		});
+	const onAfterLeave = () => {
 		emit('leave');
 	};
 </script>
+
 <template>
-	<transition
+	<Transition
+		name="g-legacy-scale-transition"
 		v-bind="attrs"
-		@before-enter="onBeforeEnterRotate"
-		@enter="onEnterRotate"
-		@leave="onLeaveRotate">
+		@after-leave="onAfterLeave">
 		<slot></slot>
-	</transition>
+	</Transition>
 </template>
+
+<style scoped lang="scss">
+	.g-legacy-scale-transition-enter-active {
+		transition:
+			opacity var(--g-token-duration-enter)
+				var(--g-token-easing-emphasized),
+			transform var(--g-token-duration-enter)
+				var(--g-token-easing-emphasized);
+	}
+
+	.g-legacy-scale-transition-leave-active {
+		transition:
+			opacity var(--g-token-duration-leave) var(--g-token-easing-standard),
+			transform var(--g-token-duration-leave)
+				var(--g-token-easing-standard);
+	}
+
+	.g-legacy-scale-transition-enter-from {
+		transform: scale(0.94);
+		opacity: 0;
+	}
+
+	.g-legacy-scale-transition-leave-to {
+		transform: scale(0.985);
+		opacity: 0;
+	}
+</style>

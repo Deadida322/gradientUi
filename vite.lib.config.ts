@@ -3,9 +3,15 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { peerDependencies, dependencies } from './package.json';
 
+const bundledDependencies = new Set([
+	'@material/material-color-utilities',
+	'gib-validate'
+]);
 const external = [
 	...Object.keys(peerDependencies ?? {}),
-	...Object.keys(dependencies ?? {})
+	...Object.keys(dependencies ?? {}).filter(
+		(dependency) => !bundledDependencies.has(dependency)
+	)
 ];
 
 export default defineConfig({
@@ -27,10 +33,18 @@ export default defineConfig({
 		emptyOutDir: true,
 		copyPublicDir: false,
 		lib: {
-			entry: resolve(__dirname, 'src/index.ts'),
+			entry: {
+				index: resolve(__dirname, 'src/index.ts'),
+				components: resolve(__dirname, 'src/components/index.ts'),
+				directives: resolve(__dirname, 'src/directives/index.ts'),
+				services: resolve(__dirname, 'src/services/index.ts'),
+				theme: resolve(__dirname, 'src/theme/index.ts'),
+				use: resolve(__dirname, 'src/use/index.ts')
+			},
 			name: 'GradientUI',
 			formats: ['es', 'cjs'],
-			fileName: (format) => (format === 'es' ? 'index.mjs' : 'index.cjs')
+			fileName: (format, entryName) =>
+				`${entryName}.${format === 'es' ? 'mjs' : 'cjs'}`
 		},
 		rollupOptions: {
 			external,

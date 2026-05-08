@@ -1,43 +1,36 @@
-<script setup>
-	import gsap from 'gsap';
-	const onBeforeEnterRotate = (el) => {
-		gsap.from(el, {
-			position: 'absolute',
-			rotate: -45,
-			duration: 0.2,
-			transform: 'scale(.5)'
-		});
-	};
+<script setup lang="ts">
+	import { useAttrs } from 'vue';
 
-	const onEnterRotate = (el, done) => {
-		gsap.to(el, {
-			opacity: 1,
-			height: 'auto',
-			onComplete: done,
-			rotation: 0,
-			duration: 0.2,
-			ease: 'ease-in-out.out'
-		});
-	};
+	defineOptions({ inheritAttrs: false });
 
-	const onLeaveRotate = (el, done) => {
-		gsap.to(el, {
-			opacity: 0,
-			height: 0,
-			duration: 0.2,
-			rotation: 45,
-			blur: 2,
-			onComplete: done,
-			ease: 'ease-in-out.in',
-			transform: 'scale(.5)'
-		});
-	};
+	const attrs = useAttrs();
 </script>
+
 <template>
-	<transition
-		@before-enter="onBeforeEnterRotate"
-		@enter="onEnterRotate"
-		@leave="onLeaveRotate">
+	<Transition
+		name="g-rotate-transition"
+		mode="out-in"
+		v-bind="attrs">
 		<slot></slot>
-	</transition>
+	</Transition>
 </template>
+
+<style scoped lang="scss">
+	.g-rotate-transition-enter-active,
+	.g-rotate-transition-leave-active {
+		transition:
+			opacity var(--g-token-duration-fast) var(--g-token-easing-standard),
+			transform var(--g-token-duration-fast)
+				var(--g-token-easing-emphasized);
+	}
+
+	.g-rotate-transition-enter-from {
+		transform: rotate(-45deg) scale(0.5);
+		opacity: 0;
+	}
+
+	.g-rotate-transition-leave-to {
+		transform: rotate(45deg) scale(0.5);
+		opacity: 0;
+	}
+</style>

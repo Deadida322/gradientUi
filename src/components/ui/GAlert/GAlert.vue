@@ -84,7 +84,10 @@
 
 		overflow: hidden;
 
+		box-sizing: border-box;
 		width: 100%;
+		min-width: 0;
+		max-width: 100%;
 		padding: var(--g-token-space-4);
 		border-radius: var(--g-token-radius-md);
 
@@ -113,6 +116,8 @@
 			display: flex;
 			gap: var(--g-token-space-3);
 			align-items: flex-start;
+
+			min-width: 0;
 		}
 
 		&__prepend,
@@ -129,6 +134,13 @@
 			min-width: 0;
 		}
 
+		&__title,
+		&__body,
+		&__footer {
+			min-width: 0;
+			overflow-wrap: anywhere;
+		}
+
 		&__title {
 			font-size: var(--g-token-font-size-md);
 			font-weight: var(--g-token-font-weight-bold);
@@ -142,7 +154,18 @@
 		}
 
 		&__footer {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-2);
 			padding-top: var(--g-token-space-2);
+		}
+
+		@media (width <= 420px) {
+			padding: var(--g-token-space-3);
+
+			&__content {
+				gap: var(--g-token-space-2);
+			}
 		}
 	}
 

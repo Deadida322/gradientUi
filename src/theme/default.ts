@@ -11,7 +11,18 @@ import { generateMaterialColors } from './generateColors';
 import { hexToRgbString } from '@/utils/color';
 import { normalizeColor } from '@/utils/colors/normaliseColor';
 import type { ColorInput } from '@/types/Colors';
-const DEFAULT_SEED = '#4e51ff';
+import {
+	inject,
+	provide,
+	ref,
+	shallowRef,
+	type App,
+	type InjectionKey,
+	type Ref,
+	type ShallowRef
+} from 'vue';
+
+export const DEFAULT_SEED = '#4e51ff';
 
 export interface SeedTheme {
 	seedColor: ColorInput;
@@ -19,8 +30,25 @@ export interface SeedTheme {
 
 export type ThemeMode = 'light' | 'dark';
 
+export interface GradientUIThemeOptions {
+	seed?: ColorInput;
+	mode?: ThemeMode;
+	autoApply?: boolean;
+}
+
+export interface GradientUITheme {
+	seed: Ref<ColorInput>;
+	mode: Ref<ThemeMode>;
+	result: ShallowRef<ReturnType<typeof createDefaultTheme> | null>;
+	apply: () => ReturnType<typeof createDefaultTheme> | null;
+	setSeed: (seed: ColorInput) => ReturnType<typeof createDefaultTheme> | null;
+	setMode: (mode: ThemeMode) => ReturnType<typeof createDefaultTheme> | null;
+	toggleMode: () => ReturnType<typeof createDefaultTheme> | null;
+}
+
 const THEME_CLASS = 'g-theme--material';
 const MODE_CLASS_PREFIX = 'g-theme--';
+const ThemeSymbol: InjectionKey<GradientUITheme> = Symbol('gradient-theme');
 
 function createSemanticTokens(mode: ThemeMode) {
 	const warningSeedArgb = normalizeColor('#FFC107');
@@ -169,12 +197,68 @@ export function createDefaultTheme(
 		gradient: generatePrimaryGradients(normalizedSeed)
 	};
 
-	console.log(tokens.theme, 'tokens');
-
 	return {
 		tokens,
 		themeCSS: applyTokensToCSS(tokens.theme, 'theme'),
 		colorsCSS: applyTokensToCSS(tokens.colors, 'color'),
 		gradientCSS: applyTokensToCSS(tokens.gradient, 'gradient')
 	};
+}
+
+export function createTheme(
+	options: GradientUIThemeOptions = {}
+): GradientUITheme {
+	const seed = ref(options.seed ?? DEFAULT_SEED) as Ref<ColorInput>;
+	const mode = ref(options.mode ?? 'light') as Ref<ThemeMode>;
+	const result = shallowRef<ReturnType<typeof createDefaultTheme> | null>(
+		null
+	);
+
+	const apply = () => {
+		if (typeof window === 'undefined') return null;
+		result.value = createDefaultTheme(seed.value, mode.value);
+		return result.value;
+	};
+
+	const setSeed = (nextSeed: ColorInput) => {
+		seed.value = nextSeed;
+		return apply();
+	};
+
+	const setMode = (nextMode: ThemeMode) => {
+		mode.value = nextMode;
+		return apply();
+	};
+
+	const toggleMode = () => {
+		mode.value = mode.value === 'dark' ? 'light' : 'dark';
+		return apply();
+	};
+
+	if (options.autoApply !== false) {
+		apply();
+	}
+
+	return {
+		seed,
+		mode,
+		result,
+		apply,
+		setSeed,
+		setMode,
+		toggleMode
+	};
+}
+
+export function provideTheme(theme: GradientUITheme = createTheme()) {
+	provide(ThemeSymbol, theme);
+	return theme;
+}
+
+export function installTheme(app: App, theme: GradientUITheme) {
+	app.provide(ThemeSymbol, theme);
+}
+
+export function useTheme() {
+	return inject(ThemeSymbol, null);
 }

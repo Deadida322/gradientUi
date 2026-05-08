@@ -54,27 +54,35 @@ import {
 	vRipple,
 	vTooltip
 } from '@/components';
-import { installIcons } from '@/use/icon';
-import { createDefaultLightTheme } from '@/theme';
+import { installIcons, type IconsOptions } from '@/use/icon';
+import {
+	createTheme,
+	installTheme,
+	type GradientUIThemeOptions
+} from '@/theme';
 import type { ColorInput } from '@/types/Colors';
+import {
+	installDefaults,
+	withGradientDefaults,
+	type GradientUIDefaults
+} from '@/use/defaults';
 
 export * from '@/components';
 export * from '@/directives';
-export * from '@/services/useLoading';
-export * from '@/services/useSnackbar';
+export * from '@/services';
 export * from '@/theme';
-export * from '@/use/breakpoints';
-export * from '@/use/mask';
+export * from '@/use';
 export { installIcons };
 export type { ColorInput };
 
 export interface GradientUIOptions {
-	icons?: boolean;
-	theme?: false | ColorInput;
+	icons?: boolean | Partial<IconsOptions>;
+	theme?: false | ColorInput | GradientUIThemeOptions;
+	defaults?: GradientUIDefaults;
 }
 
 function registerComponent(app: App, name: string, component: Component) {
-	app.component(name, component);
+	app.component(name, withGradientDefaults(name, component));
 }
 
 function registerComponents(app: App) {
@@ -126,24 +134,64 @@ function registerComponents(app: App) {
 	registerComponent(app, 'GExpandTransition', GExpandTransition);
 }
 
+function resolveThemeOptions(
+	theme: GradientUIOptions['theme']
+): GradientUIThemeOptions {
+	if (theme == null || theme === false) return {};
+	if (typeof theme === 'string' || typeof theme === 'number') {
+		return {
+			seed: theme
+		};
+	}
+	return theme;
+}
+
+export function createGradientUI(
+	options: GradientUIOptions = {}
+): Plugin<GradientUIOptions | undefined> {
+	return {
+		install(app: App, inlineOptions: GradientUIOptions = {}) {
+			const resolvedOptions: GradientUIOptions = {
+				...options,
+				...inlineOptions,
+				defaults: {
+					...(options.defaults ?? {}),
+					...(inlineOptions.defaults ?? {})
+				}
+			};
+
+			installDefaults(app, resolvedOptions.defaults);
+			registerComponents(app);
+
+			app.directive('gradient-icon', vGradientIcon);
+			app.directive('gradient-text', vGradientText);
+			app.directive('loading', vLoading);
+			app.directive('mask', vMask);
+			app.directive('ripple', vRipple);
+			app.directive('tooltip', vTooltip);
+
+			if (resolvedOptions.icons !== false) {
+				installIcons(
+					app,
+					typeof resolvedOptions.icons === 'object'
+						? resolvedOptions.icons
+						: undefined
+				);
+			}
+
+			if (resolvedOptions.theme !== false) {
+				installTheme(
+					app,
+					createTheme(resolveThemeOptions(resolvedOptions.theme))
+				);
+			}
+		}
+	};
+}
+
 export const GradientUI: Plugin<GradientUIOptions | undefined> = {
 	install(app: App, options: GradientUIOptions = {}) {
-		registerComponents(app);
-
-		app.directive('gradient-icon', vGradientIcon);
-		app.directive('gradient-text', vGradientText);
-		app.directive('loading', vLoading);
-		app.directive('mask', vMask);
-		app.directive('ripple', vRipple);
-		app.directive('tooltip', vTooltip);
-
-		if (options.icons !== false) {
-			installIcons(app);
-		}
-
-		if (options.theme !== false && typeof window !== 'undefined') {
-			createDefaultLightTheme(options.theme);
-		}
+		createGradientUI(options).install?.(app);
 	}
 };
 

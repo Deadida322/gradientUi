@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import type { GSquircleProps } from './types';
-	import { v4 } from 'uuid';
 	import { computed } from 'vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { createId } from '@/utils/createId';
 
 	const props = withDefaults(defineProps<GSquircleProps>(), {
 		size: 40,
@@ -20,7 +20,7 @@
             ${+props.size * 0.5},${+props.size} C ${+props.size * radius},${+props.size} 0,${+props.size * (1 - radius)} 0,${+props.size * 0.5} C 
             0,${+props.size * radius} ${+props.size * radius},0 ${+props.size * 0.5},0 Z`
 	);
-	const uuid = v4();
+	const id = createId('g-squircle');
 	const height = computed(() => `${props.size}px`);
 	const { colorStyles } = useSurfaceColor(props);
 	const fillSurface = computed(() =>
@@ -50,7 +50,7 @@
 			:viewBox="`0 0 ${props.size} ${props.size}`">
 			<defs>
 				<clipPath
-					:id="`squircle-clip-${uuid}`"
+					:id="`squircle-clip-${id}`"
 					fill="red">
 					<path :d="d" />
 				</clipPath>
@@ -74,7 +74,7 @@
 			<foreignObject
 				x="0"
 				y="0"
-				:clip-path="`url(#squircle-clip-${uuid})`"
+				:clip-path="`url(#squircle-clip-${id})`"
 				width="100%"
 				height="100%">
 				<div

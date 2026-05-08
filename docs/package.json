@@ -1,0 +1,16 @@
+{
+	"name": "@gradient-ui/docs",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"type-check": "vue-tsc -p tsconfig.json"
+	},
+	"dependencies": {
+		"@fontsource/manrope": "^5.1.1",
+		"@mdi/font": "^7.4.47",
+		"gradient-ui": "file:.."
+	}
+}

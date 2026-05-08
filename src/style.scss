@@ -1,12 +1,5 @@
 @use 'styles/tokens' as tokens;
 @use 'styles/helpers';
-@use '@fontsource/manrope/200.css' as roboto200;
-@use '@fontsource/manrope/300.css' as roboto300;
-@use '@fontsource/manrope/400.css' as roboto400;
-@use '@fontsource/manrope/500.css' as roboto500;
-@use '@fontsource/manrope/700.css' as roboto700;
-@use '@fontsource/manrope/800.css' as roboto800;
-@use '@mdi/font/css/materialdesignicons.css' as mdi;
 
 body {
 	font-family: var(--g-token-font-family-base);

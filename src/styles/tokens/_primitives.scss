@@ -1,5 +1,7 @@
 @mixin register-primitive-tokens() {
-	--g-token-font-family-base: manrope, sans-serif;
+	--g-token-font-family-base:
+		ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI',
+		sans-serif;
 	--g-token-font-weight-regular: 400;
 	--g-token-font-weight-medium: 500;
 	--g-token-font-weight-bold: 700;

@@ -1,7 +1,7 @@
-import type { IfAny } from '@vueuse/core';
 import type { ComponentObjectPropsOptions, PropType, Prop } from 'vue';
 
 type PartialKeys<T> = { [P in keyof T]?: unknown };
+type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 
 type MergeTypeDefault<
 	Prop,
