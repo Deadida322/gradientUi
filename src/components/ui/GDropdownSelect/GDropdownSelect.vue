@@ -19,7 +19,7 @@
 
 	const props =
 		defineProps<DropdownSelectProps<T, V, Multiple, ReturnObject>>();
-	defineSlots<DropdownSelectSlots<T, V, Multiple, ReturnObject>>();
+	defineSlots<DropdownSelectSlots<T, V>>();
 	const emit = defineEmits<{
 		(e: 'update:modelValue', value: ModelValue): void;
 	}>();
