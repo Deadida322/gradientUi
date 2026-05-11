@@ -70,7 +70,7 @@ The package is published as:
 releases from a manual workflow run.
 
 `.github/workflows/publish-package.yml` publishes the package to npm when a
-GitHub release is published, or when the workflow is manually dispatched.
+GitHub release is published.
 
 Required GitHub secret:
 
@@ -108,3 +108,6 @@ npm publish --access public
 
 The publish workflow validates that the release tag matches the package version
 and that the package name is `@gradient-ui/core` before publishing.
+
+Do not run `Publish Package` manually from a branch. Manual releases should be
+started from `Release Package`; it creates the matching version tag and release.
