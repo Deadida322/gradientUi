@@ -1,5 +1,5 @@
 {
-	"name": "gradient-ui",
+	"name": "@gib/gradient-ui",
 	"version": "0.1.0",
 	"private": false,
 	"scripts": {

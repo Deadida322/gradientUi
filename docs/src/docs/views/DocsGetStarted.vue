@@ -1,11 +1,11 @@
 <script setup lang="ts">
 	import DocsCode from '@docs/components/DocsCode.vue';
 
-	const installCode = 'npm install gradient-ui';
+	const installCode = 'npm install @gib/gradient-ui';
 	const fullRegistrationCode = `
 import { createApp } from 'vue';
-import { createGradientUI } from 'gradient-ui';
-import 'gradient-ui/style.css';
+import { createGradientUI } from '@gib/gradient-ui';
+import '@gib/gradient-ui/style.css';
 import App from './App.vue';
 
 const gradientUI = createGradientUI({
@@ -30,7 +30,7 @@ createApp(App)
   .mount('#app');`;
 
 	const pluginOptionsCode = `
-import { createGradientUI } from 'gradient-ui';
+import { createGradientUI } from '@gib/gradient-ui';
 
 app.use(createGradientUI({
   // String/number keeps the short seed-color API.
@@ -55,8 +55,8 @@ app.use(createGradientUI({
 
 	const manualComponentsCode = `
 import { createApp } from 'vue';
-import { GButton, GInput, GModal } from 'gradient-ui';
-import 'gradient-ui/style.css';
+import { GButton, GInput, GModal } from '@gib/gradient-ui';
+import '@gib/gradient-ui/style.css';
 import App from './App.vue';
 
 const app = createApp(App);
@@ -74,8 +74,8 @@ import {
   vMask,
   vRipple,
   vTooltip
-} from 'gradient-ui';
-import 'gradient-ui/style.css';
+} from '@gib/gradient-ui';
+import '@gib/gradient-ui/style.css';
 import App from './App.vue';
 
 const app = createApp(App);
@@ -88,7 +88,7 @@ app.directive('tooltip', vTooltip);
 app.mount('#app');`;
 
 	const servicesCode = `
-import { useLoading, useSnackbar } from 'gradient-ui';
+import { useLoading, useSnackbar } from '@gib/gradient-ui';
 
 const snackbar = useSnackbar();
 const loading = useLoading();
@@ -113,7 +113,7 @@ import '@mdi/font/css/materialdesignicons.css';
 	const componentCode =
 		`
 <script setup lang="ts">
-	import { GButton, GInput } from 'gradient-ui';
+	import { GButton, GInput } from '@gib/gradient-ui';
 <` +
 		`/script>
 

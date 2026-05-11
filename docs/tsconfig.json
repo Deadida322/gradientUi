@@ -16,7 +16,7 @@
 			"@/*": ["../src/*"],
 			"@docs/*": ["src/docs/*"],
 			"@playground/*": ["src/playground/*"],
-			"gradient-ui": ["../src/index.ts"]
+			"@gib/gradient-ui": ["../src/index.ts"]
 		}
 	}
 }

@@ -110,13 +110,13 @@
 		}
 	];
 
-	const installCode = `npm install gradient-ui gib-validate`;
+	const installCode = `npm install @gib/gradient-ui gib-validate`;
 
 	const validationCode = `
 <script setup lang="ts">
 	import { computed, reactive } from 'vue';
 	import { required, isEmail, minLength, useValidation } from 'gib-validate';
-	import { GButton, GInput, GTextarea } from 'gradient-ui';
+	import { GButton, GInput, GTextarea } from '@gib/gradient-ui';
 
 	const form = reactive({
 		email: '',

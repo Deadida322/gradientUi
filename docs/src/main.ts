@@ -6,7 +6,7 @@ import '@fontsource/manrope/500.css';
 import '@fontsource/manrope/700.css';
 import '@fontsource/manrope/800.css';
 import '@mdi/font/css/materialdesignicons.css';
-import GradientUI from 'gradient-ui';
+import GradientUI from '@gib/gradient-ui';
 import App from './App.vue';
 import router from './router';
 import { initDocsTheme } from './docs/use/docsTheme';
