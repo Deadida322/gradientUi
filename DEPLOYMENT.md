@@ -66,8 +66,8 @@ The package is published as:
 @gradient-ui/core
 ```
 
-`.github/workflows/release-package.yml` creates version commits, tags and GitHub
-releases from a manual workflow run.
+`.github/workflows/release-package.yml` creates version commits, tags, GitHub
+releases and publishes the package from a manual workflow run.
 
 `.github/workflows/publish-package.yml` publishes the package to npm when a
 GitHub release is published.
@@ -93,21 +93,25 @@ Recommended release flow:
 
 The release workflow will:
 
+- validate package metadata
+- validate npm auth
+- run `npm version`
 - run checks
 - build the project
-- run `npm version`
 - push the version commit
 - push the matching `vX.Y.Z` tag
+- publish the package to npm
 - create a GitHub Release
 
-Publishing starts automatically from the release event and runs:
+Publishing runs in the release workflow:
 
 ```bash
 npm publish --access public
 ```
 
-The publish workflow validates that the release tag matches the package version
-and that the package name is `@gradient-ui/core` before publishing.
+The additional publish workflow validates that the release tag matches the
+package version and that the package name is `@gradient-ui/core` before
+publishing when a release is created outside the release workflow.
 
-Do not run `Publish Package` manually from a branch. Manual releases should be
-started from `Release Package`; it creates the matching version tag and release.
+Manual releases should be started from `Release Package`; it creates the
+matching version tag, release and npm publish.
