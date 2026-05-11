@@ -42,6 +42,7 @@ jobs:
               with:
                   node-version: 22
                   cache: npm
+                  registry-url: https://registry.npmjs.org
 
             - name: Configure Git
               run: |
@@ -50,6 +51,21 @@ jobs:
 
             - name: Install
               run: npm ci
+
+            - name: Validate package metadata
+              shell: bash
+              run: |
+                  PACKAGE_NAME="$(node -p "require('./package.json').name")"
+
+                  if [ "$PACKAGE_NAME" != "@gradient-ui/core" ]; then
+                    echo "Expected package name @gradient-ui/core, got $PACKAGE_NAME"
+                    exit 1
+                  fi
+
+            - name: Validate npm auth
+              run: npm whoami
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Bump version
               id: bump
@@ -79,6 +95,11 @@ jobs:
 
             - name: Push version commit and tag
               run: git push --follow-tags
+
+            - name: Publish to npm
+              run: npm publish --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create GitHub Release
               env:
