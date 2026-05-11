@@ -51,18 +51,6 @@ jobs:
             - name: Install
               run: npm ci
 
-            - name: Type check
-              run: npm run type-check
-
-            - name: Lint TypeScript and Vue
-              run: npm run eslint
-
-            - name: Lint styles
-              run: npm run lint:css
-
-            - name: Build
-              run: npm run build
-
             - name: Bump version
               id: bump
               shell: bash
@@ -76,6 +64,18 @@ jobs:
                   VERSION="$(node -p "require('./package.json').version")"
                   echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
                   echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
+            - name: Type check
+              run: npm run type-check
+
+            - name: Lint TypeScript and Vue
+              run: npm run eslint
+
+            - name: Lint styles
+              run: npm run lint:css
+
+            - name: Build
+              run: npm run build
 
             - name: Push version commit and tag
               run: git push --follow-tags
