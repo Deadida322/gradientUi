@@ -1,0 +1,91 @@
+name: Release Package
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: Version bump type
+                required: true
+                default: patch
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+                    - prerelease
+            prerelease-id:
+                description: Prerelease identifier
+                required: false
+                default: beta
+
+concurrency:
+    group: release-package
+    cancel-in-progress: false
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        name: Create release
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Configure Git
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+            - name: Install
+              run: npm ci
+
+            - name: Type check
+              run: npm run type-check
+
+            - name: Lint TypeScript and Vue
+              run: npm run eslint
+
+            - name: Lint styles
+              run: npm run lint:css
+
+            - name: Build
+              run: npm run build
+
+            - name: Bump version
+              id: bump
+              shell: bash
+              run: |
+                  if [ "${{ inputs.version }}" = "prerelease" ]; then
+                    npm version prerelease --preid "${{ inputs.prerelease-id }}"
+                  else
+                    npm version "${{ inputs.version }}"
+                  fi
+
+                  VERSION="$(node -p "require('./package.json').version")"
+                  echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+                  echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
+            - name: Push version commit and tag
+              run: git push --follow-tags
+
+            - name: Create GitHub Release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAG: ${{ steps.bump.outputs.tag }}
+                  VERSION: ${{ steps.bump.outputs.version }}
+              run: |
+                  gh release create "$TAG" \
+                    --title "$TAG" \
+                    --notes "Release @gradient-ui/core ${VERSION}"

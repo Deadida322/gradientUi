@@ -9,12 +9,12 @@ typed APIs.
 - Added the core Gradient UI plugin with full library registration through
   `createGradientUI` and the default `GradientUI` plugin export.
 - Added subpath exports for focused imports:
-    - `@gib/gradient-ui/components`
-    - `@gib/gradient-ui/directives`
-    - `@gib/gradient-ui/services`
-    - `@gib/gradient-ui/theme`
-    - `@gib/gradient-ui/use`
-    - `@gib/gradient-ui/style.css`
+    - `@gradient-ui/core/components`
+    - `@gradient-ui/core/directives`
+    - `@gradient-ui/core/services`
+    - `@gradient-ui/core/theme`
+    - `@gradient-ui/core/use`
+    - `@gradient-ui/core/style.css`
 - Added Material You inspired theme generation, CSS tokens, gradient helpers,
   surface helpers and component defaults.
 - Added documentation app with routed pages for getting started, design tokens,
@@ -78,13 +78,13 @@ This release includes the first public component set:
 ## Installation
 
 ```bash
-npm install @gib/gradient-ui
+npm install @gradient-ui/core
 ```
 
 ```ts
 import { createApp } from 'vue';
-import GradientUI from '@gib/gradient-ui';
-import '@gib/gradient-ui/style.css';
+import GradientUI from '@gradient-ui/core';
+import '@gradient-ui/core/style.css';
 import App from './App.vue';
 
 createApp(App).use(GradientUI).mount('#app');

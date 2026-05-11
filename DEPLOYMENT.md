@@ -60,6 +60,15 @@ It checks:
 
 ## npm Publishing
 
+The package is published as:
+
+```text
+@gradient-ui/core
+```
+
+`.github/workflows/release-package.yml` creates version commits, tags and GitHub
+releases from a manual workflow run.
+
 `.github/workflows/publish-package.yml` publishes the package to npm when a
 GitHub release is published, or when the workflow is manually dispatched.
 
@@ -77,11 +86,25 @@ Repository settings -> Secrets and variables -> Actions -> New repository secret
 
 Recommended release flow:
 
+1. Push all changes to the default branch.
+2. Open GitHub Actions.
+3. Run `Release Package` manually.
+4. Choose `patch`, `minor`, `major` or `prerelease`.
+
+The release workflow will:
+
+- run checks
+- build the project
+- run `npm version`
+- push the version commit
+- push the matching `vX.Y.Z` tag
+- create a GitHub Release
+
+Publishing starts automatically from the release event and runs:
+
 ```bash
-npm version patch
-git push
-git push --tags
+npm publish --access public
 ```
 
-Then create and publish a GitHub release for the tag. The publish workflow will
-run `npm publish --access public`.
+The publish workflow validates that the release tag matches the package version
+and that the package name is `@gradient-ui/core` before publishing.
