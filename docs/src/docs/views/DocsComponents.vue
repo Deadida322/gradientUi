@@ -1,9 +1,6 @@
 <script setup lang="ts">
 	import DocsCode from '@docs/components/DocsCode.vue';
-	import {
-		componentCatalog,
-		componentGroups
-	} from '@docs/data/componentApi';
+	import { componentCatalog, componentGroups } from '@docs/data/componentApi';
 
 	const importCode =
 		`

@@ -20,7 +20,9 @@ export function useControllableOpen(
 
 	const open = computed<boolean>({
 		get() {
-			return isControlled.value ? (props.modelValue ?? false) : localOpen.value;
+			return isControlled.value
+				? (props.modelValue ?? false)
+				: localOpen.value;
 		},
 		set(value) {
 			if (!isControlled.value) {

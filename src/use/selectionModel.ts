@@ -32,7 +32,9 @@ export function useSelectionModel<TModel, TValue = TModel>(
 		const modelValue = unref(props.modelValue);
 
 		if (isMultiple.value) {
-			return getModelAsArray(modelValue).some((item) => compare(item, value));
+			return getModelAsArray(modelValue).some((item) =>
+				compare(item, value)
+			);
 		}
 
 		const model = getModelAsSingle(modelValue);

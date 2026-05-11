@@ -100,9 +100,7 @@ createApp(App).use(router).use(GradientUI).mount('#app');
 ```
 
 ```vue
-<g-nav-item
-	label="Docs"
-	to="/docs" />
+<g-nav-item label="Docs" to="/docs" />
 ```
 
 Without Vue Router, string `to` values become regular links. Object `to` values
@@ -113,21 +111,25 @@ need Vue Router and otherwise render as non-navigation actions.
 Gradient UI can generate Material You style CSS tokens from a seed color.
 
 ```ts
-app.use(createGradientUI({
-	theme: '#704aff'
-}));
+app.use(
+	createGradientUI({
+		theme: '#704aff'
+	})
+);
 ```
 
 Use object syntax when you need more control:
 
 ```ts
-app.use(createGradientUI({
-	theme: {
-		seed: '#704aff',
-		mode: 'dark',
-		autoApply: true
-	}
-}));
+app.use(
+	createGradientUI({
+		theme: {
+			seed: '#704aff',
+			mode: 'dark',
+			autoApply: true
+		}
+	})
+);
 ```
 
 Pass `theme: false` when your host application owns the CSS variables.
@@ -137,20 +139,22 @@ Pass `theme: false` when your host application owns the CSS variables.
 Component defaults let an application define shared prop values once.
 
 ```ts
-app.use(createGradientUI({
-	defaults: {
-		global: {
-			color: 'primary'
-		},
-		GButton: {
-			variant: 'filled',
-			size: 'm'
-		},
-		GInput: {
-			variant: 'outlined'
+app.use(
+	createGradientUI({
+		defaults: {
+			global: {
+				color: 'primary'
+			},
+			GButton: {
+				variant: 'filled',
+				size: 'm'
+			},
+			GInput: {
+				variant: 'outlined'
+			}
 		}
-	}
-}));
+	})
+);
 ```
 
 Local props always win over configured defaults.
