@@ -3,7 +3,28 @@ import tseslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
+const lintFiles = [
+	'src/**/*.{ts,tsx,js,jsx,vue}',
+	'docs/src/**/*.{ts,tsx,js,jsx,vue}',
+	'*.config.{js,ts}',
+	'docs/*.config.{js,ts}'
+];
+
 export default tseslint.config(
+	{
+		ignores: [
+			'node_modules/**',
+			'dist/**',
+			'dist-docs/**',
+			'coverage/**',
+			'docs/dist/**',
+			'vite.config.d.ts',
+			'*.tsbuildinfo',
+			'src/api/api.types.ts',
+			'tailwind.config.js',
+			'postcss.config.js'
+		]
+	},
 	eslint.configs.recommended,
 	...tseslint.configs.recommended,
 	...pluginVue.configs['flat/recommended'],
@@ -16,8 +37,7 @@ export default tseslint.config(
 		}
 	},
 	{
-		files: ['**/*.{ts,tsx,js,jsx,vue}'],
-		ignores: ['dist'],
+		files: lintFiles,
 		rules: {
 			quotes: [0, 'single'],
 			'@typescript-eslint/no-unused-vars': [
@@ -48,13 +68,6 @@ export default tseslint.config(
 			'arrow-body-style': ['error', 'as-needed'],
 			'vue/no-v-html': 'off'
 		}
-	},
-	{
-		ignores: [
-			'src/api/api.types.ts',
-			'tailwind.config.js',
-			'postcss.config.js'
-		]
 	},
 	eslintPluginPrettierRecommended
 );

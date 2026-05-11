@@ -1,5 +1,4 @@
 import type {
-	SelectionValue,
 	SelectBaseProps,
 	SelectItemChildren,
 	SelectItemKey,
@@ -20,12 +19,7 @@ export type DropdownSelectProps<
 	ReturnObject extends boolean = false
 > = SelectBaseProps<T, V, Multiple, ReturnObject>;
 
-export interface DropdownSelectSlots<
-	T,
-	V,
-	Multiple extends boolean = false,
-	ReturnObject extends boolean = false
-> {
+export interface DropdownSelectSlots<T, V> {
 	trigger?: () => unknown;
 	item?: (props: {
 		item: SelectMenuItem<T, V>;

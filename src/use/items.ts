@@ -50,9 +50,7 @@ export function useItems<T, V = unknown>(options: UseItemsOptions<T, V>) {
 		};
 	}
 
-	const normalizedItems = computed(() =>
-		(items ?? []).map(normalize)
-	);
+	const normalizedItems = computed(() => (items ?? []).map(normalize));
 
 	return {
 		items: normalizedItems,
