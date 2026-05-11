@@ -13,8 +13,9 @@ giving up explicit TypeScript APIs.
 npm install gradient-ui
 ```
 
-Gradient UI expects Vue 3. `vue-router` is a peer dependency because navigation
-components can render `RouterLink` when the `to` prop is used.
+Gradient UI expects Vue 3. `vue-router` is optional: navigation components use
+the globally registered `RouterLink` when your app installs a router, and fall
+back to regular anchors for string `to` values when it does not.
 
 ## Full Registration
 
@@ -76,6 +77,36 @@ You can also import public APIs from the root package:
 ```ts
 import { GButton, createGradientUI, useSnackbar } from 'gradient-ui';
 ```
+
+## Optional Router
+
+Navigation components such as `GNavItem` and `GAsideItem` support both `href`
+and `to`.
+
+With Vue Router installed in the host app, `to` renders through `RouterLink`:
+
+```ts
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import GradientUI from 'gradient-ui';
+import App from './App.vue';
+
+const router = createRouter({
+	history: createWebHistory(),
+	routes: []
+});
+
+createApp(App).use(router).use(GradientUI).mount('#app');
+```
+
+```vue
+<g-nav-item
+	label="Docs"
+	to="/docs" />
+```
+
+Without Vue Router, string `to` values become regular links. Object `to` values
+need Vue Router and otherwise render as non-navigation actions.
 
 ## Theme
 

@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build:docs",
+  "installCommand": "npm ci",
+  "outputDirectory": "dist-docs",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

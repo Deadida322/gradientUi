@@ -1,7 +1,10 @@
 <script setup lang="ts" generic="T extends AsideValue = AsideValue">
 	import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
-	import { RouterLink } from 'vue-router';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
+	import {
+		getRouterFallbackHref,
+		useOptionalRouterLink
+	} from '@/use/routerLink';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useAsideInject } from './context';
 	import { useAsideGroupInject } from './groupContext';
@@ -20,6 +23,7 @@
 
 	const aside = useAsideInject<T>();
 	const group = useAsideGroupInject<T>();
+	const RouterLink = useOptionalRouterLink();
 	const selected = computed(() =>
 		aside ? aside.isSelected(props.value as T | undefined) : false
 	);
@@ -43,8 +47,15 @@
 		isSelected,
 		select
 	}));
-	const isRouterLink = computed(() => Boolean(props.to) && !props.disabled);
-	const isLink = computed(() => Boolean(props.href) && !props.disabled);
+	const isRouterLink = computed(
+		() => Boolean(RouterLink) && Boolean(props.to) && !props.disabled
+	);
+	const fallbackHref = computed(() => getRouterFallbackHref(props.to));
+	const isLink = computed(
+		() =>
+			Boolean(props.href || (!RouterLink && fallbackHref.value)) &&
+			!props.disabled
+	);
 	const actionTag = computed(() => {
 		if (isRouterLink.value) return RouterLink;
 
@@ -57,7 +68,7 @@
 				}
 			: isLink.value
 				? {
-						href: props.href,
+						href: props.href ?? fallbackHref.value,
 						target: props.target,
 						rel:
 							props.rel ??

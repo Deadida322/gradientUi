@@ -1,0 +1,87 @@
+# Deployment
+
+Gradient UI has two publish targets:
+
+- documentation site: static Vite build from `docs`
+- npm package: library build from `src`
+
+## Documentation
+
+The docs build command is:
+
+```bash
+npm run build:docs
+```
+
+The static output directory is:
+
+```text
+dist-docs
+```
+
+## Netlify
+
+The repository includes `netlify.toml`.
+
+Netlify settings:
+
+- build command: `npm run build:docs`
+- publish directory: `dist-docs`
+- Node version: `22`
+
+Netlify can deploy automatically from the selected Git branch after connecting
+the repository in the Netlify dashboard.
+
+## Vercel
+
+The repository includes `vercel.json`.
+
+Vercel settings:
+
+- install command: `npm ci`
+- build command: `npm run build:docs`
+- output directory: `dist-docs`
+
+Vercel can deploy automatically from the selected Git branch after importing
+the repository in the Vercel dashboard.
+
+## CI
+
+`.github/workflows/ci.yml` runs on pushes, pull requests and manual dispatch.
+
+It checks:
+
+- `npm ci`
+- `npm run type-check`
+- `npm run eslint`
+- `npm run lint:css`
+- `npm run build`
+- `npm pack --dry-run`
+
+## npm Publishing
+
+`.github/workflows/publish-package.yml` publishes the package to npm when a
+GitHub release is published, or when the workflow is manually dispatched.
+
+Required GitHub secret:
+
+```text
+NPM_TOKEN
+```
+
+Create the token in npm, then add it in GitHub:
+
+```text
+Repository settings -> Secrets and variables -> Actions -> New repository secret
+```
+
+Recommended release flow:
+
+```bash
+npm version patch
+git push
+git push --tags
+```
+
+Then create and publish a GitHub release for the tag. The publish workflow will
+run `npm publish --access public`.
