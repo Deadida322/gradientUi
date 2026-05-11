@@ -1,6 +1,6 @@
 {
 	"name": "@gradient-ui/core",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"private": false,
 	"scripts": {
 		"dev": "vite --config docs/vite.config.ts",
