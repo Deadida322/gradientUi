@@ -3,7 +3,7 @@ import {
 	createDefaultTheme,
 	type ColorInput,
 	type ThemeMode
-} from '@gib/gradient-ui';
+} from '@gradient-ui/core';
 
 const DOCS_THEME_SEED: ColorInput = '#704aff';
 const DOCS_THEME_STORAGE_KEY = 'gradient-ui-docs-theme';

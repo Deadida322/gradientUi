@@ -22,12 +22,12 @@ const toPublicScript = (script: string) =>
 		.replace(
 			internalComponentImportPattern,
 			(_match, imports: string) =>
-				`import { ${imports.trim()} } from '@gib/gradient-ui';\n`
+				`import { ${imports.trim()} } from '@gradient-ui/core';\n`
 		)
 		.replace(
 			internalServiceImportPattern,
 			(_match, imports: string) =>
-				`import { ${imports.trim()} } from '@gib/gradient-ui';\n`
+				`import { ${imports.trim()} } from '@gradient-ui/core';\n`
 		)
 		.replace(internalTypeImportPattern, '')
 		.replace(/GChipVariants/g, 'string')

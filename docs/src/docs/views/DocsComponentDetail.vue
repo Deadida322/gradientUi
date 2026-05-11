@@ -142,7 +142,7 @@
 			<h2>Usage</h2>
 			<p>
 				Import <code>{{ component.title }}</code> from
-				<code>@gib/gradient-ui</code> and combine it with shared
+				<code>@gradient-ui/core</code> and combine it with shared
 				component props for <code>color</code>, <code>size</code>,
 				<code>state</code> and <code>variant</code>.
 			</p>

@@ -18,7 +18,7 @@ import {
 	vMask,
 	vRipple,
 	vTooltip
-} from '@gib/gradient-ui';
+} from '@gradient-ui/core';
 import App from './App.vue';
 
 const app = createApp(App);
