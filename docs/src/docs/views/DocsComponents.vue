@@ -5,7 +5,7 @@
 	const importCode =
 		`
 <script setup lang="ts">
-	import { GButton, GInput, GSelect } from 'gradient-ui';
+	import { GButton, GInput, GSelect } from '@gib/gradient-ui';
 <` +
 		`/script>
 
@@ -50,8 +50,8 @@
 				class="docs-page__anchor"></span>
 			<h2>Using components</h2>
 			<p>
-				Import components from <code>gradient-ui</code> and use them
-				directly in Vue single-file components. Public APIs are
+				Import components from <code>@gib/gradient-ui</code> and use
+				them directly in Vue single-file components. Public APIs are
 				intentionally small: most components share <code>variant</code>,
 				<code>size</code>, <code>color</code>, <code>disabled</code>,
 				<code>rounded</code>, <code>state</code> and slot conventions.

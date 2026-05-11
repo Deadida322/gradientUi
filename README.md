@@ -7,10 +7,12 @@ directives and service helpers.
 It is designed for product interfaces that need a polished default look without
 giving up explicit TypeScript APIs.
 
+The npm package is published as `@gib/gradient-ui`.
+
 ## Install
 
 ```bash
-npm install gradient-ui
+npm install @gib/gradient-ui
 ```
 
 Gradient UI expects Vue 3. `vue-router` is optional: navigation components use
@@ -23,8 +25,8 @@ Import the stylesheet once near your app entry and install the plugin.
 
 ```ts
 import { createApp } from 'vue';
-import { createGradientUI } from 'gradient-ui';
-import 'gradient-ui/style.css';
+import { createGradientUI } from '@gib/gradient-ui';
+import '@gib/gradient-ui/style.css';
 import App from './App.vue';
 
 const gradientUI = createGradientUI({
@@ -53,7 +55,7 @@ createApp(App).use(gradientUI).mount('#app');
 The default export is also available for simple installs:
 
 ```ts
-import GradientUI from 'gradient-ui';
+import GradientUI from '@gib/gradient-ui';
 
 app.use(GradientUI);
 ```
@@ -64,18 +66,18 @@ Components, directives, services, theme helpers and composables are exposed as
 subpath exports.
 
 ```ts
-import { GButton, GInput, GModal } from 'gradient-ui/components';
-import { vRipple, vMask, vTooltip } from 'gradient-ui/directives';
-import { useSnackbar, useLoading } from 'gradient-ui/services';
-import { createTheme, useTheme } from 'gradient-ui/theme';
-import { useBreakpoints, useMask } from 'gradient-ui/use';
-import 'gradient-ui/style.css';
+import { GButton, GInput, GModal } from '@gib/gradient-ui/components';
+import { vRipple, vMask, vTooltip } from '@gib/gradient-ui/directives';
+import { useSnackbar, useLoading } from '@gib/gradient-ui/services';
+import { createTheme, useTheme } from '@gib/gradient-ui/theme';
+import { useBreakpoints, useMask } from '@gib/gradient-ui/use';
+import '@gib/gradient-ui/style.css';
 ```
 
 You can also import public APIs from the root package:
 
 ```ts
-import { GButton, createGradientUI, useSnackbar } from 'gradient-ui';
+import { GButton, createGradientUI, useSnackbar } from '@gib/gradient-ui';
 ```
 
 ## Optional Router
@@ -88,7 +90,7 @@ With Vue Router installed in the host app, `to` renders through `RouterLink`:
 ```ts
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import GradientUI from 'gradient-ui';
+import GradientUI from '@gib/gradient-ui';
 import App from './App.vue';
 
 const router = createRouter({
@@ -173,7 +175,7 @@ The full plugin registers all public directives:
 Manual registration is available too:
 
 ```ts
-import { vRipple } from 'gradient-ui/directives';
+import { vRipple } from '@gib/gradient-ui/directives';
 
 app.directive('ripple', vRipple);
 ```
@@ -183,7 +185,7 @@ app.directive('ripple', vRipple);
 Service helpers are regular named exports.
 
 ```ts
-import { useLoading, useSnackbar } from 'gradient-ui/services';
+import { useLoading, useSnackbar } from '@gib/gradient-ui/services';
 
 const snackbar = useSnackbar();
 const loading = useLoading();
@@ -232,13 +234,13 @@ import '@mdi/font/css/materialdesignicons.css';
 ## Package Exports
 
 ```ts
-import 'gradient-ui/style.css';
-import { createGradientUI } from 'gradient-ui';
-import { GButton } from 'gradient-ui/components';
-import { vRipple } from 'gradient-ui/directives';
-import { useSnackbar } from 'gradient-ui/services';
-import { createTheme } from 'gradient-ui/theme';
-import { useBreakpoints } from 'gradient-ui/use';
+import '@gib/gradient-ui/style.css';
+import { createGradientUI } from '@gib/gradient-ui';
+import { GButton } from '@gib/gradient-ui/components';
+import { vRipple } from '@gib/gradient-ui/directives';
+import { useSnackbar } from '@gib/gradient-ui/services';
+import { createTheme } from '@gib/gradient-ui/theme';
+import { useBreakpoints } from '@gib/gradient-ui/use';
 ```
 
 ## Development
@@ -262,7 +264,7 @@ npm run build
 ```bash
 npm run build
 npm pack --dry-run
-npm publish
+npm publish --access public
 ```
 
 ## License

@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [vue()],
 	resolve: {
 		alias: {
-			'gradient-ui': resolve(__dirname, '../src/index.ts'),
+			'@gib/gradient-ui': resolve(__dirname, '../src/index.ts'),
 			'@': resolve(__dirname, '../src'),
 			'@docs': resolve(__dirname, 'src/docs'),
 			'@playground': resolve(__dirname, 'src/playground')

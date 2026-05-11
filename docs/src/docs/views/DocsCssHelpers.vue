@@ -27,7 +27,7 @@
 </template>`;
 
 	const breakpointsCode = `<script setup lang="ts">
-	import { useBreakpoints } from 'gradient-ui';
+	import { useBreakpoints } from '@gib/gradient-ui';
 
 	const display = useBreakpoints();
 	const drawerAvailable = display.down('md');
@@ -46,7 +46,7 @@ ${scriptCloseTag}
 </template>`;
 
 	const customBreakpointsCode = `<script setup lang="ts">
-	import { useBreakpoints } from 'gradient-ui';
+	import { useBreakpoints } from '@gib/gradient-ui';
 
 	const display = useBreakpoints({
 		phone: 0,
