@@ -9,6 +9,8 @@ giving up explicit TypeScript APIs.
 
 The npm package is published as `@gradient-ui/core`.
 
+Documentation: https://gradient-ui-docs.netlify.app/docs/get-started
+
 ## Install
 
 ```bash

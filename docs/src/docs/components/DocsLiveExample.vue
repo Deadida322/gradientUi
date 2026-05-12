@@ -28,10 +28,23 @@
 	.docs-live-example {
 		display: grid;
 		gap: var(--g-token-space-4);
+
+		width: 100%;
 		min-width: 0;
+		max-width: 100%;
 
 		&__code {
-			.docs-code {
+			overflow: hidden;
+			min-width: 0;
+			max-width: 100%;
+
+			:deep(.g-expansion__body),
+			:deep(.g-expansion__content) {
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			:deep(.docs-code) {
 				border: 0;
 			}
 		}
