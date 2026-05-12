@@ -87,7 +87,7 @@
 	"bugs": {
 		"url": "https://github.com/Deadida322/gradientUi/issues"
 	},
-	"homepage": "https://github.com/Deadida322/gradientUi#readme",
+	"homepage": "https://gradient-ui-docs.netlify.app/docs/get-started",
 	"publishConfig": {
 		"access": "public"
 	},

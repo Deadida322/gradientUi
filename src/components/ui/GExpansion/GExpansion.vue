@@ -322,6 +322,8 @@
 		flex-direction: column;
 
 		width: 100%;
+		min-width: 0;
+		max-width: 100%;
 		border-radius: var(--g-token-expansion-radius);
 
 		color: var(--g-surface-content-color, var(--g-token-expansion-color));
@@ -418,11 +420,16 @@
 
 		&__body {
 			overflow: hidden;
+			min-width: 0;
+			max-width: 100%;
 		}
 
 		&__content {
+			min-width: 0;
+			max-width: 100%;
 			padding: 0 var(--g-token-expansion-padding-x-m)
 				var(--g-token-expansion-content-padding-bottom-m);
+
 			font-size: var(--g-token-expansion-content-font-size);
 			line-height: var(--g-token-expansion-content-line-height);
 			color: var(--g-token-expansion-content-color);
@@ -557,6 +564,8 @@
 
 	.g-expansion__surface {
 		width: 100%;
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	@include actionSurface.action-surface-layers('g-expansion', true);

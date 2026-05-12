@@ -55,6 +55,10 @@
 	.docs-code {
 		overflow: hidden;
 
+		box-sizing: border-box;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
 		margin: 0;
 		border: 1px solid var(--g-token-border-subtle);
 		border-radius: var(--g-token-radius-md);
@@ -85,11 +89,16 @@
 		&__pre {
 			overflow: auto;
 
+			box-sizing: border-box;
+			min-width: 0;
+			max-width: 100%;
 			margin: 0;
 			padding: var(--g-token-space-4);
 
 			font-size: var(--g-token-font-size-sm);
 			line-height: var(--g-token-line-height-lg);
+
+			-webkit-overflow-scrolling: touch;
 		}
 
 		code,
