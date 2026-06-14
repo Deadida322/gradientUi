@@ -55,6 +55,7 @@
 			'g-field-base_multiline': multiline,
 			[`g-field-base_state-${state}`]: state
 		}"
+		:data-g-validation-error="state === 'error' ? 'true' : undefined"
 		:style="colorStyles">
 		<label
 			:for="id"

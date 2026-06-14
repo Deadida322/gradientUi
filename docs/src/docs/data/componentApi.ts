@@ -152,6 +152,13 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		to: '/docs/components/table'
 	},
 	{
+		id: 'form',
+		title: 'GForm',
+		group: 'form',
+		description: 'Native form wrapper for nested field validation.',
+		to: '/docs/components/form'
+	},
+	{
 		id: 'input',
 		title: 'GInput',
 		group: 'form',
@@ -520,6 +527,31 @@ export const componentApiEmits: Record<string, DocsPropRow[]> = {
 		}
 	],
 	tooltip: [],
+	form: [
+		{
+			name: 'submit',
+			type: '(event: SubmitEvent, validation: GFormValidationState) => void',
+			description:
+				'Emitted on native submit before optional validation result events.'
+		},
+		{
+			name: 'submit-valid',
+			type: '(event: SubmitEvent, validation: GFormValidationState) => void',
+			description:
+				'Emitted after submit validation passes for all nested validators.'
+		},
+		{
+			name: 'submit-invalid',
+			type: '(event: SubmitEvent, validation: GFormValidationState) => void',
+			description:
+				'Emitted after submit validation fails for local or nested validators.'
+		},
+		{
+			name: 'reset',
+			type: '(event: Event, validation: GFormValidationState) => void',
+			description: 'Emitted after native reset clears validation state.'
+		}
+	],
 	input: [
 		...textFieldEmits,
 		{
@@ -1694,6 +1726,108 @@ export const componentApi: DocsComponentApi[] = [
 			Second section
 		</g-expansion>
 	</g-expansion-group>
+</template>`
+			}
+		]
+	},
+	{
+		id: 'form',
+		title: 'GForm',
+		group: 'form',
+		description:
+			'Native form wrapper that validates nested Gradient UI controls through gib-validate.',
+		props: [
+			{
+				name: 'name',
+				type: 'string',
+				description:
+					'Optional validation registry name passed to gib-validate.'
+			},
+			{
+				name: 'preventDefault',
+				type: 'boolean',
+				defaultValue: 'true',
+				description: 'Calls preventDefault on submit before emitting.'
+			},
+			{
+				name: 'validateOnSubmit',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Runs validation on submit and emits submit-valid or submit-invalid.'
+			},
+			{
+				name: 'validateOn',
+				type: "'blur' | 'input' | 'submit' | 'lazy'",
+				defaultValue: "'blur'",
+				description:
+					'Provides the default validation trigger for nested Gradient UI controls.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Disables nested Gradient UI controls through form context.'
+			},
+			{
+				name: 'scrollToError',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Scrolls the first invalid nested control into view after invalid submit.'
+			},
+			{
+				name: 'focusFirstError',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Moves focus to the first invalid nested control after invalid submit.'
+			},
+			{
+				name: 'noValidate',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Applies novalidate to the native form so custom validation owns feedback.'
+			}
+		],
+		slots: [
+			{
+				name: 'default',
+				type: 'slot',
+				scope: '{ $v, valid, invalid, pending, dirty, error, errors, errorCount, firstError, disabled, validate, reset, touch, resetValidation }',
+				description:
+					'Form content, flattened errors and validation helpers derived from the parent validation state.'
+			}
+		],
+		examples: [
+			{
+				id: 'form-basic',
+				label: 'Basic',
+				code: `
+<script setup lang="ts">
+	import { ref } from 'vue';
+	import { required } from 'gib-validate';
+
+	const email = ref('');
+
+	const save = () => {
+		// send form
+	};
+</script>
+
+<template>
+	<g-form
+		validate-on="input"
+		focus-first-error
+		@submit-valid="save">
+		<g-input
+			v-model="email"
+			label="Email"
+			:rules="[required('Email is required')]" />
+		<g-button type="submit" label="Save" />
+	</g-form>
 </template>`
 			}
 		]
