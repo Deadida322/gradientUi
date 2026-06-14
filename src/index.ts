@@ -40,6 +40,7 @@ import {
 	GTabList,
 	GTabPanel,
 	GTabPanels,
+	GTable,
 	GTabs,
 	GText,
 	GTextarea,
@@ -125,6 +126,7 @@ function registerComponents(app: App) {
 	registerComponent(app, 'GTabList', GTabList);
 	registerComponent(app, 'GTabPanel', GTabPanel);
 	registerComponent(app, 'GTabPanels', GTabPanels);
+	registerComponent(app, 'GTable', GTable);
 	registerComponent(app, 'GTabs', GTabs);
 	registerComponent(app, 'GText', GText);
 	registerComponent(app, 'GTextarea', GTextarea);
