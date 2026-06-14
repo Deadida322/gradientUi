@@ -1,12 +1,17 @@
 <script setup lang="ts">
-	import { computed } from 'vue';
+	import { computed, useAttrs } from 'vue';
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
 	import { makeButtonProps } from './types';
 	import { useActionSurface } from '@/use/actionSurface';
 	import usePx from '@/use/px';
+	import { useTagName } from '@/use/tagName';
+
+	defineOptions({ inheritAttrs: false });
+
 	const slots = defineSlots<PLASlots>();
+	const attrs = useAttrs();
 
 	const props = defineProps(
 		makeButtonProps({
@@ -28,6 +33,7 @@
 
 		return props.ripple;
 	});
+	const { tagName, tagAttrs } = useTagName(props, 'button');
 	const {
 		actionSurfaceClasses,
 		resolvedColor,
@@ -48,7 +54,8 @@
 			color: resolvedColor,
 			state: resolvedState
 		}">
-		<div
+		<component
+			:is="tagName"
 			v-ripple="computedRipple"
 			class="g-button"
 			:class="[
@@ -57,7 +64,8 @@
 					'g-button_icon': iconButton || isIconButton
 				}
 			]"
-			:style="surfaceStyles">
+			:style="surfaceStyles"
+			v-bind="{ ...tagAttrs, ...attrs }">
 			<span :class="surfaceUnderlayClasses"></span>
 			<span :class="surfaceOverlayClasses"></span>
 			<span
@@ -89,7 +97,7 @@
 					</slot>
 				</span>
 			</span>
-		</div>
+		</component>
 	</g-gradient>
 </template>
 
@@ -121,6 +129,8 @@
 		--g-token-icon-size-m: var(--g-token-button-icon-size);
 
 		border-radius: v-bind('computedBorderRadius');
+		font: inherit;
+		text-decoration: none;
 
 		&__content {
 			display: inline-flex;

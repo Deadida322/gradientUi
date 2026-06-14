@@ -39,6 +39,7 @@ import {
 	snackbarUsageExample
 } from '@docs/examples/snackbar';
 import { switchExamples, switchUsageExample } from '@docs/examples/switch';
+import { tableExamples, tableUsageExample } from '@docs/examples/table';
 import {
 	textareaExamples,
 	textareaUsageExample
@@ -180,6 +181,21 @@ export const componentPages: DocsComponentPage[] = [
 			description:
 				'Tooltip examples cover placements, open and close delays, floating behavior, directive usage and programmatic show/hide methods.',
 			items: tooltipExamples
+		}
+	},
+	{
+		id: 'table',
+		usage: {
+			title: 'Usage',
+			description:
+				'GTable is a styled table primitive for already prepared rows. It keeps data features outside, but gives headers, alignment, widths, slots, merged cells and expandable detail rows a stable API.',
+			example: tableUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Table examples cover variants, density, elevation, column alignment, sticky headers, fixed columns, expansion, merged group rows and slot-based cell composition.',
+			items: tableExamples
 		}
 	},
 	{

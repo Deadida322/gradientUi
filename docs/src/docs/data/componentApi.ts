@@ -26,6 +26,12 @@ export const componentGroups = [
 			'Primitives for moving through product shells, page sections and tabbed views.'
 	},
 	{
+		id: 'data-display',
+		title: 'Data display',
+		description:
+			'Structured primitives for comparing rows, columns and formatted product data.'
+	},
+	{
 		id: 'form',
 		title: 'Form',
 		description:
@@ -136,6 +142,14 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		title: 'GTabs',
 		group: 'navigation',
 		description: 'Accessible tablist, tabs and panels for related views.'
+	},
+	{
+		id: 'table',
+		title: 'GTable',
+		group: 'data-display',
+		description:
+			'Styled static table primitive with headers, slots, expansion and merged cells.',
+		to: '/docs/components/table'
 	},
 	{
 		id: 'input',
@@ -579,6 +593,29 @@ export const componentApiEmits: Record<string, DocsPropRow[]> = {
 			description: 'Emitted when an aside item is selected.'
 		}
 	],
+	table: [
+		{
+			name: 'update:expanded',
+			type: '(value: Array<string | number>) => void',
+			description:
+				'Emitted when an expandable row opens or closes through v-model:expanded.'
+		},
+		{
+			name: 'expand',
+			type: '(item: unknown, expanded: boolean) => void',
+			description: 'Emitted after a row expansion state is toggled.'
+		},
+		{
+			name: 'row-click',
+			type: '(item: unknown, event: MouseEvent) => void',
+			description: 'Emitted when a body row is clicked.'
+		},
+		{
+			name: 'cell-click',
+			type: '(context: GTableCellContext, event: MouseEvent) => void',
+			description: 'Emitted when a rendered body cell is clicked.'
+		}
+	],
 	loading: [
 		{
 			name: 'close',
@@ -895,6 +932,34 @@ export const componentApiCssVariables: Record<string, DocsPropRow[]> = {
 			name: '--g-aside-active-gradient',
 			type: 'CSS background',
 			description: 'Gradient used by active aside indicators.'
+		}
+	],
+	table: [
+		...surfaceCssVariables,
+		{
+			name: '--g-table-padding-x',
+			type: 'CSS length',
+			description: 'Horizontal padding for table header and body cells.'
+		},
+		{
+			name: '--g-table-padding-y',
+			type: 'CSS length',
+			description: 'Vertical padding for table header and body cells.'
+		},
+		{
+			name: '--g-table-radius',
+			type: 'CSS length',
+			description: 'Outer table surface radius.'
+		},
+		{
+			name: '--g-table-border-color',
+			type: 'CSS color',
+			description: 'Divider color between rows and optional cell borders.'
+		},
+		{
+			name: '--g-table-header-color',
+			type: 'CSS color',
+			description: 'Header text color.'
 		}
 	]
 };
@@ -2810,6 +2875,275 @@ export const componentApi: DocsComponentApi[] = [
 	<g-tooltip text="Gradient-aware action">
 		<g-button label="Hover me" variant="tonal" />
 	</g-tooltip>
+</template>`
+			}
+		]
+	},
+	{
+		id: 'table',
+		title: 'GTable',
+		group: 'data-display',
+		description:
+			'Styled static table primitive for prepared rows. GTable owns structure, alignment, slots, merged cells and expandable detail rows, while data features stay outside for a future GDataTable layer.',
+		props: [
+			{
+				name: 'headers',
+				type: 'GTableHeader[]',
+				defaultValue: '[]',
+				description:
+					'Column definitions. Each header can define key, title, alignment, width, value and format callbacks.'
+			},
+			{
+				name: 'items',
+				type: 'T[]',
+				defaultValue: '[]',
+				description: 'Rows rendered in the table body.'
+			},
+			{
+				name: 'itemKey',
+				type: 'keyof T | string | ((item, index) => string | number)',
+				defaultValue: "'id'",
+				description:
+					'Stable row identity used by expansion and keyed rendering.'
+			},
+			{
+				name: 'variant',
+				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				defaultValue: "'tonal'",
+				description: 'Surface treatment of the table container.'
+			},
+			{
+				name: 'density',
+				type: "'compact' | 'comfortable' | 'spacious'",
+				defaultValue: "'comfortable'",
+				description: 'Cell padding density.'
+			},
+			{
+				name: 'color',
+				type: 'string',
+				defaultValue: "'primary'",
+				description: 'Theme color or custom color seed.'
+			},
+			{
+				name: 'rounded',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Uses a larger outer surface radius.'
+			},
+			{
+				name: 'stickyHeader',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Keeps header cells pinned while the table scroller moves.'
+			},
+			{
+				name: 'fixedLayout',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Uses native table-layout: fixed.'
+			},
+			{
+				name: 'hover',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Highlights body rows on hover.'
+			},
+			{
+				name: 'striped',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Adds alternating tonal row backgrounds.'
+			},
+			{
+				name: 'bordered',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Adds vertical cell dividers.'
+			},
+			{
+				name: 'caption',
+				type: 'string',
+				description: 'Accessible table caption rendered in caption.'
+			},
+			{
+				name: 'hideCaption',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Keeps the caption available to assistive tech while visually hiding it.'
+			},
+			{
+				name: 'ariaLabel',
+				type: 'string',
+				description: 'Accessible label applied to the table element.'
+			},
+			{
+				name: 'ariaLabelledby',
+				type: 'string',
+				description:
+					'ID reference used as aria-labelledby on the table element.'
+			},
+			{
+				name: 'loading',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Renders the loading slot or default loading row.'
+			},
+			{
+				name: 'elevation',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Adds calm elevation to the table surface.'
+			},
+			{
+				name: 'emptyText',
+				type: 'string',
+				defaultValue: "'No data'",
+				description: 'Fallback text for empty tables.'
+			},
+			{
+				name: 'showExpand',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Adds an expansion control column.'
+			},
+			{
+				name: 'expanded',
+				type: 'Array<string | number>',
+				defaultValue: '[]',
+				description:
+					'Controlled expanded row keys for v-model:expanded.'
+			},
+			{
+				name: 'singleExpand',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Allows only one expanded row at a time.'
+			},
+			{
+				name: 'expandOnRowClick',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Toggles expansion when the row itself is clicked.'
+			},
+			{
+				name: 'spans',
+				type: 'Array<GTableCellSpan>',
+				defaultValue: '[]',
+				description:
+					'Declaratively merges body cells by row and column, applying colspan, rowspan and hidden cells automatically.'
+			},
+			{
+				name: 'cellProps',
+				type: '(context: GTableCellContext) => GTableCellAttrs',
+				description:
+					'Returns low-level cell attrs for custom colspan, rowspan, hidden, state, class and style control.'
+			},
+			{
+				name: 'rowProps',
+				type: '(context: GTableRowContext) => GTableRowAttrs',
+				description:
+					'Returns attrs for body rows, including semantic state.'
+			},
+			{
+				name: 'headerProps',
+				type: '(header, index) => GTableCellAttrs',
+				description: 'Returns attrs for header cells.'
+			}
+		],
+		slots: [
+			{
+				name: 'top',
+				type: 'slot',
+				scope: '-',
+				description: 'Content above the table scroller.'
+			},
+			{
+				name: 'bottom',
+				type: 'slot',
+				scope: '-',
+				description: 'Content below the table scroller.'
+			},
+			{
+				name: 'header',
+				type: 'slot',
+				scope: '{ header, index }',
+				description: 'Fallback custom header cell content.'
+			},
+			{
+				name: 'header.<key>',
+				type: 'slot',
+				scope: '{ header, index }',
+				description: 'Custom header content for one column.'
+			},
+			{
+				name: 'item',
+				type: 'slot',
+				scope: '{ item, header, value, rowIndex, columnIndex }',
+				description: 'Fallback custom body cell content.'
+			},
+			{
+				name: 'item.<key>',
+				type: 'slot',
+				scope: '{ item, header, value, rowIndex, columnIndex }',
+				description: 'Custom body cell content for one column.'
+			},
+			{
+				name: 'body',
+				type: 'slot',
+				scope: '{ items, headers, columnCount, classes, getRowContext, getCellContext }',
+				description:
+					'Full tbody escape hatch for native tr/td rendering, custom colspan and rowspan markup.'
+			},
+			{
+				name: 'row',
+				type: 'slot',
+				scope: '{ item, index, key, expanded, toggleExpanded, headers }',
+				description:
+					'Full body row escape hatch for native tr/td rendering.'
+			},
+			{
+				name: 'expand',
+				type: 'slot',
+				scope: '{ item, index, key, expanded, toggleExpanded }',
+				description: 'Custom expansion control.'
+			},
+			{
+				name: 'expanded-row',
+				type: 'slot',
+				scope: '{ item, index, key, expanded, toggleExpanded, headers }',
+				description: 'Detail content rendered below an expanded row.'
+			},
+			{
+				name: 'empty',
+				type: 'slot',
+				scope: '-',
+				description: 'Custom empty state row content.'
+			},
+			{
+				name: 'loading',
+				type: 'slot',
+				scope: '-',
+				description: 'Custom loading row content.'
+			},
+			{
+				name: 'caption',
+				type: 'slot',
+				scope: '-',
+				description: 'Custom table caption content.'
+			}
+		],
+		examples: [
+			{
+				id: 'table-basic',
+				label: 'Basic',
+				code: `
+<template>
+	<g-table
+		:headers="headers"
+		:items="items"
+		hover />
 </template>`
 			}
 		]

@@ -53,10 +53,5 @@
 <style lang="scss">
 	.docs-live-example-tabs {
 		width: 100%;
-
-		.g-tab-list {
-			overflow-x: auto;
-			max-width: 100%;
-		}
 	}
 </style>
