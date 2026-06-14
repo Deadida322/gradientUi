@@ -44,19 +44,23 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 	const {
 		focused,
 		$v,
+		disabled,
 		computedMessage,
 		hasValidationError,
 		onFocus,
-		onBlur
+		onBlur,
+		onInputValidation
 	} = useFormControl({
 		modelValue: options.modelValue,
 		rules: options.rules,
-		message: options.message
+		message: options.message,
+		disabled: computed(() => options.props.disabled)
 	});
 
 	const fieldProps = computed(() => ({
 		...options.props,
 		id: options.id,
+		disabled: disabled.value,
 		focused: focused.value,
 		message: computedMessage.value,
 		state: hasValidationError.value ? 'error' : options.props.state,
@@ -87,6 +91,7 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 			.value;
 		const nextValue = updateModelValue(value);
 		syncDisplayValue(event, nextValue);
+		onInputValidation();
 		options.emitters.input(nextValue, event);
 	}
 
@@ -95,6 +100,7 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 			.value;
 		const nextValue = updateModelValue(value);
 		syncDisplayValue(event, nextValue);
+		onInputValidation();
 		options.emitters.change(nextValue, event);
 	}
 
@@ -110,6 +116,7 @@ export function useTextFieldControl(options: UseTextFieldControlOptions) {
 
 	function handleClear() {
 		options.modelValue.value = '';
+		onInputValidation();
 		options.emitters.clear();
 	}
 

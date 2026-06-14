@@ -68,20 +68,24 @@
 	const {
 		focused,
 		$v,
+		disabled,
 		computedMessage,
 		hasValidationError,
 		onFocus,
-		onBlur
+		onBlur,
+		onInputValidation
 	} = useFormControl<ModelValue>({
 		modelValue: computed(() => props.modelValue),
 		rules: computed(() => props.rules),
-		message: computed(() => props.message)
+		message: computed(() => props.message),
+		disabled: computed(() => props.disabled)
 	});
 
 	function onSelect(item: Parameters<typeof handleSelect>[0]) {
 		handleSelect(item, () => {
 			open.value = false;
 		});
+		onInputValidation();
 	}
 
 	function handleFocus(event: FocusEvent) {
@@ -98,6 +102,7 @@
 		const nextValue = (isMultiple.value ? [] : null) as ModelValue;
 		emit('update:modelValue', nextValue);
 		open.value = false;
+		onInputValidation();
 		emit('clear');
 	}
 
@@ -106,7 +111,7 @@
 		label: props.label,
 		color: props.color,
 		state: hasValidationError.value ? 'error' : props.state,
-		disabled: props.disabled,
+		disabled: disabled.value,
 		clearable: props.clearable,
 		size: props.size,
 		focused: focused.value || open.value,
@@ -125,7 +130,7 @@
 <template>
 	<g-dropdown
 		v-model="open"
-		:open-on-click="!props.disabled"
+		:open-on-click="!fieldProps.disabled"
 		:open-on-focus="false"
 		:close-on-content-click="false"
 		activator-full-width
@@ -143,9 +148,12 @@
 							:id="id"
 							class="g-select__control g-field-base__native"
 							role="combobox"
-							:tabindex="props.disabled ? -1 : 0"
+							:tabindex="fieldProps.disabled ? -1 : 0"
 							:aria-expanded="open"
-							:aria-disabled="props.disabled"
+							:aria-disabled="fieldProps.disabled"
+							:aria-invalid="
+								fieldProps.state === 'error' || undefined
+							"
 							@focus="handleFocus"
 							@blur="handleBlur">
 							<slot

@@ -20,6 +20,7 @@ import {
 } from '@docs/examples/expansion-group';
 import { fabExamples, fabUsageExample } from '@docs/examples/fab';
 import { drawerExamples, drawerUsageExample } from '@docs/examples/drawer';
+import { formExamples, formUsageExample } from '@docs/examples/form';
 import { inputExamples, inputUsageExample } from '@docs/examples/input';
 import { loadingExamples, loadingUsageExample } from '@docs/examples/loading';
 import { menuExamples, menuUsageExample } from '@docs/examples/menu';
@@ -196,6 +197,21 @@ export const componentPages: DocsComponentPage[] = [
 			description:
 				'Table examples cover variants, density, elevation, column alignment, sticky headers, fixed columns, expansion, merged group rows and slot-based cell composition.',
 			items: tableExamples
+		}
+	},
+	{
+		id: 'form',
+		usage: {
+			title: 'Usage',
+			description:
+				'GForm wraps a native form and coordinates nested Gradient UI field validators through gib-validate. Use it when field-level rules should validate together on submit.',
+			example: formUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Form examples show submit orchestration, validation triggers, form-level disabled state, mixed controls and flattened error slot state while leaving model ownership in the page.',
+			items: formExamples
 		}
 	},
 	{

@@ -33,6 +33,8 @@
 				'g-check-group_vertical': props.vertical
 			}
 		]"
+		:data-g-validation-error="props.state === 'error' ? 'true' : undefined"
+		:aria-invalid="props.state === 'error' || undefined"
 		:style="colorStyles"
 		@focusin="emit('focusin', $event)"
 		@focusout="emit('focusout', $event)"
