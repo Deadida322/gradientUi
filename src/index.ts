@@ -16,6 +16,7 @@ import {
 	GExpansion,
 	GExpansionGroup,
 	GFAB,
+	GForm,
 	GGradient,
 	GIcon,
 	GInput,
@@ -102,6 +103,7 @@ function registerComponents(app: App) {
 	registerComponent(app, 'GExpansion', GExpansion);
 	registerComponent(app, 'GExpansionGroup', GExpansionGroup);
 	registerComponent(app, 'GFAB', GFAB);
+	registerComponent(app, 'GForm', GForm);
 	registerComponent(app, 'GGradient', GGradient);
 	registerComponent(app, 'GIcon', GIcon as unknown as Component);
 	registerComponent(app, 'GInput', GInput);

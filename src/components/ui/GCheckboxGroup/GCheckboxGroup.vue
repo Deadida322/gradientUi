@@ -45,6 +45,7 @@
 	const {
 		groupName,
 		groupProps,
+		disabled,
 		items,
 		isItemSelected,
 		getNextItemValue,
@@ -80,7 +81,7 @@
 			inputType: 'checkbox' as const,
 			name: groupName.value,
 			label: item.label,
-			disabled: props.disabled || item.disabled,
+			disabled: disabled.value || item.disabled,
 			size: props.size,
 			color: props.color,
 			state: props.state,
@@ -94,7 +95,7 @@
 		return {
 			kind: 'checkbox' as const,
 			checked: isItemSelected(item),
-			disabled: props.disabled || item.disabled,
+			disabled: disabled.value || item.disabled,
 			size: props.size,
 			color: props.color,
 			state: props.state,

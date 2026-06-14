@@ -18,6 +18,7 @@ export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
 export { default as GCheckboxGroup } from '@/components/ui/GCheckboxGroup/GCheckboxGroup.vue';
 export { default as GSquircle } from '@/components/ui/GSquircle/GSquircle.vue';
 export { default as GFAB } from '@/components/ui/GFAB/GFAB.vue';
+export { GForm } from '@/components/ui/GForm';
 export { GQuickActions } from '@/components/ui/GQuickActions';
 export { default as GProgress } from '@/components/ui/GProgress/GProgress.vue';
 export { default as GLoading } from '@/components/ui/GLoading/GLoading.vue';

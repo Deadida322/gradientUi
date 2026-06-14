@@ -23,12 +23,20 @@ export function useCheckBooleanControl(
 		() => props.id ?? createComponentId(options.idPrefix)
 	);
 
-	const { focused, $v, computedMessage, onFocus, onBlur } =
-		useFormControl<boolean>({
-			modelValue,
-			rules: computed(() => props.rules),
-			message: computed(() => props.message)
-		});
+	const {
+		focused,
+		$v,
+		disabled,
+		computedMessage,
+		onFocus,
+		onBlur,
+		onInputValidation
+	} = useFormControl<boolean>({
+		modelValue,
+		rules: computed(() => props.rules),
+		message: computed(() => props.message),
+		disabled: computed(() => props.disabled)
+	});
 	const validationState = computed(() =>
 		$v.value.$errors.modelValue?.length ? 'error' : props.state
 	);
@@ -39,6 +47,7 @@ export function useCheckBooleanControl(
 		inputType: 'checkbox' as const,
 		message: computedMessage.value,
 		checked: modelValue.value,
+		disabled: disabled.value,
 		focused: focused.value,
 		state: validationState.value
 	}));
@@ -46,7 +55,7 @@ export function useCheckBooleanControl(
 	const indicatorProps = computed(() => ({
 		kind: options.indicatorKind,
 		checked: modelValue.value,
-		disabled: props.disabled,
+		disabled: disabled.value,
 		size: props.size,
 		color: props.color,
 		state: validationState.value,
@@ -70,6 +79,7 @@ export function useCheckBooleanControl(
 	function handleChange(event: Event) {
 		const nextValue = (event.target as HTMLInputElement).checked;
 		modelValue.value = nextValue;
+		onInputValidation();
 		emit.change(nextValue, event);
 	}
 

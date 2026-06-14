@@ -37,6 +37,7 @@
 	const {
 		groupName,
 		groupProps,
+		disabled,
 		items,
 		isItemSelected,
 		getNextItemValue,
@@ -65,7 +66,7 @@
 			label: item.label,
 			value: item.value,
 			checked: isItemSelected(item),
-			disabled: props.disabled || item.disabled,
+			disabled: disabled.value || item.disabled,
 			size: props.size,
 			color: props.color,
 			state: props.state,

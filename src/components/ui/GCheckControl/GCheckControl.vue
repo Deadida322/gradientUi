@@ -57,6 +57,8 @@
 				'g-check-control_inline': props.inline
 			}
 		]"
+		:data-g-validation-error="props.state === 'error' ? 'true' : undefined"
+		:aria-invalid="props.state === 'error' || undefined"
 		:style="colorStyles"
 		@focusin="emit('focusin', $event)"
 		@focusout="emit('focusout', $event)"

@@ -2,6 +2,7 @@ import { computed, toRef } from 'vue';
 import { useFormControl } from '@/use/form/control';
 import { useSelectionController } from '@/use/select/selectionController';
 import type { SelectionValue } from '@/use/select/types';
+import type { InternalItem } from '@/use/select/types';
 import { useCheckGroupFocus } from './groupFocus';
 import type { CheckSelectionProps, CheckValueComparator } from './types';
 
@@ -35,14 +36,17 @@ export function useCheckOptionGroup<
 	const {
 		focused,
 		$v,
+		disabled,
 		computedMessage,
 		hasValidationError,
 		onFocus,
-		onBlur
+		onBlur,
+		onInputValidation
 	} = useFormControl<ModelValue>({
 		modelValue: computed(() => props.modelValue),
 		rules: computed(() => props.rules),
-		message: computed(() => props.message)
+		message: computed(() => props.message),
+		disabled: computed(() => props.disabled)
 	});
 
 	const valueComparator = computed<
@@ -83,7 +87,7 @@ export function useCheckOptionGroup<
 		label: props.label,
 		message: computedMessage.value,
 		color: props.color,
-		disabled: props.disabled,
+		disabled: disabled.value,
 		size: props.size,
 		state: hasValidationError.value ? 'error' : props.state,
 		indicatorView: props.indicatorView,
@@ -91,13 +95,19 @@ export function useCheckOptionGroup<
 		focused: focused.value
 	}));
 
+	function selectOption(item: InternalItem<T, V>) {
+		selectItem(item);
+		onInputValidation();
+	}
+
 	return {
 		groupName,
 		groupProps,
+		disabled,
 		items,
 		isItemSelected,
 		getNextItemValue,
-		selectItem,
+		selectItem: selectOption,
 		handleGroupFocusIn,
 		handleGroupFocusOut,
 		handlePointerDown,
