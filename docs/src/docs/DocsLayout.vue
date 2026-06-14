@@ -26,6 +26,7 @@
 	import { docsNavigation } from '@docs/data/navigation';
 	import { docsPageAside } from '@docs/data/pageAside';
 	import { useDocsTheme } from '@docs/use/docsTheme';
+	import type { MdiIcon } from '@/types/CommonTypes';
 
 	const route = useRoute();
 	const router = useRouter();
@@ -35,6 +36,22 @@
 	const drawerAvailable = display.down(1024);
 	const { isDark } = useDocsTheme();
 	let pageAsideScrollRaf = 0;
+	const sourceLinks: {
+		label: string;
+		href: string;
+		icon: MdiIcon;
+	}[] = [
+		{
+			label: 'GitHub',
+			href: 'https://github.com/Deadida322/gradientUi',
+			icon: 'github'
+		},
+		{
+			label: 'npm',
+			href: 'https://www.npmjs.com/package/@gradient-ui/core',
+			icon: 'npm'
+		}
+	];
 	const navbarItems = computed(() =>
 		docsNavigation
 			.flatMap((group) => group.items)
@@ -233,7 +250,10 @@
 				<router-link
 					class="docs-layout__brand docs-layout__brand_navbar"
 					to="/docs/get-started">
-					<span class="docs-layout__brand-mark"></span>
+					<img
+						class="docs-layout__brand-mark"
+						src="/favicon.png"
+						alt="" />
 					<span>Gradient UI</span>
 				</router-link>
 			</template>
@@ -276,6 +296,21 @@
 			</g-navbar-menu>
 
 			<template #append>
+				<div
+					class="docs-layout__source-links"
+					aria-label="Project links">
+					<g-button
+						v-for="link in sourceLinks"
+						:key="link.href"
+						class="docs-layout__source-link"
+						size="m"
+						variant="text"
+						:href="link.href"
+						target="_blank"
+						:icon-button="link.icon"
+						:aria-label="link.label" />
+				</div>
+
 				<g-switch
 					v-model="isDark"
 					class="docs-layout__theme-switch"
@@ -437,12 +472,10 @@
 		}
 
 		&__brand-mark {
+			display: block;
 			width: 28px;
 			height: 28px;
-			border-radius: var(--g-token-radius-md);
-
-			background: var(--g-token-gradient-main);
-			box-shadow: var(--g-token-elevation-2);
+			object-fit: contain;
 		}
 
 		&__drawer-menu {
@@ -490,6 +523,20 @@
 
 		&__menu-button {
 			display: none;
+		}
+
+		&__source-links {
+			display: inline-flex;
+			gap: var(--g-token-space-1);
+			align-items: center;
+			margin-inline-end: var(--g-token-space-1);
+		}
+
+		&__source-link {
+			--g-token-icon-size-m: 24px;
+
+			width: 40px;
+			height: 40px;
 		}
 
 		&__theme-switch {

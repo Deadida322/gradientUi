@@ -24,20 +24,32 @@
 </template>
 
 <style scoped lang="scss">
+	@use '@/styles/mixins/scrollbar' as scrollbar;
+
 	.g-tab-list {
 		--g-tab-list-radius: var(--g-token-radius-md);
 
+		overflow: auto hidden;
 		display: inline-flex;
 		gap: var(--g-token-space-1);
 		align-items: stretch;
 
 		min-width: 0;
+		max-width: 100%;
 		padding: var(--g-token-space-1);
 		border-radius: var(--g-tab-list-radius);
 
 		background: rgba(var(--g-theme-on-surface), 0.04);
 
+		@include scrollbar.tonal-scrollbar(
+			4px,
+			var(--g-color, var(--g-token-color-primary)),
+			24%,
+			38%
+		);
+
 		&_vertical {
+			overflow: hidden auto;
 			flex-direction: column;
 		}
 

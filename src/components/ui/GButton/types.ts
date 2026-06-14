@@ -3,6 +3,7 @@ import type { RippleBindingValue } from '@/directives';
 import { makeActionSurfaceProps } from '@/use/actionSurface';
 import { makeGradientProps } from '@/use/gradient';
 import { makePLAProps } from '@/use/PLA';
+import { makeTagNameProps } from '@/use/tagName';
 import { propsFactory } from '@/utils/propsFactory';
 import type { GGradienStates } from '../GGradient/types';
 import type { PropType } from 'vue';
@@ -16,6 +17,10 @@ export interface GButtonProps {
 	prepend?: MdiIcon;
 	append?: MdiIcon;
 	label?: string;
+	tag?: string;
+	href?: string;
+	target?: string;
+	rel?: string;
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
@@ -37,6 +42,7 @@ export const makeButtonProps = propsFactory({
 	...makeActionSurfaceProps(),
 	...makePLAProps(),
 	...makeGradientProps(),
+	...makeTagNameProps(),
 	isIconButton: Boolean as PropType<boolean>,
 	iconButton: String as PropType<MdiIcon>,
 	ripple: {

@@ -53,6 +53,24 @@ export { GAside, GAsideGroup, GAsideItem } from '@/components/ui/GAside';
 export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';
+export { GTable } from '@/components/ui/GTable';
+export type {
+	GTableAlign,
+	GTableBodySlotClasses,
+	GTableBodySlotContext,
+	GTableCellAttrs,
+	GTableCellContext,
+	GTableCellSpan,
+	GTableDensity,
+	GTableEmits,
+	GTableHeader,
+	GTableItemKey,
+	GTableKey,
+	GTableProps,
+	GTableRowAttrs,
+	GTableRowContext,
+	GTableSlots
+} from '@/components/ui/GTable';
 export {
 	applyMask,
 	defaultMaskTokens,
