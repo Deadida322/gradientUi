@@ -5,9 +5,7 @@
 
 	const snackbar = useSnackbar();
 
-	function showVariant(
-		variant: 'tonal' | 'outlined' | 'gradient' | 'glass'
-	) {
+	function showVariant(variant: 'tonal' | 'outlined' | 'gradient' | 'glass') {
 		snackbar.show({
 			text: `${variant} snackbar with action`,
 			variant,

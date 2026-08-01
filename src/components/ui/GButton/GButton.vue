@@ -25,9 +25,7 @@
 	const resolvedBorderWidth = computed(
 		() =>
 			props.borderWidth ??
-			(props.variant === 'glass' ||
-			props.glow ||
-			props.animateGlow
+			(props.variant === 'glass' || props.glow || props.animateGlow
 				? 1
 				: 0)
 	);

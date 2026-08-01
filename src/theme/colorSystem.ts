@@ -4,7 +4,6 @@ import { createGradient, createGradientFromColor } from './gradient';
 import {
 	COLOR_SHADES,
 	createPalettePair,
-	type ColorPalette,
 	type ColorPalettePair
 } from './palette';
 import type {
