@@ -1,0 +1,114 @@
+{
+	"name": "@gradient-ui/gradient-engine",
+	"version": "0.5.0",
+	"private": false,
+	"type": "module",
+	"description": "Framework-free gradient generation engine for CSS, SVG, canvas, effects and material tokens.",
+	"license": "MIT",
+	"author": "David Aliev",
+	"keywords": [
+		"gradient",
+		"gradients",
+		"css-gradient",
+		"svg-gradient",
+		"canvas-gradient",
+		"color",
+		"color-palette",
+		"material-you",
+		"design-system",
+		"animation",
+		"effects",
+		"typescript",
+		"framework-agnostic"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Deadida322/gradientUi.git",
+		"directory": "packages/gradient-engine"
+	},
+	"bugs": {
+		"url": "https://github.com/Deadida322/gradientUi/issues"
+	},
+	"homepage": "https://gradient-ui-docs.netlify.app/docs/gradient-engine",
+	"sideEffects": false,
+	"engines": {
+		"node": ">=18"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/types/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		},
+		"./core": {
+			"types": "./dist/types/core.d.ts",
+			"import": "./dist/core.mjs",
+			"require": "./dist/core.cjs"
+		},
+		"./formatters": {
+			"types": "./dist/types/formatters/index.d.ts",
+			"import": "./dist/formatters.mjs",
+			"require": "./dist/formatters.cjs"
+		},
+		"./effects": {
+			"types": "./dist/types/effects/index.d.ts",
+			"import": "./dist/effects.mjs",
+			"require": "./dist/effects.cjs"
+		},
+		"./animation": {
+			"types": "./dist/types/animation/index.d.ts",
+			"import": "./dist/animation.mjs",
+			"require": "./dist/animation.cjs"
+		},
+		"./material": {
+			"types": "./dist/types/material.d.ts",
+			"import": "./dist/material.mjs",
+			"require": "./dist/material.cjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"typesVersions": {
+		"*": {
+			"core": [
+				"dist/types/core.d.ts"
+			],
+			"formatters": [
+				"dist/types/formatters/index.d.ts"
+			],
+			"effects": [
+				"dist/types/effects/index.d.ts"
+			],
+			"animation": [
+				"dist/types/animation/index.d.ts"
+			],
+			"material": [
+				"dist/types/material.d.ts"
+			],
+			"*": [
+				"dist/types/index.d.ts"
+			]
+		}
+	},
+	"scripts": {
+		"build": "vite build --config vite.config.ts && tsc -p tsconfig.json --emitDeclarationOnly",
+		"pack:dry": "npm pack --dry-run",
+		"type-check": "tsc -p tsconfig.json --noEmit"
+	},
+	"dependencies": {
+		"@material/material-color-utilities": "^0.4.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.5.4",
+		"vite": "^5.4.1"
+	}
+}

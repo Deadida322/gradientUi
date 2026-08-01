@@ -18,17 +18,17 @@
 		<div class="modal-playground__actions">
 			<g-button
 				label="Open modal"
-				color="teal40"
+				color="teal-500"
 				@click="modalOpen = true" />
 			<g-button
 				label="Persistent modal"
 				variant="tonal"
-				color="orange40"
+				color="orange-500"
 				@click="persistentOpen = true" />
 			<g-button
 				label="Fullscreen modal"
 				variant="outlined"
-				color="blue40"
+				color="blue-500"
 				@click="fullscreenOpen = true" />
 		</div>
 
@@ -53,11 +53,11 @@
 				<g-button
 					label="Cancel"
 					variant="text"
-					color="blue-grey-40"
+					color="blue-grey-500"
 					@click="dismiss" />
 				<g-button
 					label="Save"
-					color="teal40"
+					color="teal-500"
 					@click="close" />
 			</template>
 		</g-modal>
@@ -76,7 +76,7 @@
 					</p>
 					<g-button
 						label="Close explicitly"
-						color="orange40"
+						color="orange-500"
 						@click="close" />
 				</div>
 			</template>
@@ -102,7 +102,7 @@
 			<template #actions="{ dismiss }">
 				<g-button
 					label="Done"
-					color="blue40"
+					color="blue-500"
 					@click="dismiss" />
 			</template>
 		</g-modal>

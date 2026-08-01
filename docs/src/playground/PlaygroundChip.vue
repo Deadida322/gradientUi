@@ -7,7 +7,7 @@
 	type ChipItem = {
 		id: number;
 		label: string;
-		variant?: 'filled' | 'tonal' | 'outlined' | 'text';
+		variant?: 'default' | 'gradient' | 'tonal' | 'outlined' | 'text';
 		prependIcon?: MdiIcon;
 	};
 
@@ -27,7 +27,7 @@
 		{
 			id: 3,
 			label: 'Design tokens',
-			variant: 'filled',
+			variant: 'default',
 			prependIcon: 'palette-outline'
 		}
 	]);

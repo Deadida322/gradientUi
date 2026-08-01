@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 	import PlaygroundButtons from './PlaygroundButtons.vue';
 	import PlaygroundColors from './PlaygroundColors.vue';
+	import PlaygroundGradientEngine from './PlaygroundGradientEngine.vue';
 	import PlaygroundTooltip from './PlaygroundTooltip.vue';
 	import PlaygroundDropdown from './PlaygroundDropdown.vue';
 	import PlaygroundCheckControls from './PlaygroundCheckControls.vue';
@@ -18,6 +19,7 @@
 <template>
 	<div class="div">
 		<playground-colors></playground-colors>
+		<playground-gradient-engine></playground-gradient-engine>
 		<playground-buttons></playground-buttons>
 		<playground-tooltip></playground-tooltip>
 		<playground-dropdown></playground-dropdown>

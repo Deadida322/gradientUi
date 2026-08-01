@@ -69,7 +69,7 @@
 			:color="resolvedColor"
 			:state="resolvedState"
 			:disabled="disabled"
-			position="bottom"
+			placement="bottom"
 			:border-width="focused ? 1 : 0"
 			inherit-width
 			border-radius="6">

@@ -18,6 +18,10 @@ export default defineConfig({
 	plugins: [vue()],
 	resolve: {
 		alias: {
+			'@gradient-ui/gradient-engine': resolve(
+				__dirname,
+				'packages/gradient-engine/src'
+			),
 			'@': resolve(__dirname, 'src')
 		},
 		extensions: ['.ts', '.js', '.json']

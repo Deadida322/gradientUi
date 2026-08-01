@@ -2,6 +2,34 @@
 	import { GButton, GGradient, GIcon, GText } from '@/components';
 	import DocsCode from '@docs/components/DocsCode.vue';
 
+	const gradientEngineCode = `import {
+	gradientCore,
+	gradientEffects,
+	gradientFormatters,
+	gradientMaterial
+} from '@gradient-ui/core/theme';
+
+const model = gradientCore.createGradientModelFromColor('#704bfd', {
+	recipe: 'glare',
+	type: 'linear',
+	direction: 135
+});
+
+const background = gradientFormatters.toCssGradient(model);
+const shadow = gradientEffects.toGradientBoxShadow(model, {
+	layers: 2,
+	blur: 18,
+	y: 6,
+	spread: -3,
+	opacity: 0.24
+});
+
+const material = gradientMaterial.createGradientTokens('#704bfd', {
+	recipes: ['glare', 'soft', 'mesh'],
+	effects: true,
+	animations: true
+});`;
+
 	const gradientCode = `
 <template>
 	<g-gradient
@@ -67,6 +95,48 @@
 					together.
 				</p>
 			</div>
+		</section>
+
+		<section class="docs-page__section">
+			<span
+				id="gradient-engine"
+				class="docs-page__anchor"></span>
+			<h2>Gradient engine foundation</h2>
+			<p>
+				The visual material is built on top of the
+				<code>gradient-engine</code>: first it creates a pure gradient
+				model, then formatters turn that model into CSS, SVG, canvas,
+				shadows, filters and reusable Gradient UI tokens.
+			</p>
+
+			<div class="docs-core__engine-grid">
+				<div class="docs-core__engine-card">
+					<strong>Core model</strong>
+					<span>
+						Seed color, palette shade, recipe, type, direction and
+						stops stay framework-free.
+					</span>
+				</div>
+				<div class="docs-core__engine-card">
+					<strong>Output adapters</strong>
+					<span>
+						The same model can become a CSS background, SVG paint
+						server, box-shadow, drop-shadow or canvas gradient.
+					</span>
+				</div>
+				<div class="docs-core__engine-card">
+					<strong>Material tokens</strong>
+					<span>
+						Gradient UI consumes the engine through material tokens
+						instead of hand-writing one-off gradient styles.
+					</span>
+				</div>
+			</div>
+
+			<docs-code
+				:code="gradientEngineCode"
+				language="ts"
+				title="gradient-engine material contract" />
 		</section>
 
 		<section class="docs-page__section">
@@ -158,9 +228,10 @@
 				</g-gradient>
 
 				<g-gradient
-					color="deep-purple-60"
-					position="left"
+					color="deep-purple-300"
+					placement="left"
 					:border-width="4"
+					glow
 					:border-radius="18">
 					<div class="docs-core__gradient-card">
 						<g-icon
@@ -168,7 +239,7 @@
 							size="28" />
 						<strong>Directional border</strong>
 						<span>
-							Use <code>position</code> for single-side gradient
+							Use <code>placement</code> for single-side gradient
 							accents.
 						</span>
 					</div>
@@ -177,20 +248,24 @@
 
 			<div class="docs-core__actions">
 				<g-button
-					label="Filled action"
-					variant="filled" />
+					label="filled action"
+					gradient-recipe="analogous" />
 				<g-button
 					label="Tonal action"
 					variant="tonal"
-					color="teal40" />
+					color="teal" />
 				<g-button
 					label="Outlined action"
 					variant="outlined"
-					color="deep-purple-60" />
+					color="deep-purple-300" />
+				<g-button
+					label="gradient action"
+					gradient-recipe="analogous"
+					variant="gradient" />
 				<g-button
 					label="Outlined action"
 					variant="text"
-					color="pink-50" />
+					color="pink-400" />
 			</div>
 
 			<docs-code
@@ -203,12 +278,14 @@
 <style scoped lang="scss">
 	.docs-core {
 		&__surface-grid,
-		&__gradient-grid {
+		&__gradient-grid,
+		&__engine-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 			gap: var(--g-token-space-4);
 		}
 
+		&__engine-card,
 		&__surface-card,
 		&__gradient-card {
 			display: grid;
@@ -250,8 +327,9 @@
 
 		&__gradient-grid {
 			:deep(.g-gradient) {
+				align-self: stretch;
 				width: 100%;
-				height: 100%;
+				height: auto;
 			}
 
 			:deep(.g-gradient__slot) {

@@ -5,6 +5,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 const lintFiles = [
 	'src/**/*.{ts,tsx,js,jsx,vue}',
+	'packages/*/src/**/*.{ts,tsx,js,jsx,vue}',
 	'docs/src/**/*.{ts,tsx,js,jsx,vue}',
 	'*.config.{js,ts}',
 	'docs/*.config.{js,ts}'
@@ -15,6 +16,7 @@ export default tseslint.config(
 		ignores: [
 			'node_modules/**',
 			'dist/**',
+			'packages/*/dist/**',
 			'dist-docs/**',
 			'coverage/**',
 			'docs/dist/**',

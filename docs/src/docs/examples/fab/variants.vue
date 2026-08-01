@@ -2,7 +2,7 @@
 	defineOptions({ name: 'FABVariantsExample' });
 	import { GFAB } from '@/components';
 
-	const variants = ['filled', 'tonal', 'outlined'] as const;
+	const variants = ['default', 'tonal', 'outlined', 'gradient'] as const;
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T extends AsideValue = AsideValue">
 	import { computed, ref } from 'vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useGlass } from '@/use/glass';
 	import { provideAside } from './context';
 	import {
 		makeAsideProps,
@@ -37,10 +38,12 @@
 	const { colorStyles, resolvedGradient } = useSurfaceColor({
 		color: () => resolvedActiveColor.value
 	});
+	const { glassStyles } = useGlass(props);
 	const asideStyles = computed(
 		() =>
 			({
 				...colorStyles.value,
+				...glassStyles.value,
 				'--g-aside-active-gradient': resolvedGradient.value,
 				'--g-aside-top': toUnit(props.top, '88px'),
 				'--g-aside-offset': toUnit(props.offset, '24px'),
@@ -125,6 +128,8 @@
 </template>
 
 <style scoped lang="scss">
+	@use '@/styles/mixins/glass' as glass;
+
 	.g-aside {
 		--g-aside-padding-block: 20px;
 		--g-aside-padding-inline: 18px;
@@ -178,26 +183,8 @@
 					var(--g-token-color-on-surface) 8%,
 					transparent
 				);
-			background:
-				radial-gradient(
-					120% 110% at 100% 0%,
-					color-mix(in srgb, white 72%, transparent),
-					transparent 58%
-				),
-				linear-gradient(
-					180deg,
-					color-mix(
-						in srgb,
-						var(--g-token-color-surface) 58%,
-						transparent
-					),
-					color-mix(
-						in srgb,
-						var(--g-token-color-surface) 36%,
-						transparent
-					)
-				);
-			backdrop-filter: blur(12px);
+
+			@include glass.glass-surface;
 		}
 
 		&_left.g-aside_absolute,

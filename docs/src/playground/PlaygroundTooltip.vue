@@ -133,7 +133,7 @@
 	<div class="tooltips">
 		<g-button
 			v-tooltip="'auto-placement'"
-			variant="filled"
+			variant="gradient"
 			label="Default">
 		</g-button>
 
@@ -180,7 +180,7 @@
 	</g-text>
 	<div class="tooltips">
 		<g-button
-			variant="filled"
+			variant="gradient"
 			rounded
 			label="Rounded">
 		</g-button>
@@ -202,22 +202,22 @@
 	</div>
 	<div class="tooltips">
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="1"
 			label="border-radius-1">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="8"
 			label="border-radius-8">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="12"
 			label="border-radius-12">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="16"
 			label="border-radius-16">
 		</g-button>
@@ -229,7 +229,7 @@
 	<div class="tooltips">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			rounded
 			label="Glow">
 		</g-button>
@@ -254,7 +254,7 @@
 		<g-button
 			glow
 			size="s"
-			variant="filled"
+			variant="gradient"
 			rounded
 			border-width="1"
 			label="border-width-1">
@@ -290,7 +290,7 @@
 	<div class="tooltips">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			border-width="1"
 			placement="bottom"
 			label="Bottom">
@@ -328,7 +328,7 @@
 	<div class="tooltips">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			border-width="1"
 			placement="bottom"
 			append="heart"

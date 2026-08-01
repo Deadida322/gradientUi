@@ -2,7 +2,7 @@
 	defineOptions({ name: 'BadgeVariantsExample' });
 	import { GBadge, GButton } from '@/components';
 
-	const variants = ['filled', 'tonal', 'primary'] as const;
+	const variants = ['tonal', 'primary', 'glass'] as const;
 </script>
 
 <template>

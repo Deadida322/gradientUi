@@ -1,8 +1,8 @@
 <script setup lang="ts">
 	import GIcon from '../GIcon/GIcon.vue';
+	import GGradient from '../GGradient/GGradient.vue';
 	import { makeAlertProps } from './types';
-	import { useSurfaceLayers } from '@/use/surface';
-	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useMaterialSurface } from '@/use/materialSurface';
 
 	const slots = defineSlots<{
 		default?: () => unknown;
@@ -12,66 +12,99 @@
 		footer?: () => unknown;
 	}>();
 	const props = defineProps(makeAlertProps());
-	const { colorStyles } = useSurfaceColor(props);
 	const {
+		getMorphBlobStyle,
+		morphBlobs,
+		morphEnabled,
+		materialFrameProps,
+		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
-	} = useSurfaceLayers('g-alert');
+	} = useMaterialSurface(props, 'g-alert');
 </script>
 
 <template>
-	<section
-		class="g-alert"
-		:class="`g-alert_${props.variant}`"
-		:style="colorStyles"
-		role="status">
-		<span :class="surfaceUnderlayClasses"></span>
-		<span :class="surfaceOverlayClasses"></span>
-
-		<div
-			class="g-alert__content"
-			:class="surfaceContentClasses">
-			<div
-				v-if="slots.prepend || props.icon"
-				class="g-alert__prepend">
-				<slot name="prepend">
-					<g-icon
-						v-if="props.icon"
-						:icon="props.icon"
-						size="22" />
-				</slot>
-			</div>
-
-			<div class="g-alert__main">
-				<div
-					v-if="slots.title || props.title"
-					class="g-alert__title">
-					<slot name="title">{{ props.title }}</slot>
-				</div>
-				<div
-					v-if="slots.default || props.text"
-					class="g-alert__body">
-					<slot>{{ props.text }}</slot>
-				</div>
-				<div
-					v-if="slots.footer"
-					class="g-alert__footer">
-					<slot name="footer"></slot>
-				</div>
-			</div>
+	<g-gradient
+		class="g-alert__frame"
+		v-bind="materialFrameProps">
+		<section
+			class="g-alert"
+			:class="[
+				`g-alert_${props.variant}`,
+				{
+					[`g-alert_texture-${props.texture}`]:
+						props.texture !== 'none'
+				}
+			]"
+			:style="surfaceStyles"
+			role="status">
+			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="morphEnabled"
+				:class="surfaceMaterialMorphClasses"
+				aria-hidden="true">
+				<span
+					v-for="(blob, index) in morphBlobs"
+					:key="index"
+					:class="surfaceMaterialMorphBlobClasses"
+					:style="getMorphBlobStyle(blob)"></span>
+			</span>
+			<span :class="surfaceOverlayClasses"></span>
+			<span :class="surfaceTextureClasses"></span>
 
 			<div
-				v-if="slots.append"
-				class="g-alert__append">
-				<slot name="append"></slot>
+				class="g-alert__content"
+				:class="surfaceContentClasses">
+				<div
+					v-if="slots.prepend || props.icon"
+					class="g-alert__prepend">
+					<slot name="prepend">
+						<g-icon
+							v-if="props.icon"
+							:icon="props.icon"
+							size="22" />
+					</slot>
+				</div>
+
+				<div class="g-alert__main">
+					<div
+						v-if="slots.title || props.title"
+						class="g-alert__title">
+						<slot name="title">{{ props.title }}</slot>
+					</div>
+					<div
+						v-if="slots.default || props.text"
+						class="g-alert__body">
+						<slot>{{ props.text }}</slot>
+					</div>
+					<div
+						v-if="slots.footer"
+						class="g-alert__footer">
+						<slot name="footer"></slot>
+					</div>
+				</div>
+
+				<div
+					v-if="slots.append"
+					class="g-alert__append">
+					<slot name="append"></slot>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	</g-gradient>
 </template>
 
 <style scoped lang="scss">
 	@use '@/styles/mixins/action-surface' as actionSurface;
+	@use '@/styles/mixins/variants' as variants;
+
+	.g-alert__frame {
+		width: 100%;
+	}
 
 	.g-alert {
 		--g-surface-underlay-color: var(--g-surface-color);
@@ -92,22 +125,6 @@
 		border-radius: var(--g-token-radius-md);
 
 		color: var(--g-surface-content-color);
-
-		&_filled {
-			--g-surface-underlay-color: var(--g-color);
-			--g-surface-underlay-opacity: 1;
-			--g-surface-overlay-color: var(--g-on-color);
-			--g-surface-overlay-opacity: 0;
-			--g-surface-content-color: var(--g-on-color);
-		}
-
-		&_outlined {
-			--g-surface-underlay-opacity: 0;
-			--g-surface-overlay-opacity: 0;
-
-			border: 1px solid
-				color-mix(in srgb, var(--g-color) 38%, transparent);
-		}
 
 		&__content {
 			position: relative;
@@ -170,4 +187,8 @@
 	}
 
 	@include actionSurface.action-surface-layers('g-alert', true);
+	@include variants.variant-gradient('g-alert');
+	@include variants.variant-tonal('g-alert');
+	@include variants.variant-outlined('g-alert', null);
+	@include variants.variant-glass('g-alert');
 </style>

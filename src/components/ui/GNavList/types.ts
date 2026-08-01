@@ -5,6 +5,7 @@ import { makeColorProps } from '@/use/color';
 import { makeDisabledProps } from '@/use/disabled';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
+import { makeGlassProps } from '@/use/glass';
 
 export type NavValue =
 	| string
@@ -68,6 +69,7 @@ export type GNavListEmits<T = NavValue> = {
 };
 
 export const makeNavListProps = propsFactory({
+	...makeGlassProps(),
 	...makeColorProps(),
 	modelValue: {
 		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<

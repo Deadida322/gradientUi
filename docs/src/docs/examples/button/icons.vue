@@ -7,8 +7,7 @@
 	<div class="docs-page__preview">
 		<g-button
 			label="Create"
-			prepend="plus"
-			variant="filled" />
+			prepend="plus" />
 		<g-button
 			label="Continue"
 			append="arrow-right"

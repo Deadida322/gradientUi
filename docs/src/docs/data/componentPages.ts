@@ -48,7 +48,7 @@ import {
 import { tooltipExamples, tooltipUsageExample } from '@docs/examples/tooltip';
 import type { DocsComponentPage } from '@docs/types';
 
-export const componentPages: DocsComponentPage[] = [
+const componentPages: DocsComponentPage[] = [
 	{
 		id: 'button',
 		usage: {
@@ -75,7 +75,7 @@ export const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Badge examples cover filled and tonal surfaces, colors, dots, locations, inline mode, sizes and custom content slots.',
+				'Badge examples cover gradient and tonal surfaces, colors, dots, locations, inline mode, sizes and custom content slots.',
 			items: badgeExamples
 		}
 	},
@@ -360,7 +360,7 @@ export const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Alert examples cover tonal, filled and outlined variants, semantic states and custom composition slots.',
+				'Alert examples cover tonal, gradient and outlined variants, semantic states and custom composition slots.',
 			items: alertExamples
 		}
 	},
@@ -410,3 +410,6 @@ export const componentPages: DocsComponentPage[] = [
 		}
 	}
 ];
+
+export { componentPages };
+export default componentPages;

@@ -9,6 +9,7 @@
 	import GToggleButton from '@/components/ui/GToggleButton/GToggleButton.vue';
 	import type { GCheckboxGroupProps } from '@/components/ui/GCheckboxGroup';
 	import type { GRadioProps } from '@/components/ui/GRadio';
+	import type { GColor } from '@/use/color';
 
 	type AccessLevel = 'viewer' | 'editor' | 'owner';
 	type ReleaseChannel = {
@@ -87,13 +88,13 @@
 		{ id: 3, label: 'Nightly' }
 	];
 	const squircleColors = [
-		'red40',
-		'pink40',
-		'orange40',
-		'teal40',
-		'blue40',
-		'deep-purple-40'
-	];
+		'red-500',
+		'pink-500',
+		'orange-500',
+		'teal-500',
+		'blue-500',
+		'deep-purple-500'
+	] as const satisfies readonly GColor[];
 	const colorRadioOptions = ['red', 'teal', 'purple'] as const;
 	const featureGroupProps: Omit<
 		GCheckboxGroupProps<FeatureOption, string, false>,
@@ -234,10 +235,10 @@
 
 			<g-toggle-button
 				v-model="toggleActiveVariant"
-				label="Outlined to filled"
+				label="Outlined to gradient"
 				prepend="swap-horizontal"
 				variant="outlined"
-				active-variant="filled" />
+				active-variant="gradient" />
 		</div>
 
 		<div class="row row_two">
@@ -314,15 +315,15 @@
 		<div class="row row_three">
 			<g-checkbox
 				v-model="colorCheckbox"
-				color="red40"
+				color="red-500"
 				label="Red 40" />
 			<g-switch
 				v-model="colorSwitch"
-				color="teal40"
+				color="teal-500"
 				label="Teal 40" />
 			<g-radio
 				v-model="colorRadio"
-				color="deep-purple-40"
+				color="deep-purple-500"
 				label="Deep purple"
 				:options="colorRadioOptions" />
 		</div>
@@ -330,12 +331,12 @@
 		<div class="row row_two">
 			<g-checkbox
 				v-model="squircleCheckbox"
-				color="pink40"
+				color="pink-500"
 				indicator-view="squircle"
 				label="Squircle checkbox" />
 			<g-radio
 				v-model="squircleRadio"
-				color="blue40"
+				color="blue-500"
 				indicator-view="squircle"
 				label="Squircle radio"
 				:options="['compact', 'expressive', 'dense']" />
@@ -344,23 +345,23 @@
 		<div class="row row_four">
 			<g-checkbox
 				v-model="diamondCheckbox"
-				color="orange40"
+				color="orange-500"
 				indicator-view="diamond"
 				label="Diamond" />
 			<g-checkbox
 				v-model="softCheckbox"
-				color="teal40"
+				color="teal-500"
 				indicator-view="soft"
 				label="Soft" />
 			<g-radio
 				v-model="diamondRadio"
-				color="red40"
+				color="red-500"
 				indicator-view="diamond"
 				label="Diamond radio"
 				:options="['one', 'two', 'three']" />
 			<g-radio
 				v-model="softRadio"
-				color="green40"
+				color="green-500"
 				indicator-view="soft"
 				label="Soft radio"
 				:options="['alpha', 'beta', 'gamma']" />
@@ -369,12 +370,12 @@
 		<div class="row row_two">
 			<g-checkbox
 				v-model="blobCheckbox"
-				color="deep-purple-40"
+				color="deep-purple-500"
 				indicator-view="blob"
 				label="Blob checkbox" />
 			<g-radio
 				v-model="blobRadio"
-				color="pink40"
+				color="pink-500"
 				indicator-view="blob"
 				label="Blob radio"
 				:options="['north', 'south', 'west']" />
@@ -383,12 +384,12 @@
 		<div class="row row_two">
 			<g-checkbox
 				v-model="cutCornerCheckbox"
-				color="blue-grey-40"
+				color="blue-grey-500"
 				indicator-view="cut-corner"
 				label="Cut-corner checkbox" />
 			<g-radio
 				v-model="cutCornerRadio"
-				color="amber40"
+				color="amber-500"
 				indicator-view="cut-corner"
 				label="Cut-corner radio"
 				:options="['draft', 'ship', 'hold']" />

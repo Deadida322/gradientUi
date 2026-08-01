@@ -8,7 +8,7 @@
 		<g-badge
 			dot
 			color="success"
-			variant="filled">
+			variant="gradient">
 			<g-button
 				label="Online"
 				variant="tonal"

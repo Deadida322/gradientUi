@@ -13,7 +13,7 @@
 		</g-badge>
 		<g-badge
 			position="inline"
-			variant="filled"
+			variant="gradient"
 			state="success"
 			content="ready">
 			<g-chip

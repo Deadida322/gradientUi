@@ -34,7 +34,7 @@
 		<g-button
 			type="submit"
 			label="Submit"
-			variant="filled" />
+			variant="gradient" />
 		<div class="docs-component-detail__value-line">
 			<span>errors={{ errorCount }}</span>
 			<span

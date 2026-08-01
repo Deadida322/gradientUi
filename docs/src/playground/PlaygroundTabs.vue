@@ -32,8 +32,8 @@
 				label="Line tabs" />
 			<g-tabs
 				v-model="active"
-				color="blue40"
-				active-color="teal40">
+				color="blue-500"
+				active-color="teal-500">
 				<g-tab-list aria-label="Feature sections">
 					<g-tab
 						value="overview"
@@ -79,8 +79,8 @@
 			<g-tabs
 				v-model="pillActive"
 				variant="pill"
-				color="deep-purple-40"
-				active-color="pink40">
+				color="deep-purple-500"
+				active-color="pink-500">
 				<g-tab-list
 					grow
 					aria-label="Documentation sections">
@@ -117,7 +117,7 @@
 				v-model="verticalActive"
 				orientation="vertical"
 				variant="tonal"
-				color="blue-grey-40"
+				color="blue-grey-500"
 				active-color="primary">
 				<g-tab-list aria-label="Settings sections">
 					<g-tab
@@ -158,8 +158,8 @@
 			<g-tabs
 				v-model="manualActive"
 				activation="manual"
-				color="orange40"
-				active-color="amber40">
+				color="orange-500"
+				active-color="amber-500">
 				<g-tab-list aria-label="Manual activation tabs">
 					<g-tab
 						value="preview"

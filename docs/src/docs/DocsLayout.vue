@@ -22,6 +22,7 @@
 		GSwitch,
 		useBreakpoints
 	} from '@/components';
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import { componentCatalog, componentGroups } from '@docs/data/componentApi';
 	import { docsNavigation } from '@docs/data/navigation';
 	import { docsPageAside } from '@docs/data/pageAside';
@@ -263,7 +264,14 @@
 				:key="item.to"
 				:label="item.label"
 				:value="item.to"
-				@click="navigate(item.to)" />
+				@click="navigate(item.to)">
+				<span class="docs-layout__nav-label">
+					<span>{{ item.label }}</span>
+					<docs-release-badge
+						v-if="item.badge"
+						:badge="item.badge" />
+				</span>
+			</g-navbar-item>
 
 			<g-navbar-menu
 				label="Components"
@@ -287,7 +295,12 @@
 								:key="component.id"
 								class="docs-layout__components-link"
 								:to="component.to">
-								<span>{{ component.title }}</span>
+								<span class="docs-layout__components-title">
+									<span>{{ component.title }}</span>
+									<docs-release-badge
+										v-if="component.badge"
+										:badge="component.badge" />
+								</span>
 								<small>{{ component.description }}</small>
 							</router-link>
 						</section>
@@ -357,7 +370,14 @@
 						:key="item.to"
 						:label="item.label"
 						:value="item.to"
-						:to="item.to" />
+						:to="item.to">
+						<span class="docs-layout__nav-label">
+							<span>{{ item.label }}</span>
+							<docs-release-badge
+								v-if="item.badge"
+								:badge="item.badge" />
+						</span>
+					</g-nav-item>
 				</g-nav-group>
 
 				<g-nav-group label="Components">
@@ -532,6 +552,14 @@
 			margin-inline-end: var(--g-token-space-1);
 		}
 
+		&__nav-label,
+		&__components-title {
+			display: inline-flex;
+			gap: var(--g-token-space-2);
+			align-items: center;
+			min-width: 0;
+		}
+
 		&__source-link {
 			--g-token-icon-size-m: 24px;
 
@@ -591,7 +619,8 @@
 
 			text-decoration: none;
 
-			span {
+			> span:not(.docs-layout__components-title),
+			.docs-layout__components-title > span {
 				overflow: hidden;
 
 				font-size: var(--g-token-font-size-sm);
@@ -615,7 +644,8 @@
 			&.router-link-active {
 				background: rgba(var(--g-theme-primary), 0.08);
 
-				span {
+				> span:not(.docs-layout__components-title),
+				.docs-layout__components-title > span {
 					color: var(--g-token-color-primary);
 				}
 			}

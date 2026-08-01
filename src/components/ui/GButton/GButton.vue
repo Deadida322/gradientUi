@@ -15,13 +15,22 @@
 
 	const props = defineProps(
 		makeButtonProps({
-			borderWidth: 0,
+			borderWidth: undefined,
 			borderRadius: 4,
 			placement: 'center'
 		})
 	);
 
 	const computedBorderRadius = usePx(props.borderRadius);
+	const resolvedBorderWidth = computed(
+		() =>
+			props.borderWidth ??
+			(props.variant === 'glass' ||
+			props.glow ||
+			props.animateGlow
+				? 1
+				: 0)
+	);
 	const computedRipple = computed(() => {
 		if (props.disabled || props.ripple === false) return false;
 		if (typeof props.ripple === 'object') {
@@ -39,9 +48,15 @@
 		resolvedColor,
 		resolvedState,
 		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
-		surfaceContentClasses
+		surfaceTextureClasses,
+		surfaceContentClasses,
+		morphBlobs,
+		morphEnabled,
+		getMorphBlobStyle
 	} = useActionSurface(props, 'g-button');
 </script>
 
@@ -53,7 +68,8 @@
 			...props,
 			color: resolvedColor,
 			state: resolvedState
-		}">
+		}"
+		:border-width="resolvedBorderWidth">
 		<component
 			:is="tagName"
 			v-ripple="computedRipple"
@@ -67,7 +83,18 @@
 			:style="surfaceStyles"
 			v-bind="{ ...tagAttrs, ...attrs }">
 			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="morphEnabled"
+				:class="surfaceMaterialMorphClasses"
+				aria-hidden="true">
+				<span
+					v-for="(blob, index) in morphBlobs"
+					:key="index"
+					:class="surfaceMaterialMorphBlobClasses"
+					:style="getMorphBlobStyle(blob)"></span>
+			</span>
 			<span :class="surfaceOverlayClasses"></span>
+			<span :class="surfaceTextureClasses"></span>
 			<span
 				class="g-button__content"
 				:class="surfaceContentClasses">
@@ -165,8 +192,9 @@
 	@include rounded.rounded('g-button');
 	@include actionSurface.action-surface-layers('g-button', true);
 	@include actionSurface.action-state-overrides('g-button');
-	@include variants.variant-filled('g-button');
+	@include variants.variant-gradient('g-button');
 	@include variants.variant-tonal('g-button');
 	@include variants.variant-text('g-button');
+	@include variants.variant-glass('g-button');
 	@include variants.variant-outlined('g-button');
 </style>

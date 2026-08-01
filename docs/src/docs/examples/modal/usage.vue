@@ -11,7 +11,7 @@
 		<div class="docs-page__preview">
 			<g-button
 				label="Open modal"
-				variant="filled"
+				variant="gradient"
 				prepend="open-in-new"
 				@click="open = true" />
 		</div>

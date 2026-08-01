@@ -1,7 +1,7 @@
 <script setup generic="T extends Record<string, unknown>" lang="ts">
 	import { computed, useSlots } from 'vue';
-	import { useSurfaceColor } from '@/use/surfaceColor';
-	import { useSurfaceLayers } from '@/use/surface';
+	import { useMaterialSurface } from '@/use/materialSurface';
+	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import {
 		makeTableProps,
 		type GTableCellContext,
@@ -28,12 +28,23 @@
 	}>();
 	const slots = useSlots();
 
-	const { colorStyles } = useSurfaceColor(props);
 	const {
+		getMorphBlobStyle,
+		morphBlobs,
+		morphEnabled,
+		materialFrameProps,
+		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
-	} = useSurfaceLayers('g-table');
+	} = useMaterialSurface(props, 'g-table');
+	const tableFrameProps = computed(() => ({
+		...materialFrameProps.value,
+		borderRadius: props.borderRadius ?? (props.rounded ? 20 : 12)
+	}));
 
 	const hasExpandedRowSlot = computed(
 		() => Boolean(slots.expandedRow) || Boolean(slots['expanded-row'])
@@ -147,174 +158,201 @@
 </script>
 
 <template>
-	<div
-		class="g-table"
-		:class="[
-			`g-table_${props.variant}`,
-			`g-table_density-${props.density}`,
-			{
-				'g-table_rounded': props.rounded,
-				'g-table_sticky-header': props.stickyHeader,
-				'g-table_fixed-layout': props.fixedLayout,
-				'g-table_hover': props.hover,
-				'g-table_clickable-rows': rowInteractive,
-				'g-table_striped': props.striped,
-				'g-table_bordered': props.bordered,
-				'g-table_loading': props.loading,
-				'g-table_elevation': props.elevation,
-				'g-table_has-fixed-start': hasFixedStart,
-				'g-table_has-fixed-end': hasFixedEnd,
-				'g-table_expand-on-row-click': props.expandOnRowClick
-			}
-		]"
-		:style="colorStyles">
-		<span :class="surfaceUnderlayClasses"></span>
-		<span :class="surfaceOverlayClasses"></span>
-
+	<g-gradient
+		class="g-table__frame"
+		v-bind="tableFrameProps">
 		<div
-			class="g-table__content"
-			:class="surfaceContentClasses">
+			class="g-table"
+			:class="[
+				`g-table_${props.variant}`,
+				`g-table_density-${props.density}`,
+				{
+					'g-table_rounded': props.rounded,
+					'g-table_sticky-header': props.stickyHeader,
+					'g-table_fixed-layout': props.fixedLayout,
+					'g-table_hover': props.hover,
+					'g-table_clickable-rows': rowInteractive,
+					'g-table_striped': props.striped,
+					'g-table_bordered': props.bordered,
+					'g-table_loading': props.loading,
+					'g-table_elevation': props.elevation,
+					[`g-table_texture-${props.texture}`]:
+						props.texture !== 'none',
+					'g-table_has-fixed-start': hasFixedStart,
+					'g-table_has-fixed-end': hasFixedEnd,
+					'g-table_expand-on-row-click': props.expandOnRowClick
+				}
+			]"
+			:style="surfaceStyles">
+			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="morphEnabled"
+				:class="surfaceMaterialMorphClasses"
+				aria-hidden="true">
+				<span
+					v-for="(blob, index) in morphBlobs"
+					:key="index"
+					:class="surfaceMaterialMorphBlobClasses"
+					:style="getMorphBlobStyle(blob)"></span>
+			</span>
+			<span :class="surfaceOverlayClasses"></span>
+			<span :class="surfaceTextureClasses"></span>
+
 			<div
-				v-if="slots.top"
-				class="g-table__top">
-				<slot name="top"></slot>
-			</div>
+				class="g-table__content"
+				:class="surfaceContentClasses">
+				<div
+					v-if="slots.top"
+					class="g-table__top">
+					<slot name="top"></slot>
+				</div>
 
-			<div class="g-table__scroller">
-				<table
-					class="g-table__table"
-					:aria-label="props.ariaLabel"
-					:aria-labelledby="props.ariaLabelledby">
-					<caption
-						v-if="props.caption || slots.caption"
-						class="g-table__caption"
-						:class="{
-							'g-table__caption_hidden': props.hideCaption
-						}">
-						<slot name="caption">
-							{{ props.caption }}
-						</slot>
-					</caption>
-
-					<colgroup>
-						<col
-							v-if="props.showExpand"
-							class="g-table__col g-table__col_expand" />
-						<col
-							v-for="header in resolvedHeaders"
-							:key="String(header.key)"
-							class="g-table__col"
-							:class="{ 'g-table__col_shrink': header.shrink }"
-							:style="getHeaderStyle(header)" />
-					</colgroup>
-
-					<g-table-head
-						v-if="!props.hideHeader"
-						:get-column-fixed-attrs="getColumnFixedAttrs"
-						:get-header-align="getHeaderAlign"
-						:get-header-attrs="getHeaderAttrs"
-						:get-header-slot-name="getHeaderSlotName"
-						:get-header-style="getHeaderStyle"
-						:headers="resolvedHeaders"
-						:show-expand="props.showExpand">
-						<template #header="slotProps">
-							<slot
-								name="header"
-								v-bind="slotProps">
-								{{ slotProps.header.title }}
+				<div class="g-table__scroller">
+					<table
+						class="g-table__table"
+						:aria-label="props.ariaLabel"
+						:aria-labelledby="props.ariaLabelledby">
+						<caption
+							v-if="props.caption || slots.caption"
+							class="g-table__caption"
+							:class="{
+								'g-table__caption_hidden': props.hideCaption
+							}">
+							<slot name="caption">
+								{{ props.caption }}
 							</slot>
-						</template>
-						<template
-							v-for="header in headerSlotHeaders"
-							:key="String(header.key)"
-							#[getHeaderSlotName(header)]="slotProps">
-							<slot
-								:name="getHeaderSlotName(header)"
-								v-bind="slotProps">
+						</caption>
+
+						<colgroup>
+							<col
+								v-if="props.showExpand"
+								class="g-table__col g-table__col_expand" />
+							<col
+								v-for="header in resolvedHeaders"
+								:key="String(header.key)"
+								class="g-table__col"
+								:class="{
+									'g-table__col_shrink': header.shrink
+								}"
+								:style="getHeaderStyle(header)" />
+						</colgroup>
+
+						<g-table-head
+							v-if="!props.hideHeader"
+							:get-column-fixed-attrs="getColumnFixedAttrs"
+							:get-header-align="getHeaderAlign"
+							:get-header-attrs="getHeaderAttrs"
+							:get-header-slot-name="getHeaderSlotName"
+							:get-header-style="getHeaderStyle"
+							:headers="resolvedHeaders"
+							:show-expand="props.showExpand">
+							<template #header="slotProps">
 								<slot
 									name="header"
 									v-bind="slotProps">
 									{{ slotProps.header.title }}
 								</slot>
-							</slot>
-						</template>
-					</g-table-head>
+							</template>
+							<template
+								v-for="header in headerSlotHeaders"
+								:key="String(header.key)"
+								#[getHeaderSlotName(header)]="slotProps">
+								<slot
+									:name="getHeaderSlotName(header)"
+									v-bind="slotProps">
+									<slot
+										name="header"
+										v-bind="slotProps">
+										{{ slotProps.header.title }}
+									</slot>
+								</slot>
+							</template>
+						</g-table-head>
 
-					<g-table-body
-						:empty-text="props.emptyText"
-						:has-expanded-row-slot="hasExpandedRowSlot"
-						:has-rows="hasRows"
-						:loading="props.loading"
-						:loading-rows="props.loadingRows"
-						:show-expand="props.showExpand">
-						<template
-							v-if="slots.body"
-							#body="slotProps">
-							<slot
-								name="body"
-								v-bind="slotProps"></slot>
-						</template>
-						<template #loading>
-							<slot name="loading">Loading...</slot>
-						</template>
-						<template #empty>
-							<slot name="empty">
-								{{ props.emptyText }}
-							</slot>
-						</template>
-						<template
-							v-if="slots.row"
-							#row="slotProps">
-							<slot
-								name="row"
-								v-bind="slotProps"></slot>
-						</template>
-						<template
-							v-if="slots.expand"
-							#expand="slotProps">
-							<slot
-								name="expand"
-								v-bind="slotProps"></slot>
-						</template>
-						<template #item="slotProps">
-							<slot
-								name="item"
-								v-bind="slotProps">
-								{{ slotProps.value }}
-							</slot>
-						</template>
-						<template
-							v-for="header in itemSlotHeaders"
-							:key="String(header.key)"
-							#[getItemSlotName(header)]="slotProps">
-							<slot
-								:name="getItemSlotName(header)"
-								v-bind="slotProps"></slot>
-						</template>
-						<template
-							v-if="hasExpandedRowSlot"
-							#expanded-row="slotProps">
-							<slot
-								name="expanded-row"
-								v-bind="slotProps"></slot>
-						</template>
-					</g-table-body>
-				</table>
-			</div>
+						<g-table-body
+							:empty-text="props.emptyText"
+							:has-expanded-row-slot="hasExpandedRowSlot"
+							:has-rows="hasRows"
+							:loading="props.loading"
+							:loading-rows="props.loadingRows"
+							:show-expand="props.showExpand">
+							<template
+								v-if="slots.body"
+								#body="slotProps">
+								<slot
+									name="body"
+									v-bind="slotProps"></slot>
+							</template>
+							<template #loading>
+								<slot name="loading">Loading...</slot>
+							</template>
+							<template #empty>
+								<slot name="empty">
+									{{ props.emptyText }}
+								</slot>
+							</template>
+							<template
+								v-if="slots.row"
+								#row="slotProps">
+								<slot
+									name="row"
+									v-bind="slotProps"></slot>
+							</template>
+							<template
+								v-if="slots.expand"
+								#expand="slotProps">
+								<slot
+									name="expand"
+									v-bind="slotProps"></slot>
+							</template>
+							<template #item="slotProps">
+								<slot
+									name="item"
+									v-bind="slotProps">
+									{{ slotProps.value }}
+								</slot>
+							</template>
+							<template
+								v-for="header in itemSlotHeaders"
+								:key="String(header.key)"
+								#[getItemSlotName(header)]="slotProps">
+								<slot
+									:name="getItemSlotName(header)"
+									v-bind="slotProps"></slot>
+							</template>
+							<template
+								v-if="hasExpandedRowSlot"
+								#expanded-row="slotProps">
+								<slot
+									name="expanded-row"
+									v-bind="slotProps"></slot>
+							</template>
+						</g-table-body>
+					</table>
+				</div>
 
-			<div
-				v-if="slots.bottom"
-				class="g-table__bottom">
-				<slot name="bottom"></slot>
+				<div
+					v-if="slots.bottom"
+					class="g-table__bottom">
+					<slot name="bottom"></slot>
+				</div>
 			</div>
 		</div>
-	</div>
+	</g-gradient>
 </template>
 
 <style lang="scss">
 	@use '@/styles/mixins/action-surface' as actionSurface;
 	@use '@/styles/mixins/focus-ring' as focusRing;
 	@use '@/styles/mixins/scrollbar' as scrollbar;
+	@use '@/styles/mixins/variants' as variants;
+
+	@include variants.variant-gradient('g-table');
+	@include variants.variant-glass('g-table');
+
+	.g-table__frame {
+		width: 100%;
+	}
 
 	.g-table {
 		--g-table-padding-y: var(--g-token-space-3);
@@ -361,40 +399,45 @@
 		transition: box-shadow var(--g-token-duration-base)
 			var(--g-token-easing-emphasized);
 
-		&_filled {
-			--g-surface-underlay-color: var(--g-color);
-			--g-surface-underlay-opacity: 1;
-			--g-surface-overlay-color: var(--g-on-color);
-			--g-surface-overlay-opacity: 0;
-			--g-surface-content-color: var(--g-on-color);
+		&_gradient {
 			--g-table-border-color: color-mix(
 				in srgb,
-				var(--g-on-color) 18%,
+				var(--g-gradient-material-foreground, var(--g-on-color)) 18%,
 				transparent
 			);
 			--g-table-header-color: color-mix(
 				in srgb,
-				var(--g-on-color) 72%,
+				var(--g-gradient-material-foreground, var(--g-on-color)) 72%,
 				transparent
 			);
 			--g-table-muted-color: color-mix(
 				in srgb,
-				var(--g-on-color) 58%,
+				var(--g-gradient-material-foreground, var(--g-on-color)) 58%,
 				transparent
 			);
-			--g-table-fixed-background: var(--g-color);
+			--g-table-fixed-background: var(
+				--g-gradient-material-color,
+				var(--g-color)
+			);
 		}
 
 		&_outlined {
 			--g-surface-underlay-opacity: 0;
 			--g-surface-overlay-opacity: 0;
-
-			border: 1px solid var(--g-table-border-color);
 		}
 
 		&_text {
 			--g-surface-underlay-opacity: 0;
 			--g-surface-overlay-opacity: 0;
+		}
+
+		&_glass {
+			--g-surface-content-color: var(--g-token-color-on-surface);
+			--g-table-fixed-background: color-mix(
+				in srgb,
+				var(--g-token-color-surface) 32%,
+				transparent
+			);
 		}
 
 		&_default {

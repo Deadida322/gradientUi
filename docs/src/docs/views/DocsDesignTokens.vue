@@ -2,20 +2,17 @@
 	import { GButton, GGradient, GIcon, GText } from '@/components';
 	import type { IconValue } from '@/components/ui/GIcon/types';
 	import type { TextType } from '@/components/ui/GText/types';
+	import type { GColor } from '@/use/color';
 	import DocsCode from '@docs/components/DocsCode.vue';
 	import DocsPropsTable from '@docs/components/DocsPropsTable.vue';
 
 	const seedPalette = [
-		{ name: 'Primary', token: '--g-theme-primary', value: '112, 74, 255' },
-		{ name: 'Error', token: '--g-theme-error', value: '186, 26, 26' },
-		{ name: 'Warning', token: '--g-theme-warning', value: '146, 76, 0' },
-		{ name: 'Success', token: '--g-theme-success', value: '46, 125, 50' },
-		{ name: 'Surface', token: '--g-theme-surface', value: '255, 255, 255' },
-		{
-			name: 'Background',
-			token: '--g-theme-background',
-			value: '255, 251, 254'
-		}
+		{ name: 'Primary', token: '--g-theme-primary' },
+		{ name: 'Error', token: '--g-theme-error' },
+		{ name: 'Warning', token: '--g-theme-warning' },
+		{ name: 'Success', token: '--g-theme-success' },
+		{ name: 'Surface', token: '--g-theme-surface' },
+		{ name: 'Background', token: '--g-theme-background' }
 	];
 	const semanticPalette = [
 		{ name: 'Primary', token: '--g-token-color-primary' },
@@ -29,72 +26,70 @@
 		{
 			name: 'Red',
 			prop: 'red',
-			tones: ['red20', 'red40', 'red60', 'red80']
+			tones: ['red-100', 'red-300', 'red-500', 'red-800']
 		},
 		{
 			name: 'Orange',
 			prop: 'orange',
-			tones: ['orange20', 'orange40', 'orange60', 'orange80']
+			tones: ['orange-100', 'orange-300', 'orange-500', 'orange-800']
 		},
 		{
 			name: 'Amber',
 			prop: 'amber',
-			tones: ['amber20', 'amber40', 'amber60', 'amber80']
+			tones: ['amber-100', 'amber-300', 'amber-500', 'amber-800']
 		},
 		{
 			name: 'Green',
 			prop: 'green',
-			tones: ['green20', 'green40', 'green60', 'green80']
+			tones: ['green-100', 'green-300', 'green-500', 'green-800']
 		},
 		{
 			name: 'Teal',
 			prop: 'teal',
-			tones: ['teal20', 'teal40', 'teal60', 'teal80']
+			tones: ['teal-100', 'teal-300', 'teal-500', 'teal-800']
 		},
 		{
 			name: 'Blue',
 			prop: 'blue',
-			tones: ['blue20', 'blue40', 'blue60', 'blue80']
+			tones: ['blue-100', 'blue-300', 'blue-500', 'blue-800']
 		},
 		{
 			name: 'Deep purple',
 			prop: 'deep-purple',
 			tones: [
-				'deep-purple-20',
-				'deep-purple-40',
-				'deep-purple-60',
-				'deep-purple-80'
+				'deep-purple-100',
+				'deep-purple-300',
+				'deep-purple-500',
+				'deep-purple-800'
 			]
 		},
 		{
 			name: 'Pink',
 			prop: 'pink',
-			tones: ['pink20', 'pink40', 'pink60', 'pink80']
+			tones: ['pink-100', 'pink-300', 'pink-500', 'pink-800']
 		},
 		{
 			name: 'Blue grey',
 			prop: 'blue-grey',
 			tones: [
-				'blue-grey-20',
-				'blue-grey-40',
-				'blue-grey-60',
-				'blue-grey-80'
+				'blue-grey-100',
+				'blue-grey-300',
+				'blue-grey-500',
+				'blue-grey-800'
 			]
 		}
 	];
 	const actionColors = [
-		'red40',
-		'orange40',
-		'amber40',
-		'green40',
-		'teal40',
-		'blue40',
-		'deep-purple-40',
-		'pink40',
-		'blue-grey-40'
-	];
-	const colorTokenName = (color: string) =>
-		color.replace(/([a-zA-Z])(\d+)/, '$1-$2');
+		'red-500',
+		'orange-500',
+		'amber-500',
+		'green-500',
+		'teal-500',
+		'blue-500',
+		'deep-purple-500',
+		'pink-500',
+		'blue-grey-500'
+	] as const satisfies readonly GColor[];
 	const gradientExamples = [
 		{
 			name: 'Main',
@@ -118,15 +113,15 @@
 		}
 	];
 	const tonalGradientExamples = [
-		'red40',
-		'orange40',
-		'amber40',
-		'green40',
-		'teal40',
-		'blue40',
-		'deep-purple-60',
-		'pink40'
-	];
+		'red-500',
+		'orange-500',
+		'amber-500',
+		'green-500',
+		'teal-500',
+		'blue-500',
+		'deep-purple-300',
+		'pink-500'
+	] as const satisfies readonly GColor[];
 	const gradientTextExamples = [
 		{
 			label: 'Default gradient text',
@@ -138,18 +133,18 @@
 			binding: 'warning'
 		},
 		{
-			label: 'Deep purple 60',
-			binding: 'deep-purple-60'
+			label: 'Deep purple 300',
+			binding: 'deep-purple-300'
 		},
 		{
 			label: 'Pink to teal',
-			binding: { from: 'pink40', to: 'teal40' }
+			binding: { from: 'pink-500', to: 'teal-500' }
 		},
 		{
 			label: 'Multi color text',
 			className: 'docs-gradient-text-card_lg',
 			binding: {
-				colors: ['red40', 'orange40', 'amber40'],
+				colors: ['red-500', 'orange-500', 'amber-500'],
 				direction: '90deg'
 			}
 		}
@@ -186,9 +181,9 @@
 </template>`;
 	const colorCode = `
 <template>
-	<g-button color="teal40" variant="filled" label="Filled" />
-	<g-button color="deep-purple-60" variant="outlined" label="Outlined" />
-	<g-button color="pink40" variant="tonal" glow label="Glow" />
+	<g-button color="teal-500" variant="gradient" label="gradient" />
+	<g-button color="deep-purple-300" variant="outlined" label="Outlined" />
+	<g-button color="pink-500" variant="tonal" glow label="Glow" />
 </template>`;
 	const tokenRows = [
 		{
@@ -273,9 +268,10 @@
 				class="docs-page__anchor"></span>
 			<h2>Palette</h2>
 			<p>
-				Theme tokens store RGB channels, while semantic tokens expose
-				ready-to-use CSS colors for application surfaces and Gradient UI
-				components.
+				Palettes use a predictable <code>50–900</code> shade scale. The
+				default component color is <code>500</code>. The scale omits
+				pure white and black endpoints. Theme tokens store RGB channels,
+				while semantic tokens expose ready-to-use CSS colors.
 			</p>
 
 			<div class="docs-token-palette">
@@ -285,14 +281,13 @@
 					class="docs-token-swatch">
 					<span
 						class="docs-token-swatch__preview"
-						:style="{ background: `rgb(${color.value})` }"></span>
+						:style="{
+							background: `rgb(var(${color.token}))`
+						}"></span>
 					<span class="docs-token-swatch__name">{{
 						color.name
 					}}</span>
 					<code>{{ color.token }}</code>
-					<span class="docs-token-swatch__value">{{
-						color.value
-					}}</span>
 				</div>
 			</div>
 
@@ -326,8 +321,8 @@
 							:key="tone"
 							class="docs-tone"
 							:style="{
-								background: `rgb(var(--g-color-${colorTokenName(tone)}))`,
-								color: `rgb(var(--g-color-on-${colorTokenName(tone)}))`
+								background: `rgb(var(--g-color-${tone}))`,
+								color: `rgb(var(--g-color-on-${tone}))`
 							}">
 							{{ tone }}
 						</div>
@@ -340,7 +335,7 @@
 					v-for="color in actionColors"
 					:key="color"
 					:color="color"
-					variant="filled"
+					variant="gradient"
 					size="s"
 					glow
 					:label="color" />
@@ -383,10 +378,10 @@
 					:key="color"
 					class="docs-gradient-ramp__item"
 					:style="{
-						background: `var(--g-gradient-${colorTokenName(color)})`
+						background: `var(--g-gradient-${color})`
 					}">
 					<span>{{ color }}</span>
-					<code>--g-gradient-{{ colorTokenName(color) }}</code>
+					<code>--g-gradient-{{ color }}</code>
 				</div>
 			</div>
 
@@ -465,7 +460,7 @@
 				</div>
 				<div
 					v-gradient-icon="{
-						colors: ['red40', 'orange40', 'amber40'],
+						colors: ['red-500', 'orange-500', 'amber-500'],
 						direction: '90deg'
 					}"
 					class="docs-icon-card docs-icon-card_gradient">

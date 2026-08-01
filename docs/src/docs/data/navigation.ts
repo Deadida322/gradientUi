@@ -1,8 +1,12 @@
+import type { DocsReleaseBadgeMeta } from '@docs/types';
+import { docsNextReleaseBadge } from './releaseBadges';
+
 export interface DocsNavigationGroup {
 	title: string;
 	items: {
 		label: string;
 		to: string;
+		badge?: DocsReleaseBadgeMeta;
 	}[];
 }
 
@@ -12,7 +16,12 @@ export const docsNavigation: DocsNavigationGroup[] = [
 		items: [
 			{ label: 'Get started', to: '/docs/get-started' },
 			{ label: 'Core conceptions', to: '/docs/core-conceptions' },
-			{ label: 'Design tokens', to: '/docs/design-tokens' }
+			{ label: 'Design tokens', to: '/docs/design-tokens' },
+			{
+				label: 'Gradient engine',
+				to: '/docs/gradient-engine',
+				badge: docsNextReleaseBadge
+			}
 		]
 	},
 	{

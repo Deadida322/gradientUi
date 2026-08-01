@@ -29,7 +29,7 @@
 			<g-button
 				type="submit"
 				label="Submit"
-				variant="filled" />
+				variant="gradient" />
 		</g-form>
 	</div>
 </template>

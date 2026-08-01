@@ -1,8 +1,13 @@
 import type { GColor } from '@/use/color';
 import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { GVariant } from '@/use/variant';
+import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
 import { propsFactory } from '@/utils/propsFactory';
 import type { HTMLAttributes, PropType, StyleValue } from 'vue';
+import {
+	makeMaterialSurfaceProps,
+	type MaterialSurfaceProps
+} from '@/use/materialSurface';
 
 export type GTableAlign = 'start' | 'center' | 'end';
 export type GTableDensity = 'compact' | 'comfortable' | 'spacious';
@@ -96,7 +101,9 @@ export interface GTableBodySlotContext<T = Record<string, unknown>> {
 	) => GTableCellContext<T>;
 }
 
-export interface GTableProps<T = Record<string, unknown>> {
+export interface GTableProps<
+	T = Record<string, unknown>
+> extends MaterialSurfaceProps {
 	headers?: GTableHeader<T>[];
 	items?: T[];
 	itemKey?: GTableItemKey<T>;
@@ -119,6 +126,7 @@ export interface GTableProps<T = Record<string, unknown>> {
 	loadingRows?: number;
 	emptyText?: string;
 	elevation?: boolean;
+	texture?: GSurfaceTexture;
 	showExpand?: boolean;
 	expanded?: GTableKey[];
 	singleExpand?: boolean;
@@ -161,6 +169,8 @@ export type GTableEmits = {
 };
 
 export const makeTableProps = propsFactory({
+	...makeMaterialSurfaceProps(),
+	...makeSurfaceTextureProps(),
 	headers: {
 		type: Array as PropType<GTableHeader[]>,
 		default: () => []

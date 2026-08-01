@@ -4,6 +4,7 @@
 	import GExpansion from '@/components/ui/GExpansion/GExpansion.vue';
 	import GExpansionGroup from '@/components/ui/GExpansionGroup/GExpansionGroup.vue';
 	import GText from '@/components/ui/GText/GText.vue';
+	import type { GColor } from '@/use/color';
 
 	type FaqKey = 'tokens' | 'group' | 'slots';
 	type SetupKey = 'install' | 'theme' | 'ship';
@@ -16,79 +17,79 @@
 	type GapKey = 'gap-a' | 'gap-b';
 
 	const materialExpansionColors = [
-		'red40',
-		'pink40',
-		'purple40',
-		'deep-purple-40',
-		'indigo40',
-		'blue40',
-		'light-blue-40',
-		'cyan40',
-		'teal40',
-		'green40',
-		'light-green-40',
-		'lime40',
-		'yellow40',
-		'amber40',
-		'orange40',
-		'deep-orange-40',
-		'brown40',
-		'grey40',
-		'blue-grey-40'
-	];
+		'red-500',
+		'pink-500',
+		'purple-500',
+		'deep-purple-500',
+		'indigo-500',
+		'blue-500',
+		'light-blue-500',
+		'cyan-500',
+		'teal-500',
+		'green-500',
+		'light-green-500',
+		'lime-500',
+		'yellow-500',
+		'amber-500',
+		'orange-500',
+		'deep-orange-500',
+		'brown-500',
+		'grey-500',
+		'blue-grey-500'
+	] as const satisfies readonly GColor[];
 	const materialExpansionTones = [
-		'blue20',
-		'blue30',
-		'blue40',
-		'blue50',
-		'blue60',
-		'blue70',
-		'blue80',
-		'blue90',
-		'blue100'
-	];
+		'blue-800',
+		'blue-700',
+		'blue-500',
+		'blue-400',
+		'blue-300',
+		'blue-200',
+		'blue-100',
+		'blue-50',
+		'blue-50'
+	] as const satisfies readonly GColor[];
 	const materialExpansionToneRows = [
-		'red20',
-		'red40',
-		'red60',
-		'red80',
-		'orange20',
-		'orange40',
-		'orange60',
-		'orange80',
-		'green20',
-		'green40',
-		'green60',
-		'green80',
-		'teal20',
-		'teal40',
-		'teal60',
-		'teal80',
-		'blue20',
-		'blue40',
-		'blue60',
-		'blue80',
-		'deep-purple-20',
-		'deep-purple-40',
-		'deep-purple-60',
-		'deep-purple-80'
-	];
+		'red-800',
+		'red-500',
+		'red-300',
+		'red-100',
+		'orange-800',
+		'orange-500',
+		'orange-300',
+		'orange-100',
+		'green-800',
+		'green-500',
+		'green-300',
+		'green-100',
+		'teal-800',
+		'teal-500',
+		'teal-300',
+		'teal-100',
+		'blue-800',
+		'blue-500',
+		'blue-300',
+		'blue-100',
+		'deep-purple-800',
+		'deep-purple-500',
+		'deep-purple-300',
+		'deep-purple-100'
+	] as const satisfies readonly GColor[];
 	const gradientExpansionColors = [
-		'red40',
-		'red70',
-		'orange40',
-		'orange70',
-		'green40',
-		'green70',
-		'teal40',
-		'teal70',
-		'blue40',
-		'blue70',
-		'deep-purple-40',
-		'deep-purple-70',
-		'pink40',
-		'blue-grey-40'
-	];
+		'red-500',
+		'red-200',
+		'orange-500',
+		'orange-200',
+		'green-500',
+		'green-200',
+		'teal-500',
+		'teal-200',
+		'blue-500',
+		'blue-200',
+		'deep-purple-500',
+		'deep-purple-200',
+		'pink-500',
+		'blue-grey-500'
+	] as const satisfies readonly GColor[];
 
 	const standaloneOpen = ref(true);
 	const singleValue = ref<FaqKey | null>('tokens');
@@ -357,7 +358,7 @@
 				gap="12">
 				<g-expansion
 					value="default"
-					variant="filled"
+					variant="gradient"
 					title="Default variant"
 					text="The neutral surface stays closest to the current implementation.">
 					<div class="expansion-playground__body-copy">
@@ -412,12 +413,12 @@
 			<div class="expansion-color-grid">
 				<g-expansion
 					v-for="color in materialExpansionColors"
-					:key="`filled-${color}`"
+					:key="`gradient-${color}`"
 					:color="color"
-					variant="filled"
+					variant="gradient"
 					size="s"
 					:title="color"
-					text="filled">
+					text="gradient">
 					<div class="expansion-playground__body-copy">
 						{{ color }}
 					</div>
@@ -474,7 +475,7 @@
 					v-for="color in materialExpansionTones"
 					:key="`tone-${color}`"
 					:color="color"
-					variant="filled"
+					variant="gradient"
 					size="s"
 					:title="color"
 					text="tone scale">
@@ -624,7 +625,7 @@
 					value="warning"
 					title="Warning becomes stronger on open"
 					text="Closed state uses warning, open state keeps the same semantic color and intensifies it."
-					variant="filled"
+					variant="gradient"
 					state="warning"
 					active-state="warning">
 					<div class="expansion-playground__body-copy">
@@ -666,7 +667,7 @@
 					value="mixed"
 					title="Mixed visual transition"
 					text="Closed warning, open success, with active gradient props on top."
-					variant="filled"
+					variant="gradient"
 					state="warning"
 					active-state="success"
 					:active-glow="true"

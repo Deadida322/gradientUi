@@ -24,7 +24,7 @@
 	<div class="docs-component-detail__feedback-stack">
 		<g-button
 			label="Show composed snackbar"
-			variant="filled"
+			variant="gradient"
 			@click="showCustomAction" />
 	</div>
 </template>

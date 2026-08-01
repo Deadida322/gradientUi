@@ -1,0 +1,52 @@
+@mixin glass-surface() {
+	--g-glass-highlight-source: var(
+		--g-color,
+		var(--g-gradient-material-color, var(--g-token-color-primary))
+	);
+	--g-glass-highlight-color: color-mix(
+		in srgb,
+		var(--g-glass-highlight-source) 42%,
+		white
+	);
+	--g-glass-tint-color: color-mix(
+		in srgb,
+		var(--g-glass-highlight-source) 70%,
+		var(--g-token-color-surface)
+	);
+
+	background:
+		radial-gradient(
+			120% 110% at 100% 0%,
+			color-mix(
+				in srgb,
+				var(--g-glass-highlight-color)
+					var(--g-glass-highlight-opacity, 24%),
+				transparent
+			),
+			transparent 58%
+		),
+		linear-gradient(
+			180deg,
+			color-mix(
+				in srgb,
+				var(--g-glass-tint-color)
+					var(--g-glass-surface-top-opacity, 12%),
+				transparent
+			),
+			color-mix(
+				in srgb,
+				var(--g-glass-tint-color)
+					var(--g-glass-surface-bottom-opacity, 5%),
+				transparent
+			)
+		);
+	backdrop-filter: blur(var(--g-glass-backdrop-blur, 6px)) saturate(1.1);
+
+	@supports not (backdrop-filter: blur(1px)) {
+		background: color-mix(
+			in srgb,
+			var(--g-glass-tint-color) 28%,
+			transparent
+		);
+	}
+}

@@ -18,7 +18,7 @@
 	<div class="docs-component-detail__feedback-stack">
 		<g-button
 			label="Show snackbar"
-			variant="filled"
+			variant="gradient"
 			@click="showSnackbar" />
 		<p class="docs-component-detail__note">
 			Use GSnackbar directly for local positioned feedback, or call

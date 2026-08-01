@@ -63,7 +63,7 @@
 					@click="dismiss" />
 				<g-button
 					label="Apply"
-					variant="filled"
+					variant="gradient"
 					color="cyan"
 					@click="dismiss" />
 			</template>

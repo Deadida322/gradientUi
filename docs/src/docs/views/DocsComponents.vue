@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import DocsCode from '@docs/components/DocsCode.vue';
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import { componentCatalog, componentGroups } from '@docs/data/componentApi';
 
 	const importCode =
@@ -11,13 +12,13 @@
 
 <template>
 	<g-input label="Email" />
-	<g-button label="Continue" variant="filled" />
+	<g-button label="Continue" />
 </template>`;
 
 	const anatomyCode = `
 <g-component
 	v-model="value"
-	variant="filled"
+	variant="default"
 	size="m"
 	color="primary"
 	state="success">
@@ -89,7 +90,10 @@
 								'docs-components__chip_disabled': !component.to
 							}"
 							:to="component.to || getComponentUrl(component.id)">
-							{{ component.title }}
+							<span>{{ component.title }}</span>
+							<docs-release-badge
+								v-if="component.badge"
+								:badge="component.badge" />
 						</router-link>
 					</div>
 				</section>
@@ -165,7 +169,12 @@
 						'docs-components__card_disabled': !component.to
 					}"
 					:to="component.to || getComponentUrl(component.id)">
-					<span>{{ component.title }}</span>
+					<span class="docs-components__card-title">
+						<span>{{ component.title }}</span>
+						<docs-release-badge
+							v-if="component.badge"
+							:badge="component.badge" />
+					</span>
 					<p>{{ component.description }}</p>
 					<small v-if="!component.to">Page coming soon</small>
 				</router-link>
@@ -222,6 +231,10 @@
 		}
 
 		&__chip {
+			display: inline-flex;
+			gap: var(--g-token-space-2);
+			align-items: center;
+
 			padding: var(--g-token-space-1) var(--g-token-space-3);
 			border-radius: var(--g-token-radius-pill);
 
@@ -272,7 +285,14 @@
 			padding: var(--g-token-space-5);
 			text-decoration: none;
 
-			span {
+			&-title {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--g-token-space-2);
+				align-items: center;
+			}
+
+			&-title > span {
 				font-size: var(--g-token-font-size-lg);
 				font-weight: var(--g-token-font-weight-bold);
 				color: var(--g-token-color-on-surface);

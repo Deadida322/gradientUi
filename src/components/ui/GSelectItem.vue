@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import type { GColor } from '@/use/color';
+	import type { PropType } from 'vue';
 
 	const props = defineProps({
 		item: {
@@ -7,7 +9,7 @@
 			default: () => {}
 		},
 		color: {
-			type: String,
+			type: String as PropType<GColor>,
 			default: 'primary'
 		},
 		checked: {

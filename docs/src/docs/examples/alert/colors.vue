@@ -11,9 +11,11 @@
 			v-for="color in colors"
 			:key="color"
 			:color="color"
-			:variant="color === 'pink' || color === 'cyan' ? 'filled' : 'tonal'"
+			:variant="
+				color === 'pink' || color === 'cyan' ? 'gradient' : 'tonal'
+			"
 			icon="information-outline"
 			:title="color"
-			text="Color can work in tonal and filled feedback surfaces." />
+			text="Color can work in tonal and gradient feedback surfaces." />
 	</div>
 </template>

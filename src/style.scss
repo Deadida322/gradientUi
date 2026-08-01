@@ -21,6 +21,8 @@ html.g-theme--light {
 	--g-token-elevation-2-opacity: 0.14;
 	--g-token-elevation-3-opacity: 0.18;
 	--g-token-field-surface-tint-opacity: 0.04;
+	--g-token-surface-texture-noise-opacity: 0.2;
+	--g-token-surface-texture-noise-blend-mode: multiply;
 
 	color-scheme: light;
 }
@@ -30,6 +32,8 @@ html.g-theme--dark {
 	--g-token-elevation-2-opacity: 0.34;
 	--g-token-elevation-3-opacity: 0.42;
 	--g-token-field-surface-tint-opacity: 0.12;
+	--g-token-surface-texture-noise-opacity: 0.34;
+	--g-token-surface-texture-noise-blend-mode: hard-light;
 
 	color-scheme: dark;
 }
@@ -62,6 +66,66 @@ html.g-theme--dark {
 
 	animation: g-ripple-animation var(--g-ripple-duration, 520ms)
 		var(--g-ripple-easing, var(--g-token-easing-standard));
+}
+
+.g-specular {
+	position: relative;
+}
+
+.g-specular__container {
+	pointer-events: none;
+
+	position: absolute;
+	z-index: var(--g-specular-z-index, 2);
+	inset: 0;
+
+	overflow: hidden;
+
+	border-radius: inherit;
+}
+
+.g-specular__highlight {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(
+		calc(var(--g-specular-x, 50%) - 50%),
+		calc(var(--g-specular-y, 50%) - 50%)
+	);
+
+	width: var(--g-specular-size, 140px);
+	height: var(--g-specular-size, 140px);
+	border-radius: 50%;
+
+	opacity: 0;
+	background:
+		radial-gradient(
+			circle,
+			color-mix(
+					in srgb,
+					var(--g-specular-color, white) 78%,
+					transparent
+				)
+				0%,
+			color-mix(
+					in srgb,
+					var(--g-specular-color, white) 34%,
+					transparent
+				)
+				34%,
+			transparent 68%
+		);
+	filter: blur(var(--g-specular-blur, 2px));
+
+	transition:
+		opacity var(--g-specular-duration, 180ms)
+			var(--g-specular-easing, var(--g-token-easing-standard)),
+		transform var(--g-specular-duration, 180ms)
+			var(--g-specular-easing, var(--g-token-easing-standard));
+}
+
+.g-specular[data-g-specular-active='true'] .g-specular__highlight {
+	opacity: var(--g-specular-max-opacity, 0.36);
 }
 
 .g-snackbar-stack {

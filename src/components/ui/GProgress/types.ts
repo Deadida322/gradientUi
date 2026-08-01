@@ -3,6 +3,7 @@ import { makeColorProps } from '@/use/color';
 import { makeRoundedProps } from '@/use/rounded';
 import { makeSizeProps } from '@/use/size';
 import { makeStateProps } from '@/use/state';
+import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
 import { propsFactory } from '@/utils/propsFactory';
 import type { GColor } from '@/use/color';
 import type { GGradienStates } from '../GGradient/types';
@@ -23,6 +24,7 @@ export interface GProgressProps {
 	labelAlign?: GProgressLabelAlign;
 	view?: GProgressView;
 	segments?: number;
+	texture?: GSurfaceTexture;
 }
 
 export const makeProgressProps = propsFactory({
@@ -30,6 +32,7 @@ export const makeProgressProps = propsFactory({
 	...makeRoundedProps(),
 	...makeSizeProps(),
 	...makeStateProps(),
+	...makeSurfaceTextureProps(),
 	modelValue: {
 		type: Number,
 		default: 0

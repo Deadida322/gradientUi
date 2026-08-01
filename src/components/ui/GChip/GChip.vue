@@ -1,21 +1,37 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
 	import GGradient from '../GGradient/GGradient.vue';
 	import GIcon from '@/components/ui/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
 	import { useActionSurface } from '@/use/actionSurface';
+	import usePx from '@/use/px';
 	import { makeChipProps } from './types';
 
 	const slots = defineSlots<PLASlots>();
 	const props = defineProps(makeChipProps());
+	const computedBorderRadius = usePx(props.borderRadius);
+	const resolvedBorderWidth = computed(
+		() =>
+			props.borderWidth ??
+			(props.variant === 'glass' || props.glow || props.animateGlow
+				? 1
+				: 0)
+	);
 
 	const {
 		actionSurfaceClasses,
 		resolvedColor,
 		resolvedState,
 		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
-		surfaceContentClasses
+		surfaceTextureClasses,
+		surfaceContentClasses,
+		morphBlobs,
+		morphEnabled,
+		getMorphBlobStyle
 	} = useActionSurface(props, 'g-chip');
 </script>
 
@@ -26,13 +42,25 @@
 			...props,
 			color: resolvedColor,
 			state: resolvedState
-		}">
+		}"
+		:border-width="resolvedBorderWidth">
 		<div
 			class="g-chip"
 			:class="actionSurfaceClasses"
 			:style="surfaceStyles">
 			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="morphEnabled"
+				:class="surfaceMaterialMorphClasses"
+				aria-hidden="true">
+				<span
+					v-for="(blob, index) in morphBlobs"
+					:key="index"
+					:class="surfaceMaterialMorphBlobClasses"
+					:style="getMorphBlobStyle(blob)"></span>
+			</span>
 			<span :class="surfaceOverlayClasses"></span>
+			<span :class="surfaceTextureClasses"></span>
 			<div
 				class="g-chip__content"
 				:class="surfaceContentClasses">
@@ -103,7 +131,7 @@
 
 		min-width: 0;
 		padding: var(--g-token-chip-padding-y-m) var(--g-token-chip-padding-x-m);
-		border-radius: var(--g-token-chip-radius);
+		border-radius: v-bind('computedBorderRadius');
 
 		font-size: var(--g-token-chip-font-size-m);
 		line-height: var(--g-token-chip-line-height);
@@ -167,8 +195,9 @@
 	@include rounded.rounded('g-chip');
 	@include actionSurface.action-surface-layers('g-chip', true);
 	@include actionSurface.action-state-overrides('g-chip');
-	@include variants.variant-filled('g-chip');
+	@include variants.variant-gradient('g-chip');
 	@include variants.variant-tonal('g-chip');
 	@include variants.variant-text('g-chip');
+	@include variants.variant-glass('g-chip');
 	@include variants.variant-outlined('g-chip');
 </style>

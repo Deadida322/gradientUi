@@ -11,6 +11,11 @@ import { makeGradientGlowProps } from './gradientGlow';
 import { makeGradientSurfaceProps } from './gradientSurface';
 import type { GColor } from './color';
 import { useResolveGradientValue } from './colorResolver';
+import {
+	useGradientMaterial,
+	type GradientMaterialKind
+} from './gradientMaterial';
+import type { GradientTokenRecipe } from '@/theme';
 
 export type GGradienStates = 'warning' | 'success' | 'error';
 export type GBorderRadius = number | StringeredNumber;
@@ -32,7 +37,12 @@ export const makeGradientBorderProps = propsFactory({
 		default: 1
 	},
 	color: String as PropType<GColor>,
-	state: String as PropType<GGradienStates>
+	state: String as PropType<GGradienStates>,
+	materialKind: {
+		type: String as PropType<GradientMaterialKind>,
+		default: 'action'
+	},
+	gradientRecipe: String as PropType<GradientTokenRecipe>
 });
 
 export const makeGradientProps = propsFactory({
@@ -62,28 +72,35 @@ export function useGradient(props: GGradientProps) {
 	const resolvedGradient = useResolveGradientValue(
 		() => props.color ?? props.state
 	);
+	const hasBorder = computed(() => Number(props.borderWidth) > 0);
+	const { gradientMaterial, gradientMaterialStyles } = useGradientMaterial({
+		color: () => props.color ?? props.state,
+		kind: () => props.materialKind,
+		recipe: () => props.gradientRecipe
+	});
 	const gradientClasses = computed(() => {
 		return {
 			[disabledClass.value]: true,
 			[placementClass.value]: true,
 			[roundedClasses.value]: true,
 			'g-gradient_inherit-width': props.inheritWidth,
-			[`g-gradient_${props.placement}`]: props.placement,
-			[`g-gradient_${props.state}`]: props.state,
-			[`g-gradient_border_${props.borderWidth}`]: true
+			[`g-gradient_${props.state}`]: props.state
 		};
 	});
 
 	const gradientStyles = computed(() => ({
+		...(hasBorder.value
+			? gradientMaterialStyles.value
+			: { '--g-gradient-current': resolvedGradient.value }),
 		'--g-border-radius': borderRadiusPx.value,
-		'--g-border-width': borderWidthPx.value,
-		'--g-gradient-current': resolvedGradient.value
+		'--g-border-width': borderWidthPx.value
 	}));
 
 	return {
 		borderWidthPx,
 		borderRadiusPx,
 		containerBorderRadius,
+		gradientMaterial,
 		resolvedGradient,
 		gradientClasses,
 		gradientStyles

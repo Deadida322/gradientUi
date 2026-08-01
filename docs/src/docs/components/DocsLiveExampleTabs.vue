@@ -2,6 +2,7 @@
 	import { computed, ref, watch } from 'vue';
 	import { GTab, GTabList, GTabs } from '@/components';
 	import DocsLiveExample from '@docs/components/DocsLiveExample.vue';
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import type { DocsLiveExample as DocsLiveExampleType } from '@docs/types';
 
 	const props = defineProps<{
@@ -41,7 +42,14 @@
 				v-for="example in examples"
 				:key="example.id"
 				:value="example.id"
-				:label="example.label" />
+				:label="example.label">
+				<span class="docs-live-example-tabs__label">
+					<span>{{ example.label }}</span>
+					<docs-release-badge
+						v-if="example.badge"
+						:badge="example.badge" />
+				</span>
+			</g-tab>
 		</g-tab-list>
 
 		<docs-live-example
@@ -53,5 +61,12 @@
 <style lang="scss">
 	.docs-live-example-tabs {
 		width: 100%;
+
+		&__label {
+			display: inline-flex;
+			gap: var(--g-token-space-2);
+			align-items: center;
+			min-width: 0;
+		}
 	}
 </style>
