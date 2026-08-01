@@ -16,7 +16,6 @@
 		<g-chip
 			label="Gradient UI"
 			prepend-icon="palette-outline"
-			append-icon="star-outline"
-			variant="filled" />
+			append-icon="star-outline" />
 	</div>
 </template>

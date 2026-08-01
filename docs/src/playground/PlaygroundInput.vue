@@ -78,17 +78,17 @@
 		<div class="row">
 			<g-input
 				v-model="gradientInputA"
-				color="red40"
+				color="red-500"
 				label="Red 40"
 				prepend-icon="palette" />
 			<g-input
 				v-model="gradientInputB"
-				color="teal40"
+				color="teal-500"
 				label="Teal 40"
 				prepend-icon="palette" />
 			<g-input
 				v-model="gradientInputC"
-				color="deep-purple-40"
+				color="deep-purple-500"
 				label="Deep purple 40"
 				prepend-icon="palette" />
 		</div>

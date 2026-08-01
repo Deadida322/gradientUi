@@ -46,7 +46,7 @@
 			<g-button
 				size="s"
 				variant="tonal"
-				color="teal40"
+				color="teal-500"
 				:label="
 					hideOnScroll
 						? 'Disable hide on scroll'
@@ -59,14 +59,14 @@
 		<g-navbar
 			v-model="active"
 			:hide-on-scroll="hideOnScroll"
-			color="blue40"
-			active-color="teal40"
+			color="blue-500"
+			active-color="teal-500"
 			elevated
 			aria-label="Product navigation">
 			<template #prepend>
 				<div class="navigation-brand">
 					<g-icon
-						v-gradient-icon="'teal40'"
+						v-gradient-icon="'teal-500'"
 						icon="star-four-points"
 						size="22" />
 					<span>Gradient UI</span>
@@ -137,8 +137,8 @@
 			<template #append>
 				<g-button
 					size="s"
-					variant="filled"
-					color="teal40"
+					variant="gradient"
+					color="teal-500"
 					label="Create"
 					prepend="plus" />
 			</template>
@@ -177,7 +177,7 @@
 
 					<g-aside
 						v-model="asideActive"
-						color="blue-grey-40"
+						color="blue-grey-500"
 						active-color="primary"
 						aria-label="Section navigation">
 						<g-aside-item
@@ -229,8 +229,8 @@
 						position="absolute"
 						top="24px"
 						offset="24px"
-						color="blue-grey-40"
-						active-color="teal40"
+						color="blue-grey-500"
+						active-color="teal-500"
 						aria-label="Absolute aside navigation">
 						<g-aside-item
 							value="default"
@@ -284,8 +284,8 @@
 			<g-navbar
 				v-model="compactActive"
 				density="compact"
-				color="deep-purple-40"
-				active-color="pink40"
+				color="deep-purple-500"
+				active-color="pink-500"
 				aria-label="Compact navigation">
 				<g-navbar-item
 					value="docs"
@@ -309,8 +309,8 @@
 			<g-navbar
 				v-model="warmActive"
 				density="prominent"
-				color="orange40"
-				active-color="amber40"
+				color="orange-500"
+				active-color="amber-500"
 				elevated
 				aria-label="Account navigation">
 				<template #prepend>
@@ -346,8 +346,8 @@
 
 			<g-navbar
 				default-value="home"
-				color="green40"
-				active-color="teal40"
+				color="green-500"
+				active-color="teal-500"
 				aria-label="Uncontrolled navigation">
 				<g-navbar-item
 					value="home"
@@ -367,7 +367,7 @@
 				top="136px"
 				offset="24px"
 				width="210"
-				color="blue-grey-40"
+				color="blue-grey-500"
 				active-color="primary"
 				aria-label="Fixed page aside">
 				<g-aside-item
@@ -451,7 +451,7 @@
 	}
 
 	.navigation-brand_warm {
-		color: rgb(var(--g-color-orange-40));
+		color: rgb(var(--g-color-orange-500));
 	}
 
 	.navigation-menu {
@@ -510,11 +510,11 @@
 		padding: var(--g-token-space-6);
 		border-radius: var(--g-token-radius-xl);
 
-		color: rgb(var(--g-color-orange-60));
+		color: rgb(var(--g-color-orange-300));
 
 		background: color-mix(
 			in srgb,
-			rgb(var(--g-color-amber-20)) 62%,
+			rgb(var(--g-color-amber-800)) 62%,
 			white 38%
 		);
 	}

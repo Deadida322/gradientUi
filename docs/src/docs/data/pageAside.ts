@@ -18,6 +18,7 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Gradients', href: '#gradients' },
 		{ label: 'Composable APIs', href: '#composable-apis' },
 		{ label: 'Examples as contracts', href: '#examples-as-contracts' },
+		{ label: 'Gradient engine', href: '#gradient-engine' },
 		{ label: 'Surface', href: '#surface' },
 		{ label: 'GGradient primitive', href: '#g-gradient' }
 	],
@@ -28,6 +29,16 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Typography', href: '#typography' },
 		{ label: 'Icons', href: '#icons' },
 		{ label: 'Common tokens', href: '#common-tokens' }
+	],
+	'/docs/gradient-engine': [
+		{ label: 'Overview', href: '#overview' },
+		{ label: 'Workflow', href: '#workflow' },
+		{ label: 'API layers', href: '#api-layers' },
+		{ label: 'Material integration', href: '#material-integration' },
+		{ label: 'Playground', href: '#playground' },
+		{ label: 'API surface', href: '#api' },
+		{ label: 'Recipes', href: '#recipes' },
+		{ label: 'Formats', href: '#formats' }
 	],
 	'/docs/components': [
 		{ label: 'Using components', href: '#using-components' },
@@ -52,6 +63,7 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Mask', href: '#mask' },
 		{ label: 'Gradient text', href: '#gradient-text' },
 		{ label: 'Ripple', href: '#ripple' },
+		{ label: 'Specular', href: '#specular' },
 		{ label: 'API', href: '#api' }
 	],
 	'/docs/css-helpers': [

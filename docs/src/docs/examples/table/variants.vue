@@ -23,9 +23,9 @@
 		},
 		{
 			id: 3,
-			variant: 'Filled',
-			use: 'Prominent dashboard blocks and compact summaries',
-			tone: 'High'
+			variant: 'Text',
+			use: 'Dense utility views with minimal container styling',
+			tone: 'Low'
 		}
 	];
 </script>
@@ -47,13 +47,28 @@
 		<g-table
 			:headers="headers"
 			:items="items"
+			variant="text" />
+
+		<g-table
+			:headers="headers"
+			:items="[
+				...items,
+				{
+					id: 4,
+					variant: 'Gradient',
+					use: 'Prominent dashboard blocks and compact summaries',
+					tone: 'High'
+				}
+			]"
 			color="deep-purple"
-			variant="filled" />
+			variant="gradient" />
 
 		<g-table
 			:headers="headers"
 			:items="items"
-			variant="text" />
+			color="cyan"
+			variant="glass"
+			:backdrop-blur="6" />
 	</div>
 </template>
 

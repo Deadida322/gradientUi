@@ -2,9 +2,16 @@
 	defineOptions({ name: 'CheckboxColorsExample' });
 	import { ref } from 'vue';
 	import { GCheckbox } from '@/components';
+	import type { GColor } from '@/use/color';
 
 	const checked = ref(true);
-	const colors = ['primary', 'cyan', 'deep-purple', 'green', 'pink'];
+	const colors = [
+		'primary',
+		'cyan',
+		'deep-purple',
+		'green',
+		'pink'
+	] as const satisfies readonly GColor[];
 </script>
 
 <template>

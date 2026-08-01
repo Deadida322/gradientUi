@@ -1,8 +1,10 @@
 import type { PXtype } from '@/types/CommonTypes';
 import type { GColor } from '@/use/color';
 import type { GGradienStates } from '../GGradient/types';
+import type { GradientAnimationOptions, GradientTokenRecipe } from '@/theme';
+import type { GGlow } from '@/use/gradient';
 
-type SquircleVariants = 'tonal' | 'primary';
+export type SquircleVariants = 'tonal' | 'primary' | 'gradient';
 
 export interface GSquircleProps {
 	size?: PXtype;
@@ -12,4 +14,9 @@ export interface GSquircleProps {
 	borderColor?: string;
 	color?: GColor;
 	state?: GGradienStates;
+	gradientRecipe?: GradientTokenRecipe;
+	animationOptions?: GradientAnimationOptions;
+	gradientBorder?: boolean;
+	glow?: GGlow;
+	animateGlow?: boolean;
 }

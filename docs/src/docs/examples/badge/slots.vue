@@ -7,7 +7,7 @@
 	<div class="docs-component-detail__badge-stage">
 		<g-badge
 			color="pink"
-			variant="filled">
+			variant="gradient">
 			<g-button
 				label="Favorites"
 				variant="tonal"

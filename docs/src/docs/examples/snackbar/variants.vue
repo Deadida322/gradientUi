@@ -5,7 +5,7 @@
 
 	const snackbar = useSnackbar();
 
-	function showVariant(variant: 'tonal' | 'filled' | 'outlined') {
+	function showVariant(variant: 'tonal' | 'outlined' | 'gradient' | 'glass') {
 		snackbar.show({
 			text: `${variant} snackbar with action`,
 			variant,
@@ -21,12 +21,16 @@
 			variant="tonal"
 			@click="showVariant('tonal')" />
 		<g-button
-			label="Filled"
-			variant="filled"
-			@click="showVariant('filled')" />
-		<g-button
 			label="Outlined"
 			variant="outlined"
 			@click="showVariant('outlined')" />
+		<g-button
+			label="Gradient"
+			variant="gradient"
+			@click="showVariant('gradient')" />
+		<g-button
+			label="Glass"
+			variant="glass"
+			@click="showVariant('glass')" />
 	</div>
 </template>

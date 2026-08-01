@@ -35,6 +35,11 @@ const routes = [
 				component: () => import('@docs/views/DocsDesignTokens.vue')
 			},
 			{
+				path: 'gradient-engine',
+				name: 'docs-gradient-engine',
+				component: () => import('@docs/views/DocsGradientEngine.vue')
+			},
+			{
 				path: 'components',
 				name: 'docs-components',
 				component: () => import('@docs/views/DocsComponents.vue')

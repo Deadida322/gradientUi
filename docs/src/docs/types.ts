@@ -5,6 +5,7 @@ export interface DocsPropRow {
 	type: string;
 	defaultValue?: string;
 	description: string;
+	badge?: DocsReleaseBadgeMeta;
 }
 
 export interface DocsExampleTab {
@@ -25,6 +26,7 @@ export interface DocsLiveExample {
 	label: string;
 	component: Component;
 	code: string;
+	badge?: DocsReleaseBadgeMeta;
 }
 
 export interface DocsComponentPage {
@@ -39,4 +41,12 @@ export interface DocsComponentPage {
 		description: string;
 		items: DocsLiveExample[];
 	};
+}
+
+export type DocsReleaseBadgeTone = 'rc' | 'testing' | 'new';
+
+export interface DocsReleaseBadgeMeta {
+	label: string;
+	tone?: DocsReleaseBadgeTone;
+	title?: string;
 }

@@ -4,6 +4,10 @@ import type { GColor } from '@/use/color';
 import type { GGradienStates } from '../GGradient/types';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';
+import { makeMaterialProps } from '@/use/material';
+import { makeGradientGlowProps } from '@/use/gradientGlow';
+import type { GGlow } from '@/use/gradient';
+import type { GradientAnimationOptions, GradientTokenRecipe } from '@/theme';
 
 export type GFABLocation =
 	| 'top-left'
@@ -14,7 +18,7 @@ export type GFABLocation =
 	| 'bottom-right';
 
 export type GFABPosition = 'static' | 'absolute' | 'fixed';
-export type GFABVariant = 'filled' | 'tonal' | 'outlined' | 'default';
+export type GFABVariant = 'gradient' | 'tonal' | 'outlined' | 'default';
 export type GFABLabelPlacement = 'left' | 'right';
 
 export interface GFABProps {
@@ -33,9 +37,15 @@ export interface GFABProps {
 	shadow?: boolean;
 	border?: number;
 	borderColor?: string;
+	gradientRecipe?: GradientTokenRecipe;
+	animationOptions?: GradientAnimationOptions;
+	glow?: GGlow;
+	animateGlow?: boolean;
 }
 
 export const makeFABProps = propsFactory({
+	...makeMaterialProps(),
+	...makeGradientGlowProps(),
 	icon: String as PropType<MdiIcon>,
 	label: String,
 	labelPlacement: {
@@ -49,7 +59,7 @@ export const makeFABProps = propsFactory({
 	},
 	variant: {
 		type: String as PropType<GFABVariant>,
-		default: 'filled'
+		default: 'default'
 	},
 	color: {
 		type: String as PropType<GColor>,

@@ -75,12 +75,12 @@
 		<div class="row">
 			<g-textarea
 				v-model="gradientTextareaA"
-				color="red40"
+				color="red-500"
 				label="Red 40"
 				:rows="2" />
 			<g-textarea
 				v-model="gradientTextareaB"
-				color="teal40"
+				color="teal-500"
 				label="Teal 40"
 				:rows="2" />
 		</div>

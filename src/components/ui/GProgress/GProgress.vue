@@ -56,6 +56,7 @@
 	const {
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers('g-progress');
 </script>
@@ -69,7 +70,8 @@
 			'g-progress_no-label': props.noLabel,
 			[`g-progress_${props.size}`]: true,
 			[`g-progress_label-${props.labelAlign}`]: true,
-			[`g-progress_view-${props.view}`]: true
+			[`g-progress_view-${props.view}`]: true,
+			[`g-progress_texture-${props.texture}`]: props.texture !== 'none'
 		}"
 		:style="progressStyles">
 		<div
@@ -88,6 +90,7 @@
 			:aria-valuetext="props.indeterminate ? undefined : displayLabel">
 			<span :class="surfaceUnderlayClasses"></span>
 			<span :class="surfaceOverlayClasses"></span>
+			<span :class="surfaceTextureClasses"></span>
 			<div
 				class="g-progress__surface-content"
 				:class="surfaceContentClasses">

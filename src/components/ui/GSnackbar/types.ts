@@ -1,11 +1,13 @@
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { GColor } from '@/use/color';
+import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
 import type { GTransitionValue } from '@/use/transition';
 import type { GGradienStates } from '../GGradient/types';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
+import { makeMaterialSurfaceProps } from '@/use/materialSurface';
 
-export type GSnackbarVariant = 'filled' | 'tonal' | 'outlined';
+export type GSnackbarVariant = 'gradient' | 'tonal' | 'outlined' | 'glass';
 export type GSnackbarLocation =
 	| 'top-left'
 	| 'top-center'
@@ -15,6 +17,7 @@ export type GSnackbarLocation =
 	| 'bottom-right';
 export type GSnackbarCloseReason = 'manual' | 'timeout' | 'action' | 'dismiss';
 export type GSnackbarPosition = 'static' | 'absolute' | 'fixed';
+export type GSnackbarTexture = GSurfaceTexture;
 
 export interface GSnackbarAction {
 	label: string;
@@ -23,6 +26,8 @@ export interface GSnackbarAction {
 }
 
 export const makeSnackbarProps = propsFactory({
+	...makeMaterialSurfaceProps({ borderRadius: 12 }),
+	...makeSurfaceTextureProps(),
 	modelValue: {
 		type: Boolean as PropType<boolean | undefined>,
 		default: undefined

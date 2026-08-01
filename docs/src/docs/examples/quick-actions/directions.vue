@@ -30,6 +30,7 @@
 			direction="left"
 			label-placement="left"
 			transition="slide-x"
+			variant="outlined"
 			:offset="16"
 			:options="actions" />
 	</div>

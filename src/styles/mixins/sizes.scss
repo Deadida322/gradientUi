@@ -1,31 +1,43 @@
-@mixin size-s($prefix) { 
-    .#{$prefix}_s { 
-        padding: var(--g-size-padding-y-s) var(--g-size-padding-x-s);
-        font-size: var(--g-size-font-size-s);
-        line-height: var(--g-size-line-height-s, var(--g-size-line-height, inherit));
-    } 
+@mixin size-s($prefix) {
+	.#{$prefix}_s {
+		padding: var(--g-size-padding-y-s) var(--g-size-padding-x-s);
+		font-size: var(--g-size-font-size-s);
+		line-height: var(
+			--g-size-line-height-s,
+			var(--g-size-line-height, inherit)
+		);
+	}
 }
 
-@mixin size-m($prefix) { 
-    .#{$prefix}_m { 
-        padding: var(--g-size-padding-y-m) var(--g-size-padding-x-m);
-        font-size: var(--g-size-font-size-m);
-        line-height: var(--g-size-line-height-m, var(--g-size-line-height, inherit));
-    } 
+@mixin size-m($prefix) {
+	.#{$prefix}_m {
+		padding: var(--g-size-padding-y-m) var(--g-size-padding-x-m);
+		font-size: var(--g-size-font-size-m);
+		line-height: var(
+			--g-size-line-height-m,
+			var(--g-size-line-height, inherit)
+		);
+	}
 }
 
-@mixin size-l($prefix) { 
-    .#{$prefix}_l { 
-        padding: var(--g-size-padding-y-l) var(--g-size-padding-x-l);
-        font-size: var(--g-size-font-size-l);
-        line-height: var(--g-size-line-height-l, var(--g-size-line-height, inherit));
-    }
+@mixin size-l($prefix) {
+	.#{$prefix}_l {
+		padding: var(--g-size-padding-y-l) var(--g-size-padding-x-l);
+		font-size: var(--g-size-font-size-l);
+		line-height: var(
+			--g-size-line-height-l,
+			var(--g-size-line-height, inherit)
+		);
+	}
 }
 
 @mixin size-xl($prefix) {
-    .#{$prefix}_xl {
-        padding: var(--g-size-padding-y-xl) var(--g-size-padding-x-xl);
-        font-size: var(--g-size-font-size-xl);
-        line-height: var(--g-size-line-height-xl, var(--g-size-line-height, inherit));
-    }
+	.#{$prefix}_xl {
+		padding: var(--g-size-padding-y-xl) var(--g-size-padding-x-xl);
+		font-size: var(--g-size-font-size-xl);
+		line-height: var(
+			--g-size-line-height-xl,
+			var(--g-size-line-height, inherit)
+		);
+	}
 }

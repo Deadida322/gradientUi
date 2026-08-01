@@ -8,41 +8,38 @@
 	import GProgress from '@/components/ui/GProgress/GProgress.vue';
 	import GSwitch from '@/components/ui/GSwitch/GSwitch.vue';
 	import GText from '@/components/ui/GText/GText.vue';
+	import type { GColor } from '@/use/color';
 
 	const colors = [
-		'red40',
-		'orange40',
-		'amber40',
-		'green40',
-		'teal40',
-		'blue40',
-		'deep-purple-40',
-		'pink40',
-		'blue-grey-40'
-	];
+		'red-500',
+		'orange-500',
+		'amber-500',
+		'green-500',
+		'teal-500',
+		'blue-500',
+		'deep-purple-500',
+		'pink-500',
+		'blue-grey-500'
+	] as const satisfies readonly GColor[];
 	const tones = [
-		'red20',
-		'red40',
-		'red60',
-		'red80',
-		'teal20',
-		'teal40',
-		'teal60',
-		'teal80',
-		'deep-purple-20',
-		'deep-purple-40',
-		'deep-purple-60',
-		'deep-purple-80'
-	];
+		'red-800',
+		'red-500',
+		'red-300',
+		'red-100',
+		'teal-800',
+		'teal-500',
+		'teal-300',
+		'teal-100',
+		'deep-purple-800',
+		'deep-purple-500',
+		'deep-purple-300',
+		'deep-purple-100'
+	] as const satisfies readonly GColor[];
 
 	const fieldValue = ref('Color system');
 	const checked = ref(true);
 	const loadingSimple = ref(false);
 	const loadingCustom = ref(true);
-
-	function colorTokenName(color: string) {
-		return color.replace(/([a-zA-Z])(\d+)/, '$1-$2');
-	}
 </script>
 
 <template>
@@ -57,8 +54,8 @@
 				:key="color"
 				class="color-swatch"
 				:style="{
-					'--color-swatch-bg': `rgb(var(--g-color-${colorTokenName(color)}))`,
-					'--color-swatch-fg': `rgb(var(--g-color-on-${colorTokenName(color)}))`
+					'--color-swatch-bg': `rgb(var(--g-color-${color}))`,
+					'--color-swatch-fg': `rgb(var(--g-color-on-${color}))`
 				}">
 				<span>{{ color }}</span>
 			</div>
@@ -69,7 +66,7 @@
 				v-for="color in colors"
 				:key="`button-${color}`"
 				:color="color"
-				variant="filled"
+				variant="gradient"
 				size="s"
 				border-width="1"
 				glow
@@ -104,21 +101,21 @@
 			</div>
 			<div class="gradient-icon-demo">
 				<g-icon
-					v-gradient-icon="'teal40'"
+					v-gradient-icon="'teal-500'"
 					icon="check"
 					size="32" />
-				<span>teal40</span>
+				<span>teal-500</span>
 			</div>
 			<div class="gradient-icon-demo">
 				<g-icon
-					v-gradient-icon="'deep-purple-60'"
+					v-gradient-icon="'deep-purple-300'"
 					icon="star-four-points"
 					size="32" />
-				<span>deep-purple-60</span>
+				<span>deep-purple-300</span>
 			</div>
 			<div class="gradient-icon-demo">
 				<g-icon
-					v-gradient-icon="{ from: 'pink40', to: 'teal40' }"
+					v-gradient-icon="{ from: 'pink-500', to: 'teal-500' }"
 					icon="heart-outline"
 					size="32" />
 				<span>from/to</span>
@@ -126,7 +123,7 @@
 			<div class="gradient-icon-demo">
 				<g-icon
 					v-gradient-icon="{
-						colors: ['red40', 'orange40', 'amber40'],
+						colors: ['red-500', 'orange-500', 'amber-500'],
 						direction: '90deg'
 					}"
 					icon="flash"
@@ -147,18 +144,18 @@
 				Warning text
 			</div>
 			<div
-				v-gradient-text="'deep-purple-60'"
+				v-gradient-text="'deep-purple-300'"
 				class="gradient-text-demo">
 				Deep purple 60
 			</div>
 			<div
-				v-gradient-text="{ from: 'pink40', to: 'teal40' }"
+				v-gradient-text="{ from: 'pink-500', to: 'teal-500' }"
 				class="gradient-text-demo">
 				Pink to teal
 			</div>
 			<div
 				v-gradient-text="{
-					colors: ['red40', 'orange40', 'amber40'],
+					colors: ['red-500', 'orange-500', 'amber-500'],
 					direction: '90deg'
 				}"
 				class="gradient-text-demo gradient-text-demo_lg">
@@ -216,19 +213,19 @@
 
 		<div class="color-playground__grid">
 			<g-progress
-				color="blue40"
+				color="blue-500"
 				label="Syncing components"
 				label-align="start"
 				:model-value="38"
 				rounded />
 			<g-progress
-				color="green40"
+				color="green-500"
 				label="Build quality"
 				label-align="center"
 				:model-value="64"
 				rounded />
 			<g-progress
-				color="pink40"
+				color="pink-500"
 				label="Release readiness"
 				label-align="end"
 				:model-value="86"
@@ -237,19 +234,19 @@
 
 		<div class="color-playground__grid">
 			<g-progress
-				color="orange40"
+				color="orange-500"
 				label="Striped"
 				view="striped"
 				:model-value="58"
 				rounded />
 			<g-progress
-				color="teal40"
+				color="teal-500"
 				label="Segmented"
 				view="segmented"
 				:segments="8"
 				:model-value="76" />
 			<g-progress
-				color="deep-purple-40"
+				color="deep-purple-500"
 				label="Glow"
 				view="glow"
 				:model-value="44"
@@ -258,18 +255,18 @@
 
 		<div class="color-playground__grid">
 			<g-progress
-				color="blue40"
+				color="blue-500"
 				label="Loading"
 				indeterminate
 				rounded />
 			<g-progress
-				color="orange40"
+				color="orange-500"
 				label="Striped loading"
 				view="striped"
 				indeterminate
 				rounded />
 			<g-progress
-				color="teal40"
+				color="teal-500"
 				label="Segmented loading"
 				view="segmented"
 				:segments="8"
@@ -289,7 +286,7 @@
 				<g-button
 					size="s"
 					variant="tonal"
-					color="blue40"
+					color="blue-500"
 					:label="loadingSimple ? 'Hide loading' : 'Show loading'"
 					@click="loadingSimple = !loadingSimple" />
 			</div>
@@ -298,7 +295,7 @@
 				v-loading="{
 					active: loadingCustom,
 					text: 'Syncing colors',
-					color: 'teal40',
+					color: 'teal-500',
 					progressView: 'striped',
 					opacity: 0.68,
 					blur: 6
@@ -314,7 +311,7 @@
 				<g-button
 					size="s"
 					variant="tonal"
-					color="teal40"
+					color="teal-500"
 					:label="loadingCustom ? 'Hide loading' : 'Show loading'"
 					@click="loadingCustom = !loadingCustom" />
 			</div>
@@ -323,7 +320,7 @@
 				v-loading.dark="{
 					active: loadingCustom,
 					noText: true,
-					color: 'pink40',
+					color: 'pink-500',
 					progressView: 'glow'
 				}"
 				class="loading-demo-card loading-demo-card_tinted">
@@ -456,7 +453,7 @@
 	.loading-demo-card_tinted {
 		background: color-mix(
 			in srgb,
-			rgb(var(--g-color-pink-40)) 18%,
+			rgb(var(--g-color-pink-500)) 18%,
 			rgb(var(--g-theme-surface))
 		);
 	}

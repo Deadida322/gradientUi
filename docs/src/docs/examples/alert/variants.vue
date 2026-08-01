@@ -2,7 +2,7 @@
 	defineOptions({ name: 'AlertVariantsExample' });
 	import { GAlert } from '@/components';
 
-	const variants = ['tonal', 'filled', 'outlined'] as const;
+	const variants = ['tonal', 'outlined', 'gradient', 'glass'] as const;
 </script>
 
 <template>
@@ -11,6 +11,7 @@
 			v-for="variant in variants"
 			:key="variant"
 			:variant="variant"
+			:backdrop-blur="variant === 'glass' ? 8 : undefined"
 			title="Gradient surface"
 			text="Alerts use the same color language as the rest of the library."
 			icon="information-outline" />

@@ -11,6 +11,32 @@ The npm package is published as `@gradient-ui/core`.
 
 Documentation: https://gradient-ui-docs.netlify.app/docs/get-started
 
+## 0.5 RC
+
+Gradient UI `0.5` is the release-candidate line for the new color and gradient
+architecture.
+
+- The standalone `@gradient-ui/gradient-engine` package powers gradient
+  materials, recipes, effects and animation output.
+- Component variants now treat `default` as the regular material fill and
+  `gradient` as the explicit gradient surface.
+- `filled` has been replaced by `gradient` for gradient-backed controls.
+- Color tokens are generated through the new palette layer, while components can
+  still resolve semantic colors such as `primary`, `error`, `warning` and
+  `success`.
+
+Install the RC when validating the next version:
+
+```bash
+npm install @gradient-ui/core@rc
+```
+
+The gradient engine can also be installed independently:
+
+```bash
+npm install @gradient-ui/gradient-engine
+```
+
 ## Install
 
 ```bash
@@ -43,7 +69,7 @@ const gradientUI = createGradientUI({
 		},
 		GButton: {
 			rounded: true,
-			variant: 'filled'
+			variant: 'default'
 		},
 		GInput: {
 			variant: 'outlined'
@@ -150,7 +176,7 @@ app.use(
 				color: 'primary'
 			},
 			GButton: {
-				variant: 'filled',
+				variant: 'default',
 				size: 'm'
 			},
 			GInput: {
@@ -162,6 +188,36 @@ app.use(
 ```
 
 Local props always win over configured defaults.
+
+Use `variant: 'gradient'` when a component should render an expressive gradient
+surface:
+
+```vue
+<g-button label="Save" />
+<g-button label="Launch" variant="gradient" gradient-recipe="glare" />
+```
+
+## Gradient Engine
+
+Gradient UI uses `@gradient-ui/gradient-engine` as its material generation
+layer. The engine is framework-free and can be used outside Vue:
+
+```ts
+import { createGradientMaterial } from '@gradient-ui/gradient-engine';
+
+const material = createGradientMaterial('#704aff', {
+	preset: 'materialAction',
+	recipe: 'glare',
+	animation: {
+		preset: 'shift',
+		duration: 6000
+	}
+});
+```
+
+The returned material contains CSS variables, CSS text, keyframes and effect
+descriptors that can be applied by Vue, React, vanilla JavaScript or SSR
+adapters.
 
 ## Directives
 

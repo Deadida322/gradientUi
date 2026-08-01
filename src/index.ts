@@ -54,6 +54,7 @@ import {
 	vLoading,
 	vMask,
 	vRipple,
+	vSpecular,
 	vTooltip
 } from '@/components';
 import { installIcons, type IconsOptions } from '@/use/icon';
@@ -172,6 +173,7 @@ export function createGradientUI(
 			app.directive('loading', vLoading);
 			app.directive('mask', vMask);
 			app.directive('ripple', vRipple);
+			app.directive('specular', vSpecular);
 			app.directive('tooltip', vTooltip);
 
 			if (resolvedOptions.icons !== false) {

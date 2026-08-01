@@ -2,9 +2,16 @@
 	defineOptions({ name: 'RadioColorsExample' });
 	import { ref } from 'vue';
 	import { GRadio } from '@/components';
+	import type { GColor } from '@/use/color';
 
 	const selected = ref('cyan');
-	const colors = ['primary', 'cyan', 'deep-purple', 'green', 'pink'];
+	const colors = [
+		'primary',
+		'cyan',
+		'deep-purple',
+		'green',
+		'pink'
+	] as const satisfies readonly GColor[];
 </script>
 
 <template>

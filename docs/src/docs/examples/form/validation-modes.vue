@@ -34,7 +34,7 @@
 			<g-button
 				type="submit"
 				label="Validate"
-				variant="filled" />
+				variant="gradient" />
 			<span class="docs-component-detail__value-line">
 				errors={{ errorCount }}
 				<span v-if="firstError">{{ firstError.message }}</span>

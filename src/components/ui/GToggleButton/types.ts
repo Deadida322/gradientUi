@@ -2,26 +2,31 @@ import type { MdiIcon, Sizes } from '@/types/CommonTypes';
 import type { GGradienStates } from '../GGradient/types';
 import type { ValidationRule } from 'gib-validate';
 import { makeCheckFieldProps } from '@/use/check';
-import { makeColorProps } from '@/use/color';
+import { makeColorProps, type GColor } from '@/use/color';
 import { makeRoundedProps } from '@/use/rounded';
+import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
 import { propsFactory } from '@/utils/propsFactory';
 import { makeVariantProps, type GVariant } from '@/use/variant';
 import type { PropType } from 'vue';
+import { makeGlassProps, type GlassProps } from '@/use/glass';
+import { makeGradientProps } from '@/use/gradient';
+import { makeMaterialProps } from '@/use/material';
 
-export interface GToggleButtonProps {
+export interface GToggleButtonProps extends GlassProps {
 	id?: string;
 	label?: string;
 	message?: string;
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
-	activeColor?: string;
+	activeColor?: GColor;
 	activeState?: GGradienStates;
 	activeVariant?: GVariant;
 	inline?: boolean;
-	color?: string;
+	color?: GColor;
 	variant?: GVariant;
 	rounded?: boolean;
+	texture?: GSurfaceTexture;
 	prepend?: MdiIcon;
 	append?: MdiIcon;
 	rules?: ValidationRule<boolean>[];
@@ -35,6 +40,10 @@ export interface GToggleButtonSlots {
 }
 
 export const makeToggleButtonProps = propsFactory({
+	...makeMaterialProps(),
+	...makeGradientProps({
+		borderWidth: undefined
+	}),
 	...makeCheckFieldProps({
 		disabled: false,
 		size: 'm',
@@ -43,7 +52,9 @@ export const makeToggleButtonProps = propsFactory({
 	...makeColorProps(),
 	...makeVariantProps(),
 	...makeRoundedProps(),
-	activeColor: String,
+	...makeSurfaceTextureProps(),
+	...makeGlassProps(),
+	activeColor: String as PropType<GColor>,
 	activeState: String as PropType<GGradienStates>,
 	activeVariant: String as PropType<GVariant>,
 	prepend: String as PropType<MdiIcon>,

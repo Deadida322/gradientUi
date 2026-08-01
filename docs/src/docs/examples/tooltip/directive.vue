@@ -8,7 +8,7 @@
 		<g-button
 			v-tooltip="'Saved to cloud'"
 			label="String directive"
-			variant="filled" />
+			variant="gradient" />
 		<g-button
 			v-tooltip="{ content: 'Right placement', placement: 'right' }"
 			label="Object directive"

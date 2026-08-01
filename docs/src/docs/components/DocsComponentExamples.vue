@@ -12,9 +12,7 @@
 	<docs-example-tabs :tabs="tabs">
 		<template #variants>
 			<div class="docs-page__preview">
-				<g-button
-					label="Filled"
-					variant="filled" />
+				<g-button label="Default" />
 				<g-button
 					label="Tonal"
 					variant="tonal" />
@@ -27,12 +25,19 @@
 			</div>
 		</template>
 
+		<template #gradient>
+			<div class="docs-page__preview">
+				<g-button
+					label="Gradient"
+					variant="gradient" />
+			</div>
+		</template>
+
 		<template #icons>
 			<div class="docs-page__preview">
 				<g-button
 					label="Create"
-					prepend="plus"
-					variant="filled" />
+					prepend="plus" />
 				<g-button
 					icon-button="heart"
 					variant="tonal" />

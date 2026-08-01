@@ -5,7 +5,7 @@
 
 	const selected = ref('tonal');
 	const items = [
-		{ id: 'filled', label: 'Filled surfaces' },
+		{ id: 'gradient', label: 'gradient surfaces' },
 		{ id: 'tonal', label: 'Tonal surfaces' },
 		{ id: 'outlined', label: 'Outlined surfaces' },
 		{ id: 'text', label: 'Text surfaces' }

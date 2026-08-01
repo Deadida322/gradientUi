@@ -10,7 +10,7 @@
 			text: 'Changes saved',
 			icon: 'check-circle-outline',
 			state: 'success',
-			variant: 'filled',
+			variant: 'gradient',
 			action: 'Undo'
 		});
 	}
@@ -20,7 +20,6 @@
 	<div class="docs-component-detail__feedback-stack">
 		<g-button
 			label="Show from service"
-			variant="filled"
 			@click="showSaved" />
 		<p class="docs-component-detail__note">
 			The service mounts a snackbar on document.body and removes it after

@@ -1,0 +1,20 @@
+{
+	"extends": "../../tsconfig.node.json",
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"composite": false,
+		"declaration": true,
+		"declarationDir": "dist/types",
+		"emitDeclarationOnly": true,
+		"incremental": false,
+		"lib": ["ESNext", "DOM"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noEmit": false,
+		"outDir": "dist/types",
+		"rootDir": "src",
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ES2020"
+	}
+}

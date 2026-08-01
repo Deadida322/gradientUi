@@ -1,0 +1,88 @@
+name: Publish Gradient Engine
+
+on:
+    workflow_dispatch:
+        inputs:
+            npm-tag:
+                description: npm dist-tag
+                required: true
+                default: latest
+                type: choice
+                options:
+                    - latest
+                    - rc
+                    - next
+                    - beta
+
+concurrency:
+    group: publish-gradient-engine
+    cancel-in-progress: false
+
+jobs:
+    publish:
+        name: Publish @gradient-ui/gradient-engine
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  registry-url: https://registry.npmjs.org
+
+            - name: Install
+              run: npm ci
+
+            - name: Validate package metadata
+              shell: bash
+              run: |
+                  PACKAGE_NAME="$(node -p "require('./packages/gradient-engine/package.json').name")"
+                  PACKAGE_VERSION="$(node -p "require('./packages/gradient-engine/package.json').version")"
+                  IS_PRERELEASE="$(node -p "require('./packages/gradient-engine/package.json').version.includes('-') ? 'true' : 'false'")"
+
+                  if [ "$PACKAGE_NAME" != "@gradient-ui/gradient-engine" ]; then
+                    echo "Expected package name @gradient-ui/gradient-engine, got $PACKAGE_NAME"
+                    exit 1
+                  fi
+
+                  if [ "$IS_PRERELEASE" = "true" ] && [ "${{ inputs.npm-tag }}" = "latest" ]; then
+                    echo "Prerelease versions must be published with a non-latest npm tag."
+                    exit 1
+                  fi
+
+                  echo "Publishing ${PACKAGE_NAME}@${PACKAGE_VERSION} with npm tag ${{ inputs.npm-tag }}"
+
+            - name: Validate npm auth
+              run: npm whoami
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Check package
+              run: npm run release:gradient-engine:check
+
+            - name: Check npm version
+              id: npm-version
+              shell: bash
+              run: |
+                  PACKAGE_NAME="$(node -p "require('./packages/gradient-engine/package.json').name")"
+                  PACKAGE_VERSION="$(node -p "require('./packages/gradient-engine/package.json').version")"
+
+                  if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+                    echo "Package ${PACKAGE_NAME}@${PACKAGE_VERSION} is already published."
+                    echo "published=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "published=false" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Publish
+              if: steps.npm-version.outputs.published != 'true'
+              run: npm publish -w @gradient-ui/gradient-engine --access public --tag "${{ inputs.npm-tag }}"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

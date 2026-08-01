@@ -19,8 +19,7 @@ const gradientUI = createGradientUI({
       color: 'primary'
     },
     GButton: {
-      rounded: true,
-      variant: 'filled'
+      rounded: true
     }
   }
 });
@@ -120,7 +119,7 @@ import '@mdi/font/css/materialdesignicons.css';
 <template>
 	<form class="account-form">
 		<g-input label="Email" placeholder="you@example.com" />
-		<g-button label="Continue" variant="filled" />
+		<g-button label="Continue" />
 	</form>
 </template>`;
 </script>

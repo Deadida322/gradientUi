@@ -18,10 +18,27 @@
 			shadow />
 		<g-button
 			label="Animated"
-			variant="filled"
 			color="cyan"
 			active
 			animate-glow
 			glow />
+		<span class="button-effects-example__item">
+			<g-button
+				label="Noise"
+				variant="tonal"
+				color="cyan"
+				texture="noise" />
+			<span class="docs-component-detail__badge">0.5.0 RC</span>
+		</span>
 	</div>
 </template>
+
+<style scoped lang="scss">
+	.button-effects-example {
+		&__item {
+			display: inline-flex;
+			gap: var(--g-token-space-2);
+			align-items: center;
+		}
+	}
+</style>

@@ -2,11 +2,14 @@
 	import DocsCode from '@docs/components/DocsCode.vue';
 	import DocsLiveExampleTabs from '@docs/components/DocsLiveExampleTabs.vue';
 	import DocsPropsTable from '@docs/components/DocsPropsTable.vue';
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
+	import { docsNextReleaseBadge } from '@docs/data/releaseBadges';
 	import {
 		gradientDirectiveExamples,
 		loadingDirectiveExamples,
 		maskDirectiveExamples,
 		rippleDirectiveExamples,
+		specularDirectiveExamples,
 		tooltipDirectiveExamples
 	} from '@docs/examples/directives';
 	import type { DocsPropRow } from '@docs/types';
@@ -17,6 +20,7 @@ import {
 	vLoading,
 	vMask,
 	vRipple,
+	vSpecular,
 	vTooltip
 } from '@gradient-ui/core';
 import App from './App.vue';
@@ -27,6 +31,7 @@ app.directive('gradient-text', vGradientText);
 app.directive('loading', vLoading);
 app.directive('mask', vMask);
 app.directive('ripple', vRipple);
+app.directive('specular', vSpecular);
 app.directive('tooltip', vTooltip);
 
 app.mount('#app');`;
@@ -73,6 +78,14 @@ app.mount('#app');`;
 			defaultValue: 'currentColor',
 			description:
 				'Adds a pointer ripple to action surfaces. Object syntax supports color, center, disabled, duration, easing and opacity.'
+		},
+		{
+			name: 'v-specular',
+			type: 'boolean | GColor | SpecularOptions',
+			defaultValue: 'material color → currentColor',
+			description:
+				'Adds a cursor-following specular highlight that inherits the host material color. Object syntax supports color, disabled, duration, easing, opacity and size.',
+			badge: docsNextReleaseBadge
 		}
 	];
 </script>
@@ -107,7 +120,8 @@ app.mount('#app');`;
 					<p>
 						<code>v-ripple</code> and <code>v-tooltip</code> enhance
 						buttons, links and custom controls without wrapping
-						markup.
+						markup. <code>v-specular</code> adds a lightweight
+						material shine to those same surfaces.
 					</p>
 				</section>
 				<section class="docs-page__tile">
@@ -231,6 +245,24 @@ app.mount('#app');`;
 
 		<section class="docs-page__section">
 			<span
+				id="specular"
+				class="docs-page__anchor"></span>
+			<div class="docs-directives__heading">
+				<h2>Specular highlight</h2>
+				<docs-release-badge :badge="docsNextReleaseBadge" />
+			</div>
+			<p>
+				<code>v-specular</code> adds a soft cursor-following highlight
+				to glossy, glass or gradient surfaces. It is decorative, so use
+				it as polish on already clear interactive controls.
+			</p>
+			<docs-live-example-tabs
+				label="Specular directive examples"
+				:examples="specularDirectiveExamples" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
 				id="api"
 				class="docs-page__anchor"></span>
 			<h2>API</h2>
@@ -253,6 +285,19 @@ app.mount('#app');`;
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 			gap: var(--g-token-space-4);
+		}
+
+		&__heading {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-3);
+			align-items: center;
+
+			min-width: 0;
+
+			h2 {
+				min-width: 0;
+			}
 		}
 
 		&__panel {
@@ -393,11 +438,11 @@ app.mount('#app');`;
 			background: color-mix(in srgb, currentcolor 10%, transparent);
 
 			&_cyan {
-				color: rgb(var(--g-color-cyan-40));
+				color: rgb(var(--g-color-cyan-500));
 			}
 
 			&_pink {
-				color: rgb(var(--g-color-pink-40));
+				color: rgb(var(--g-color-pink-500));
 			}
 
 			&:focus-visible {

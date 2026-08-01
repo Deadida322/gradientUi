@@ -23,8 +23,11 @@
 		l: 28,
 		xl: 40
 	};
-	const squircleVariantMap: Record<GFABVariant, 'primary' | 'tonal'> = {
-		filled: 'primary',
+	const squircleVariantMap: Record<
+		GFABVariant,
+		'gradient' | 'primary' | 'tonal'
+	> = {
+		gradient: 'gradient',
 		default: 'primary',
 		tonal: 'tonal',
 		outlined: 'tonal'
@@ -98,7 +101,14 @@
 			:border="computedBorder"
 			:border-color="computedBorderColor"
 			:color="props.color"
-			:state="props.state">
+			:state="props.state"
+			:gradient-border="
+				props.variant === 'outlined' || props.variant === 'gradient'
+			"
+			:glow="props.glow"
+			:animate-glow="props.animateGlow"
+			:gradient-recipe="props.gradientRecipe"
+			:animation-options="props.animationOptions">
 			<span class="g-fab__icon">
 				<g-icon
 					v-if="props.icon"
@@ -186,6 +196,10 @@
 
 		&:hover {
 			transform: translateY(-2px);
+
+			:deep(.squircle__glow) {
+				transform: translateY(2px);
+			}
 		}
 
 		&:focus-visible {

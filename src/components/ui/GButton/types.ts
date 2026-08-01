@@ -2,17 +2,20 @@ import type { MdiIcon, Sizes } from '@/types/CommonTypes';
 import type { RippleBindingValue } from '@/directives';
 import { makeActionSurfaceProps } from '@/use/actionSurface';
 import { makeGradientProps } from '@/use/gradient';
+import type { GColor } from '@/use/color';
 import { makePLAProps } from '@/use/PLA';
 import { makeTagNameProps } from '@/use/tagName';
 import { propsFactory } from '@/utils/propsFactory';
 import type { GGradienStates } from '../GGradient/types';
+import type { GGradientSurfaceFill } from '@/use/gradientSurface';
 import type { PropType } from 'vue';
+import type { GlassProps } from '@/use/glass';
 
-export interface GButtonProps {
+export interface GButtonProps extends GlassProps {
 	variant?: GButtonVariants;
 	active?: boolean;
 	rounded?: boolean;
-	color?: string;
+	color?: GColor;
 	iconButton?: MdiIcon;
 	prepend?: MdiIcon;
 	append?: MdiIcon;
@@ -24,18 +27,20 @@ export interface GButtonProps {
 	disabled?: boolean;
 	size?: Sizes;
 	state?: GGradienStates;
-	activeColor?: string;
+	activeColor?: GColor;
 	activeState?: GGradienStates;
 	activeVariant?: GButtonVariants;
 	isIconButton?: boolean;
 	ripple?: RippleBindingValue;
+	surfaceFill?: GGradientSurfaceFill;
 }
 
 export type GButtonVariants =
-	| 'filled'
+	| 'gradient'
 	| 'tonal'
 	| 'text'
 	| 'outlined'
+	| 'glass'
 	| 'default';
 
 export const makeButtonProps = propsFactory({

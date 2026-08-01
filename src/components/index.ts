@@ -12,6 +12,7 @@ export {
 	GExpandTransition
 } from '@/components/transitions';
 export { default as GGradient } from '@/components/ui/GGradient/GGradient.vue';
+export { GGradientMaterial } from '@/components/ui/GGradientMaterial';
 export { default as GButton } from '@/components/ui/GButton/GButton.vue';
 export { default as GChip } from '@/components/ui/GChip/GChip.vue';
 export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
@@ -31,6 +32,7 @@ export {
 	vLoading,
 	vMask,
 	vRipple,
+	vSpecular,
 	vTooltip
 } from '@/directives';
 export { default as GRadio } from '@/components/ui/GRadio/GRadio.vue';

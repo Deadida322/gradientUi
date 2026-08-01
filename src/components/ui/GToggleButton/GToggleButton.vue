@@ -32,9 +32,15 @@
 		resolvedColor,
 		resolvedState,
 		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
-		surfaceContentClasses
+		surfaceTextureClasses,
+		surfaceContentClasses,
+		morphBlobs,
+		morphEnabled,
+		getMorphBlobStyle
 	} = useActionSurface(props, 'g-toggle-button', {
 		focused: () => focused.value,
 		selected: () => modelValue.value
@@ -78,13 +84,25 @@
 		<g-gradient
 			class="g-toggle-button-field__surface"
 			:active="modelValue"
-			:glow="modelValue"
+			:glow="props.glow || modelValue"
+			:animate-glow="props.animateGlow"
 			:disabled="props.disabled"
 			:color="resolvedColor"
 			:state="resolvedState"
 			:rounded="props.rounded"
-			:border-width="modelValue ? 1 : 0"
-			:border-radius="gradientBorderRadius">
+			:border-width="
+				props.borderWidth ??
+				(modelValue ||
+				props.glow ||
+				props.animateGlow ||
+				props.variant === 'outlined' ||
+				props.variant === 'glass'
+					? 1
+					: 0)
+			"
+			:border-radius="gradientBorderRadius"
+			:placement="props.placement"
+			:gradient-recipe="props.gradientRecipe">
 			<button
 				:id="inputId"
 				type="button"
@@ -97,7 +115,18 @@
 				@focus="handleFocus"
 				@blur="handleBlur">
 				<span :class="surfaceUnderlayClasses"></span>
+				<span
+					v-if="morphEnabled"
+					:class="surfaceMaterialMorphClasses"
+					aria-hidden="true">
+					<span
+						v-for="(blob, index) in morphBlobs"
+						:key="index"
+						:class="surfaceMaterialMorphBlobClasses"
+						:style="getMorphBlobStyle(blob)"></span>
+				</span>
 				<span :class="surfaceOverlayClasses"></span>
+				<span :class="surfaceTextureClasses"></span>
 				<span
 					class="g-toggle-button__content"
 					:class="surfaceContentClasses">
@@ -242,9 +271,10 @@
 		}
 	}
 
-	@include variants.variant-filled('g-toggle-button');
+	@include variants.variant-gradient('g-toggle-button');
 	@include variants.variant-text('g-toggle-button');
-	@include variants.variant-outlined('g-toggle-button');
+	@include variants.variant-glass('g-toggle-button');
+	@include variants.variant-outlined('g-toggle-button', null);
 	@include variants.variant-tonal('g-toggle-button');
 
 	@include size.size-s('g-toggle-button');

@@ -16,6 +16,8 @@ import States from './states.vue';
 import statesCode from './states.vue?raw';
 import Slots from './slots.vue';
 import slotsCode from './slots.vue?raw';
+import Gradient from './gradient.vue';
+import gradientCode from './gradient.vue?raw';
 import type { DocsLiveExample } from '@docs/types';
 import { toPublicExampleCode } from '@docs/utils/code';
 
@@ -74,5 +76,11 @@ export const fabExamples: DocsLiveExample[] = [
 		label: 'Slots',
 		component: Slots,
 		code: toPublicExampleCode(slotsCode)
+	},
+	{
+		id: 'gradient',
+		label: 'Gradient',
+		component: Gradient,
+		code: toPublicExampleCode(gradientCode)
 	}
 ];

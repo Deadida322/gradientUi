@@ -11,7 +11,7 @@
 		<div class="docs-page__preview">
 			<g-button
 				label="Open drawer"
-				variant="filled"
+				variant="gradient"
 				prepend="menu-open"
 				@click="open = true" />
 		</div>

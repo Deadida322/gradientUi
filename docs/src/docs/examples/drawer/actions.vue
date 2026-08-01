@@ -30,7 +30,7 @@
 				<g-button
 					label="Cancel"
 					variant="text"
-					color="blue-grey-40"
+					color="blue-grey-500"
 					@click="dismiss" />
 				<g-button
 					label="Apply"
