@@ -77,5 +77,5 @@
 
 ## References
 
-* Architecture reference is vuetify and shadcn/vue
-* Design reference is material you, gradients, Vuesax/alpha
+- Architecture reference is vuetify and shadcn/vue
+- Design reference is material you, gradients, Vuesax/alpha

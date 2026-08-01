@@ -98,23 +98,12 @@ html.g-theme--dark {
 	border-radius: 50%;
 
 	opacity: 0;
-	background:
-		radial-gradient(
-			circle,
-			color-mix(
-					in srgb,
-					var(--g-specular-color, white) 78%,
-					transparent
-				)
-				0%,
-			color-mix(
-					in srgb,
-					var(--g-specular-color, white) 34%,
-					transparent
-				)
-				34%,
-			transparent 68%
-		);
+	background: radial-gradient(
+		circle,
+		color-mix(in srgb, var(--g-specular-color, white) 78%, transparent) 0%,
+		color-mix(in srgb, var(--g-specular-color, white) 34%, transparent) 34%,
+		transparent 68%
+	);
 	filter: blur(var(--g-specular-blur, 2px));
 
 	transition:
@@ -332,9 +321,7 @@ html.g-theme--dark {
 
 	.g-slide-x-transition-enter-from,
 	.g-slide-x-transition-leave-to {
-		transform: translateX(
-			calc(var(--g-transition-distance, 12px) * -1)
-		);
+		transform: translateX(calc(var(--g-transition-distance, 12px) * -1));
 		opacity: var(--g-transition-opacity-from, 0);
 	}
 
@@ -346,9 +333,7 @@ html.g-theme--dark {
 
 	.g-slide-y-transition-enter-from,
 	.g-slide-y-transition-leave-to {
-		transform: translateY(
-			calc(var(--g-transition-distance, 10px) * -1)
-		);
+		transform: translateY(calc(var(--g-transition-distance, 10px) * -1));
 		opacity: var(--g-transition-opacity-from, 0);
 	}
 
@@ -373,28 +358,16 @@ html.g-theme--dark {
 
 	.g-overlay-transition-enter-active .base-overlay__scrim::after,
 	.g-overlay-transition-leave-active .base-overlay__scrim::after {
-		transition:
-			backdrop-filter var(
-				--g-transition-enter-duration,
-				var(--g-token-duration-enter)
-			)
-				var(
-					--g-transition-enter-easing,
-					var(--g-token-easing-standard)
-		);
+		transition: backdrop-filter
+			var(--g-transition-enter-duration, var(--g-token-duration-enter))
+			var(--g-transition-enter-easing, var(--g-token-easing-standard));
 	}
 
 	.g-overlay-transition-enter-active .base-overlay__scrim::before,
 	.g-overlay-transition-leave-active .base-overlay__scrim::before {
 		transition: opacity
-			var(
-				--g-transition-enter-duration,
-				var(--g-token-duration-enter)
-			)
-			var(
-				--g-transition-enter-easing,
-				var(--g-token-easing-standard)
-			);
+			var(--g-transition-enter-duration, var(--g-token-duration-enter))
+			var(--g-transition-enter-easing, var(--g-token-easing-standard));
 	}
 
 	.g-overlay-transition-leave-active .base-overlay__scrim::after {
@@ -433,22 +406,18 @@ html.g-theme--dark {
 	.g-overlay-transition-enter-active .base-overlay__content,
 	.g-overlay-transition-leave-active .base-overlay__content {
 		transition:
-			opacity var(
-				--g-transition-enter-duration,
-				var(--g-token-duration-enter)
-			)
+			opacity
 				var(
-					--g-transition-enter-easing,
-					var(--g-token-easing-standard)
-				),
-			transform var(
-				--g-transition-enter-duration,
-				var(--g-token-duration-enter)
-			)
+					--g-transition-enter-duration,
+					var(--g-token-duration-enter)
+				)
+				var(--g-transition-enter-easing, var(--g-token-easing-standard)),
+			transform
 				var(
-					--g-transition-enter-easing,
-					var(--g-token-easing-standard)
-				);
+					--g-transition-enter-duration,
+					var(--g-token-duration-enter)
+				)
+				var(--g-transition-enter-easing, var(--g-token-easing-standard));
 	}
 
 	.g-overlay-transition-leave-active .base-overlay__content {

@@ -1,9 +1,9 @@
 {
-  "recommendations": [
-    "Vue.volar",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss",
-    "openai.chatgpt"
-  ]
+	"recommendations": [
+		"Vue.volar",
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"bradlc.vscode-tailwindcss",
+		"openai.chatgpt"
+	]
 }
