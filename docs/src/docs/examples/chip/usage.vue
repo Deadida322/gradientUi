@@ -12,7 +12,6 @@
 			prepend-icon="palette-outline" />
 		<g-chip
 			label="Selected"
-			variant="filled"
 			color="teal"
 			active
 			append-icon="check" />

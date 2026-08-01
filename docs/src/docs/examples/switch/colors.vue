@@ -2,9 +2,16 @@
 	defineOptions({ name: 'SwitchColorsExample' });
 	import { ref } from 'vue';
 	import { GSwitch } from '@/components';
+	import type { GColor } from '@/use/color';
 
 	const enabled = ref(true);
-	const colors = ['primary', 'cyan', 'deep-purple', 'green', 'pink'];
+	const colors = [
+		'primary',
+		'cyan',
+		'deep-purple',
+		'green',
+		'pink'
+	] as const satisfies readonly GColor[];
 </script>
 
 <template>

@@ -28,7 +28,7 @@
 		{
 			id: 3,
 			label: 'Design tokens',
-			variant: 'filled',
+			variant: 'default',
 			prependIcon: 'palette-outline'
 		}
 	]);

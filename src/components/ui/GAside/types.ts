@@ -5,6 +5,7 @@ import { makeColorProps } from '@/use/color';
 import { makeDisabledProps } from '@/use/disabled';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
+import { makeGlassProps } from '@/use/glass';
 
 export type AsideValue =
 	| string
@@ -69,6 +70,7 @@ export type GAsideEmits<T = AsideValue> = {
 };
 
 export const makeAsideProps = propsFactory({
+	...makeGlassProps(),
 	...makeColorProps(),
 	modelValue: {
 		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<

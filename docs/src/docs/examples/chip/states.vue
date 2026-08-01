@@ -7,7 +7,6 @@
 	<div class="docs-page__preview">
 		<g-chip
 			label="Success"
-			variant="filled"
 			state="success" />
 		<g-chip
 			label="Warning"
@@ -24,7 +23,6 @@
 			active-color="pink" />
 		<g-chip
 			label="Disabled"
-			variant="filled"
 			disabled />
 	</div>
 </template>

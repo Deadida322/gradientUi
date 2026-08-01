@@ -8,6 +8,8 @@ import Radius from './radius.vue';
 import radiusCode from './radius.vue?raw';
 import Placement from './placement.vue';
 import placementCode from './placement.vue?raw';
+import Glass from './glass.vue';
+import glassCode from './glass.vue?raw';
 import States from './states.vue';
 import statesCode from './states.vue?raw';
 import Effects from './effects.vue';
@@ -16,6 +18,11 @@ import Icons from './icons.vue';
 import iconsCode from './icons.vue?raw';
 import Slots from './slots.vue';
 import slotsCode from './slots.vue?raw';
+import Gradient from './gradient.vue';
+import gradientCode from './gradient.vue?raw';
+import CustomRecipe from './custom-recipe.vue';
+import customRecipeCode from './custom-recipe.vue?raw';
+import { docsNextReleaseBadge } from '@docs/data/releaseBadges';
 import type { DocsLiveExample } from '@docs/types';
 import { toPublicExampleCode } from '@docs/utils/code';
 
@@ -52,6 +59,12 @@ export const buttonExamples: DocsLiveExample[] = [
 		code: toPublicExampleCode(placementCode)
 	},
 	{
+		id: 'glass',
+		label: 'Glass',
+		component: Glass,
+		code: toPublicExampleCode(glassCode)
+	},
+	{
 		id: 'states',
 		label: 'States',
 		component: States,
@@ -74,5 +87,18 @@ export const buttonExamples: DocsLiveExample[] = [
 		label: 'Slots',
 		component: Slots,
 		code: toPublicExampleCode(slotsCode)
+	},
+	{
+		id: 'gradient',
+		label: 'Gradient',
+		component: Gradient,
+		code: toPublicExampleCode(gradientCode)
+	},
+	{
+		id: 'custom-recipe',
+		label: 'Custom recipe',
+		component: CustomRecipe,
+		code: toPublicExampleCode(customRecipeCode),
+		badge: docsNextReleaseBadge
 	}
 ];

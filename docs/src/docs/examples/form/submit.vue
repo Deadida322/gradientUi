@@ -39,7 +39,7 @@
 			<g-button
 				type="submit"
 				label="Save profile"
-				variant="filled"
+				variant="gradient"
 				:disabled="pending" />
 			<g-button
 				type="reset"

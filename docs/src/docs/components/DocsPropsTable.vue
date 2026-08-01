@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import type { DocsPropRow } from '@docs/types';
 
 	defineProps<{
@@ -24,7 +25,12 @@
 					v-for="row in rows"
 					:key="row.name">
 					<td>
-						<code>{{ row.name }}</code>
+						<span class="docs-props-table__name">
+							<code>{{ row.name }}</code>
+							<docs-release-badge
+								v-if="row.badge"
+								:badge="row.badge" />
+						</span>
 					</td>
 					<td>
 						<code>{{ row.type }}</code>
@@ -86,6 +92,13 @@
 			font-size: var(--g-token-font-size-xs);
 
 			background: rgba(var(--g-theme-on-surface), 0.05);
+		}
+
+		&__name {
+			display: inline-flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-2);
+			align-items: center;
 		}
 	}
 </style>

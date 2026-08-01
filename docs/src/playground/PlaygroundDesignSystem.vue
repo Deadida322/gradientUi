@@ -38,13 +38,13 @@
 			<div class="design-system__row">
 				<g-button
 					:active="mode === 'light'"
-					active-variant="filled"
+					active-variant="gradient"
 					variant="tonal"
 					label="Light"
 					@click="applyMode('light')" />
 				<g-button
 					:active="mode === 'dark'"
-					active-variant="filled"
+					active-variant="gradient"
 					variant="tonal"
 					label="Dark"
 					@click="applyMode('dark')" />

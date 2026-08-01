@@ -6,7 +6,8 @@
 		"dev": "vite --config docs/vite.config.ts",
 		"dev:docs": "vite --config docs/vite.config.ts",
 		"build:docs": "vite build --config docs/vite.config.ts",
-		"build:lib": "vite build --config vite.lib.config.ts && vue-tsc -p tsconfig.lib.json",
+		"build:gradient-engine": "npm run build -w @gradient-ui/gradient-engine",
+		"build:lib": "npm run build:gradient-engine && vite build --config vite.lib.config.ts && vue-tsc -p tsconfig.lib.json",
 		"build": "npm run build:lib && npm run build:docs",
 		"preview:docs": "vite preview --config docs/vite.config.ts",
 		"prettier": "prettier --check . --ignore-unknown",
@@ -16,12 +17,17 @@
 		"eslint:fix": "eslint --fix .",
 		"lint:css": "stylelint src docs/src",
 		"lint:css:fix": "npm run lint:css -- --fix",
-		"type-check": "vue-tsc -b && npm run type-check:docs",
+		"type-check": "npm run build:gradient-engine && vue-tsc -b && npm run type-check:docs",
+		"type-check:gradient-engine": "npm run type-check -w @gradient-ui/gradient-engine",
 		"type-check:lib": "vue-tsc -p tsconfig.lib.json",
 		"type-check:docs": "vue-tsc -p docs/tsconfig.json",
+		"release:gradient-engine:check": "npm run type-check:gradient-engine && npm run build:gradient-engine",
+		"release:gradient-engine:pack": "npm run release:gradient-engine:check && npm pack -w @gradient-ui/gradient-engine",
+		"release:gradient-engine:publish": "npm run release:gradient-engine:check && npm publish -w @gradient-ui/gradient-engine --access public",
 		"prepack": "npm run build:lib"
 	},
 	"dependencies": {
+		"@gradient-ui/gradient-engine": "^0.5.0",
 		"@floating-ui/vue": "^1.1.10",
 		"@mdi/js": "^7.4.47",
 		"gib-validate": "^1.1.0"
@@ -165,6 +171,7 @@
 		"vue": "^3.5.0"
 	},
 	"workspaces": [
-		"docs"
+		"docs",
+		"packages/*"
 	]
 }

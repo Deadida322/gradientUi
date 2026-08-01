@@ -15,7 +15,7 @@
 		snackbar.show({
 			text,
 			state,
-			variant: 'filled'
+			variant: 'gradient'
 		});
 	}
 </script>
@@ -25,17 +25,14 @@
 		<g-button
 			label="Success"
 			state="success"
-			variant="filled"
 			@click="showState('success')" />
 		<g-button
 			label="Warning"
 			state="warning"
-			variant="filled"
 			@click="showState('warning')" />
 		<g-button
 			label="Error"
 			state="error"
-			variant="filled"
 			@click="showState('error')" />
 	</div>
 </template>

@@ -9,9 +9,11 @@ import { makeRoundedProps } from '@/use/rounded';
 import { makeSizeProps } from '@/use/size';
 import { makeTransitionProps } from '@/use/transition';
 import { makeVariantProps } from '@/use/variant';
+import { makeSurfaceTextureProps } from '@/use/surface';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
 import type { GGlow } from '@/use/gradient';
+import { makeMaterialSurfaceProps } from '@/use/materialSurface';
 
 export type ExpansionValue =
 	| string
@@ -47,6 +49,8 @@ export const makeExpansionProps = propsFactory({
 	...makeSizeProps(),
 	...makeVariantProps(),
 	...makeColorProps(),
+	...makeSurfaceTextureProps(),
+	...makeMaterialSurfaceProps(),
 	...makeTransitionProps(),
 	title: String,
 	text: String,

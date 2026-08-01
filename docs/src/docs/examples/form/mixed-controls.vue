@@ -69,7 +69,7 @@
 		<g-button
 			type="submit"
 			label="Create workspace"
-			variant="filled" />
+			variant="gradient" />
 		<p class="docs-component-detail__value-line">
 			{{ result }}
 		</p>

@@ -103,7 +103,7 @@
 					:ref="activatorRef"
 					v-bind="activatorAttrs"
 					variant="tonal"
-					color="teal40"
+					color="teal-500"
 					:label="groupedDropdownLabel">
 				</g-button>
 			</template>
@@ -111,7 +111,7 @@
 			<div class="grouped-dropdown-demo">
 				<g-dropdown-group label="Theme">
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'color'"
 						@click="selectGroupedDropdown('color')">
 						Color
@@ -120,13 +120,13 @@
 
 				<g-dropdown-group label="Layout">
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'grid'"
 						@click="selectGroupedDropdown('grid')">
 						Grid
 					</g-menu-item>
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'spacing'"
 						@click="selectGroupedDropdown('spacing')">
 						Spacing
@@ -135,19 +135,19 @@
 
 				<g-dropdown-group label="Components">
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'button'"
 						@click="selectGroupedDropdown('button')">
 						Button
 					</g-menu-item>
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'alert'"
 						@click="selectGroupedDropdown('alert')">
 						Alert
 					</g-menu-item>
 					<g-menu-item
-						color="teal40"
+						color="teal-500"
 						:selected="groupedDropdownValue === 'loading'"
 						@click="selectGroupedDropdown('loading')">
 						Loading

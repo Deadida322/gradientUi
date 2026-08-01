@@ -1,4 +1,10 @@
-import type { DocsExampleTab, DocsPropRow, DocsSlotRow } from '@docs/types';
+import type {
+	DocsExampleTab,
+	DocsPropRow,
+	DocsReleaseBadgeMeta,
+	DocsSlotRow
+} from '@docs/types';
+import { docsNextReleaseBadge } from './releaseBadges';
 
 export interface DocsComponentApi {
 	id: string;
@@ -57,6 +63,7 @@ export interface DocsComponentCatalogItem {
 	group: string;
 	description: string;
 	to?: string;
+	badge?: DocsReleaseBadgeMeta;
 }
 
 export const componentCatalog: DocsComponentCatalogItem[] = [
@@ -783,7 +790,7 @@ export const componentApiCssVariables: Record<string, DocsPropRow[]> = {
 		{
 			name: '--g-on-color',
 			type: 'CSS color',
-			description: 'Readable foreground color for filled FAB surfaces.'
+			description: 'Readable foreground color for gradient FAB surfaces.'
 		}
 	],
 	'quick-actions': [
@@ -996,6 +1003,45 @@ export const componentApiCssVariables: Record<string, DocsPropRow[]> = {
 	]
 };
 
+const materialFrameApiProps: DocsPropRow[] = [
+	{
+		name: 'gradientRecipe',
+		type: 'GradientTokenRecipe',
+		description:
+			'Overrides the shared material recipe used by the fill, border and glow.'
+	},
+	{
+		name: 'borderWidth',
+		type: 'number | string',
+		description:
+			'Width of the real transparent gradient frame. Outlined, glass and glow surfaces default to one pixel.'
+	},
+	{
+		name: 'borderRadius',
+		type: 'number | string',
+		description: 'Inner radius shared by the surface and SVG frame.'
+	},
+	{
+		name: 'placement',
+		type: "'top' | 'right' | 'bottom' | 'left' | 'center'",
+		defaultValue: "'center'",
+		description:
+			'Limits the gradient frame to one side or keeps a full frame.'
+	},
+	{
+		name: 'glow',
+		type: 'boolean | number | string',
+		description:
+			'Enables the SVG-filtered glow derived from the frame recipe.'
+	},
+	{
+		name: 'animateGlow',
+		type: 'boolean',
+		defaultValue: 'false',
+		description: 'Pulses the independent glow layer when motion is allowed.'
+	}
+];
+
 export const componentApi: DocsComponentApi[] = [
 	{
 		id: 'button',
@@ -1012,9 +1058,15 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				defaultValue: "'default'",
 				description: 'Visual priority of the action.'
+			},
+			{
+				name: 'backdropBlur',
+				type: 'number | numeric string',
+				defaultValue: '6',
+				description: 'Backdrop blur radius used by the glass variant.'
 			},
 			{
 				name: 'color',
@@ -1044,7 +1096,7 @@ export const componentApi: DocsComponentApi[] = [
 			{
 				name: 'borderRadius',
 				type: 'number | string',
-				defaultValue: '4',
+				defaultValue: '6',
 				description:
 					'Exact corner radius passed through the gradient wrapper.'
 			},
@@ -1073,6 +1125,14 @@ export const componentApi: DocsComponentApi[] = [
 				description: 'Animates the gradient glow layer.'
 			},
 			{
+				name: 'texture',
+				type: "'none' | 'noise'",
+				defaultValue: "'none'",
+				description:
+					'Adds a subtle material texture layer above the surface color.',
+				badge: docsNextReleaseBadge
+			},
+			{
 				name: 'shadow',
 				type: 'boolean',
 				defaultValue: 'false',
@@ -1097,7 +1157,7 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'activeVariant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				description: 'Variant used while active or selected.'
 			},
 			{
@@ -1156,7 +1216,7 @@ export const componentApi: DocsComponentApi[] = [
 				label: 'Variants',
 				code: `
 <template>
-	<g-button label="Filled" variant="filled" />
+	<g-button label="Default" />
 	<g-button label="Tonal" variant="tonal" />
 	<g-button label="Text" variant="text" />
 	<g-button label="Outlined" variant="outlined" />
@@ -1167,8 +1227,16 @@ export const componentApi: DocsComponentApi[] = [
 				label: 'Icons',
 				code: `
 <template>
-	<g-button label="Create" prepend="plus" variant="filled" />
+	<g-button label="Create" prepend="plus" />
 	<g-button icon-button="heart" variant="tonal" />
+</template>`
+			},
+			{
+				id: 'gradient',
+				label: 'Gradient',
+				code: `
+<template>
+	<g-button label="Gradient" variant="gradient" />
 </template>`
 			}
 		]
@@ -1195,10 +1263,10 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'primary'",
+				type: "'gradient' | 'tonal' | 'primary' | 'glass'",
 				defaultValue: "'tonal'",
 				description:
-					'Visual treatment of the badge surface. Primary is kept as a compatibility alias for filled.'
+					'Visual treatment of the badge surface. Primary is kept as a compatibility alias for gradient.'
 			},
 			{
 				name: 'color',
@@ -1212,6 +1280,7 @@ export const componentApi: DocsComponentApi[] = [
 				description:
 					'Semantic state that switches the badge surface color.'
 			},
+			...materialFrameApiProps,
 			{
 				name: 'size',
 				type: "'s' | 'm' | 'l' | 'xl'",
@@ -1275,9 +1344,15 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				defaultValue: "'default'",
 				description: 'Visual emphasis of the chip surface.'
+			},
+			{
+				name: 'backdropBlur',
+				type: 'number | numeric string',
+				defaultValue: '6',
+				description: 'Backdrop blur radius used by the glass variant.'
 			},
 			{
 				name: 'color',
@@ -1300,16 +1375,16 @@ export const componentApi: DocsComponentApi[] = [
 			{
 				name: 'rounded',
 				type: 'boolean',
-				defaultValue: 'false',
+				defaultValue: 'true',
 				description:
-					'Applies the shared rounded class for stronger pill geometry.'
+					'Keeps the chip material and SVG frame aligned to its pill geometry.'
 			},
 			{
 				name: 'borderRadius',
 				type: 'number | string',
 				defaultValue: '20',
 				description:
-					'Exact corner radius passed through the gradient wrapper.'
+					'Exact corner radius shared by the material and frame when rounded is false.'
 			},
 			{
 				name: 'borderWidth',
@@ -1360,7 +1435,7 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'activeVariant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				description: 'Variant used while active or selected.'
 			},
 			{
@@ -1474,9 +1549,15 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				defaultValue: "'text'",
 				description: 'Visual treatment of the expansion surface.'
+			},
+			{
+				name: 'backdropBlur',
+				type: 'number | numeric string',
+				defaultValue: '6',
+				description: 'Backdrop blur radius used by the glass variant.'
 			},
 			{
 				name: 'color',
@@ -3042,10 +3123,17 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'text' | 'outlined' | 'default'",
+				type: "'gradient' | 'tonal' | 'text' | 'outlined' | 'glass' | 'default'",
 				defaultValue: "'tonal'",
 				description: 'Surface treatment of the table container.'
 			},
+			{
+				name: 'backdropBlur',
+				type: 'number | numeric string',
+				defaultValue: '4',
+				description: 'Backdrop blur radius used by the glass variant.'
+			},
+			...materialFrameApiProps,
 			{
 				name: 'density',
 				type: "'compact' | 'comfortable' | 'spacious'",
@@ -3322,10 +3410,10 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'outlined' | 'default'",
-				defaultValue: "'filled'",
+				type: "'gradient' | 'tonal' | 'outlined' | 'default'",
+				defaultValue: "'default'",
 				description:
-					'Visual treatment. Filled/default map to primary squircle; tonal and outlined map to tonal squircle.'
+					'Visual treatment. Gradient uses the material recipe; outlined uses a masked gradient squircle border.'
 			},
 			{
 				name: 'color',
@@ -3374,6 +3462,24 @@ export const componentApi: DocsComponentApi[] = [
 				name: 'borderColor',
 				type: 'string',
 				description: 'Overrides the squircle border color.'
+			},
+			{
+				name: 'gradientRecipe',
+				type: 'GradientTokenRecipe',
+				description:
+					'Overrides the material recipe shared by the squircle fill, border and glow.'
+			},
+			{
+				name: 'glow',
+				type: 'boolean | number | string',
+				description:
+					'Enables a native SVG-filtered glow following the squircle path.'
+			},
+			{
+				name: 'animateGlow',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Pulses the squircle glow when motion is allowed.'
 			},
 			{
 				name: 'disabled',
@@ -3536,7 +3642,7 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'outlined'",
+				type: "'gradient' | 'tonal' | 'outlined' | 'glass'",
 				defaultValue: "'tonal'",
 				description: 'Visual emphasis of the alert surface.'
 			},
@@ -3551,6 +3657,15 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'warning' | 'success' | 'error'",
 				description:
 					'Semantic state that switches the alert surface color.'
+			},
+			...materialFrameApiProps,
+			{
+				name: 'texture',
+				type: "'none' | 'noise'",
+				defaultValue: "'none'",
+				description:
+					'Adds a material texture layer above the alert surface.',
+				badge: docsNextReleaseBadge
 			}
 		],
 		slots: [
@@ -3637,7 +3752,7 @@ export const componentApi: DocsComponentApi[] = [
 			},
 			{
 				name: 'variant',
-				type: "'filled' | 'tonal' | 'outlined'",
+				type: "'gradient' | 'tonal' | 'outlined' | 'glass'",
 				defaultValue: "'tonal'",
 				description: 'Visual emphasis of the snackbar surface.'
 			},
@@ -3653,6 +3768,7 @@ export const componentApi: DocsComponentApi[] = [
 				description:
 					'Semantic state that switches the snackbar surface color.'
 			},
+			...materialFrameApiProps,
 			{
 				name: 'location',
 				type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",

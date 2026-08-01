@@ -29,7 +29,7 @@
 		<g-button
 			type="submit"
 			label="Create account"
-			variant="filled" />
+			variant="gradient" />
 		<p class="docs-component-detail__value-line">
 			<span>{{ status }}</span>
 		</p>

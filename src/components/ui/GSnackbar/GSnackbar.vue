@@ -3,8 +3,8 @@
 	import { GTransition } from '@/components/transitions';
 	import GButton from '@/components/ui/GButton/GButton.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
-	import { useSurfaceLayers } from '@/use/surface';
-	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useMaterialSurface } from '@/use/materialSurface';
+	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import usePx from '@/use/px';
 	import { makeSnackbarProps, type GSnackbarCloseReason } from './types';
 
@@ -31,17 +31,23 @@
 	);
 	const offset = usePx(props.offset);
 	const maxWidth = usePx(props.maxWidth);
-	const { colorStyles } = useSurfaceColor(props);
 	const {
+		getMorphBlobStyle,
+		morphBlobs,
+		morphEnabled,
+		materialFrameProps,
+		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
-	} = useSurfaceLayers('g-snackbar');
+	} = useMaterialSurface(props, 'g-snackbar');
 	const resolvedActionLabel = computed(
 		() => props.action?.label ?? props.actionText
 	);
-	const snackbarStyles = computed(() => ({
-		...colorStyles.value,
+	const snackbarFrameStyles = computed(() => ({
 		'--g-snackbar-max-width': maxWidth.value
 	}));
 	const layerStyles = computed(() => ({
@@ -50,7 +56,8 @@
 	const snackbarClasses = computed(() => [
 		`g-snackbar_${props.variant}`,
 		{
-			'g-snackbar_multiline': props.multiline
+			'g-snackbar_multiline': props.multiline,
+			[`g-snackbar_texture-${props.texture}`]: props.texture !== 'none'
 		}
 	]);
 	const layerClasses = computed(() => [
@@ -151,81 +158,99 @@
 		<g-transition
 			:transition="transition"
 			@after-leave="onAfterClose">
-			<section
+			<g-gradient
 				v-if="isOpen"
-				class="g-snackbar"
-				:class="snackbarClasses"
-				:style="snackbarStyles"
-				role="status"
-				aria-live="polite"
-				@mouseenter="onMouseenter"
-				@mouseleave="onMouseleave">
-				<span :class="surfaceUnderlayClasses"></span>
-				<span :class="surfaceOverlayClasses"></span>
-
-				<div
-					class="g-snackbar__content"
-					:class="surfaceContentClasses">
-					<div
-						v-if="slots.prepend || props.icon"
-						class="g-snackbar__prepend">
-						<slot name="prepend">
-							<g-icon
-								v-if="props.icon"
-								:icon="props.icon"
-								size="22" />
-						</slot>
-					</div>
-
-					<div class="g-snackbar__main">
-						<div
-							v-if="slots.title || props.title"
-							class="g-snackbar__title">
-							<slot name="title">{{ props.title }}</slot>
-						</div>
-						<div
-							v-if="slots.default || props.text"
-							class="g-snackbar__text">
-							<slot>{{ props.text }}</slot>
-						</div>
-					</div>
+				class="g-snackbar__frame"
+				v-bind="materialFrameProps"
+				:inherit-width="false"
+				:style="snackbarFrameStyles">
+				<section
+					class="g-snackbar"
+					:class="snackbarClasses"
+					:style="surfaceStyles"
+					role="status"
+					aria-live="polite"
+					@mouseenter="onMouseenter"
+					@mouseleave="onMouseleave">
+					<span :class="surfaceUnderlayClasses"></span>
+					<span
+						v-if="morphEnabled"
+						:class="surfaceMaterialMorphClasses"
+						aria-hidden="true">
+						<span
+							v-for="(blob, index) in morphBlobs"
+							:key="index"
+							:class="surfaceMaterialMorphBlobClasses"
+							:style="getMorphBlobStyle(blob)"></span>
+					</span>
+					<span :class="surfaceOverlayClasses"></span>
+					<span :class="surfaceTextureClasses"></span>
 
 					<div
-						v-if="
-							slots.action ||
-							resolvedActionLabel ||
-							props.closeable
-						"
-						class="g-snackbar__actions">
-						<slot
-							name="action"
-							:close="() => close('action')">
-							<g-button
-								v-if="resolvedActionLabel"
-								variant="text"
-								size="s"
-								:label="resolvedActionLabel"
-								@click="onAction" />
-						</slot>
-						<button
-							v-if="props.closeable"
-							type="button"
-							class="g-snackbar__close"
-							aria-label="Close snackbar"
-							@click="close('dismiss')">
-							<g-icon
-								icon="close"
-								size="18" />
-						</button>
+						class="g-snackbar__content"
+						:class="surfaceContentClasses">
+						<div
+							v-if="slots.prepend || props.icon"
+							class="g-snackbar__prepend">
+							<slot name="prepend">
+								<g-icon
+									v-if="props.icon"
+									:icon="props.icon"
+									size="22" />
+							</slot>
+						</div>
+
+						<div class="g-snackbar__main">
+							<div
+								v-if="slots.title || props.title"
+								class="g-snackbar__title">
+								<slot name="title">{{ props.title }}</slot>
+							</div>
+							<div
+								v-if="slots.default || props.text"
+								class="g-snackbar__text">
+								<slot>{{ props.text }}</slot>
+							</div>
+						</div>
+
+						<div
+							v-if="
+								slots.action ||
+								resolvedActionLabel ||
+								props.closeable
+							"
+							class="g-snackbar__actions">
+							<slot
+								name="action"
+								:close="() => close('action')">
+								<g-button
+									v-if="resolvedActionLabel"
+									variant="text"
+									size="s"
+									:label="resolvedActionLabel"
+									@click="onAction" />
+							</slot>
+							<button
+								v-if="props.closeable"
+								type="button"
+								class="g-snackbar__close"
+								aria-label="Close snackbar"
+								@click="close('dismiss')">
+								<g-icon
+									icon="close"
+									size="18" />
+							</button>
+						</div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</g-gradient>
 		</g-transition>
 	</div>
 </template>
 
 <style scoped lang="scss">
 	@use '@/styles/mixins/action-surface' as actionSurface;
+	@use '@/styles/mixins/variants' as variants;
 
 	.g-snackbar-layer {
 		pointer-events: none;
@@ -320,23 +345,6 @@
 
 		box-shadow: var(--g-token-elevation-2);
 
-		&_filled {
-			--g-surface-underlay-color: var(--g-color);
-			--g-surface-underlay-opacity: 1;
-			--g-surface-overlay-color: var(--g-on-color);
-			--g-surface-overlay-opacity: 0;
-			--g-surface-content-color: var(--g-on-color);
-		}
-
-		&_outlined {
-			--g-surface-underlay-opacity: 0.72;
-			--g-surface-overlay-opacity: 0;
-
-			border: 1px solid
-				color-mix(in srgb, var(--g-color) 38%, transparent);
-			backdrop-filter: blur(18px) saturate(1.35);
-		}
-
 		&__content {
 			position: relative;
 			z-index: 2;
@@ -423,5 +431,14 @@
 		}
 	}
 
+	.g-snackbar__frame {
+		width: min(calc(100vw - 32px), var(--g-snackbar-max-width));
+		max-width: 100%;
+	}
+
 	@include actionSurface.action-surface-layers('g-snackbar', true);
+	@include variants.variant-gradient('g-snackbar');
+	@include variants.variant-tonal('g-snackbar');
+	@include variants.variant-outlined('g-snackbar', null);
+	@include variants.variant-glass('g-snackbar');
 </style>

@@ -12,6 +12,14 @@ import {
 import { useSurfaceColor } from './surfaceColor';
 import type { GColor } from './color';
 import { type GVariant } from './variant';
+import { useMaterial } from './material';
+import type {
+	GradientAnimationOptions,
+	GradientMorphOptions,
+	GradientShadowOptions,
+	GradientTokenRecipe
+} from '@/theme';
+import { useGlass } from './glass';
 
 export interface ActionSurfaceProps extends SurfaceProps {
 	size: Sizes;
@@ -19,6 +27,12 @@ export interface ActionSurfaceProps extends SurfaceProps {
 	activeColor?: GColor;
 	activeState?: GGradienStates;
 	activeVariant?: GVariant;
+	gradientRecipe?: GradientTokenRecipe;
+	morph?: boolean;
+	shadowOptions?: GradientShadowOptions;
+	dropShadowOptions?: GradientShadowOptions;
+	animationOptions?: GradientAnimationOptions;
+	morphOptions?: GradientMorphOptions;
 }
 
 export interface ActionSurfaceStateOptions {
@@ -33,7 +47,13 @@ export const makeActionSurfaceProps = propsFactory({
 	active: Boolean,
 	activeColor: String as PropType<GColor>,
 	activeState: String as PropType<GGradienStates>,
-	activeVariant: String as PropType<GVariant>
+	activeVariant: String as PropType<GVariant>,
+	gradientRecipe: String as PropType<GradientTokenRecipe>,
+	morph: Boolean,
+	shadowOptions: Object as PropType<GradientShadowOptions>,
+	dropShadowOptions: Object as PropType<GradientShadowOptions>,
+	animationOptions: Object as PropType<GradientAnimationOptions>,
+	morphOptions: Object as PropType<GradientMorphOptions>
 });
 
 export function useActionSurface(
@@ -41,12 +61,14 @@ export function useActionSurface(
 	baseClass: string,
 	options: ActionSurfaceStateOptions = {}
 ) {
-	const { disabledClass, roundedClass, stateClass } = useSurface(
-		props,
-		baseClass
-	);
+	const { disabledClass, roundedClass, stateClass, textureClass } =
+		useSurface(props, baseClass);
+	const { glassStyles } = useGlass(props);
 	const {
 		surfaceOverlayClasses,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
+		surfaceTextureClasses,
 		surfaceUnderlayClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers(baseClass);
@@ -67,29 +89,61 @@ export function useActionSurface(
 			? props.activeVariant
 			: props.variant
 	);
+	const {
+		getMorphBlobStyle,
+		gradientMaterial,
+		materialStyles: gradientMaterialStyles,
+		morphBlobs,
+		morphEnabled
+	} = useMaterial({
+		color: resolvedColor,
+		kind: 'action',
+		recipe: () => props.gradientRecipe,
+		effects: () => resolvedVariant.value === 'gradient',
+		animations: () => Boolean(props.animationOptions),
+		shadow: () => props.shadowOptions,
+		dropShadow: () => props.dropShadowOptions,
+		animation: () => props.animationOptions,
+		morph: () => props.morphOptions ?? props.morph
+	});
+	const surfaceStyles = computed(() => ({
+		...colorStyles.value,
+		...gradientMaterialStyles.value,
+		...glassStyles.value
+	}));
 	const actionSurfaceClasses = computed(() => {
 		const isFocused = Boolean(toValue(options.focused));
+		const animationPreset = props.animationOptions?.preset;
 
 		return [
 			`${baseClass}_${resolvedVariant.value}`,
 			disabledClass.value,
 			roundedClass.value,
 			stateClass.value,
+			textureClass.value,
 			sizeClass.value,
 			isFocused ? `${baseClass}_focused` : '',
 			isSelected.value ? `${baseClass}_selected` : '',
-			isActive.value ? `${baseClass}_active` : ''
+			isActive.value ? `${baseClass}_active` : '',
+			animationPreset ? `${baseClass}_animation-${animationPreset}` : ''
 		].filter(Boolean);
 	});
 
 	return {
 		actionSurfaceClasses,
+		getMorphBlobStyle,
+		gradientMaterial,
+		morphBlobs,
+		morphEnabled,
 		resolvedColor,
 		resolvedState,
 		resolvedVariant,
-		surfaceStyles: colorStyles,
+		surfaceStyles,
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
 	};
 }

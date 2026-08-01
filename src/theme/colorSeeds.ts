@@ -1,4 +1,4 @@
-export const MaterialSeeds = {
+export const COLOR_SEEDS = {
 	red: '#F44336',
 	pink: '#E91E63',
 	purple: '#9C27B0',
@@ -18,4 +18,6 @@ export const MaterialSeeds = {
 	brown: '#795548',
 	grey: '#9E9E9E',
 	blueGrey: '#607D8B'
-};
+} as const;
+
+export type ColorFamily = keyof typeof COLOR_SEEDS;

@@ -99,7 +99,7 @@
 						v-if="!props.hideClose"
 						size="s"
 						variant="text"
-						color="blue-grey-40"
+						color="blue-grey-500"
 						icon-button="close"
 						class="g-modal__close"
 						aria-label="Close modal"

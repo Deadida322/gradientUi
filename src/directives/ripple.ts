@@ -3,7 +3,7 @@ import { resolveColorValue, type GColor } from '@/use/colorResolver';
 
 export type RippleBindingValue =
 	| boolean
-	| string
+	| GColor
 	| {
 			center?: boolean;
 			color?: GColor;

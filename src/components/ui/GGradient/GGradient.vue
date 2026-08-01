@@ -1,29 +1,57 @@
 <script lang="ts" setup>
-	import usePx from '@/use/px';
-	import { toRefs } from 'vue';
+	import { computed, useId } from 'vue';
 	import { makeGradientProps, useGradient } from '@/use/gradient';
 	import { useGradientGlow } from '@/use/gradientGlow';
 	import { useGradientSurface } from '@/use/gradientSurface';
+	import GGradientBorderLayer from './GGradientBorderLayer.vue';
 	const props = defineProps(makeGradientProps());
-
-	const { borderWidth } = toRefs(props);
-	const padding = usePx(borderWidth);
+	const instanceId = useId().replaceAll(':', '');
+	const borderMaskId = `g-gradient-border-${instanceId}`;
+	const glowMaskId = `g-gradient-glow-${instanceId}`;
+	const hasBorder = computed(() => Number(props.borderWidth) > 0);
+	const showGlow = computed(
+		() => hasBorder.value && Boolean(props.glow || props.animateGlow)
+	);
 
 	const { containerBorderRadius, gradientClasses, gradientStyles } =
 		useGradient(props);
 	const { glowClasses } = useGradientGlow(props);
-	const { surfaceBorderRadius } = useGradientSurface(props);
+	const { interactionClass, surfaceBorderRadius, surfaceFillClass } =
+		useGradientSurface(props);
 </script>
 
 <template>
-	<div
+	<component
+		:is="rootTag"
 		class="g-gradient"
-		:class="[gradientClasses, glowClasses]"
+		:class="[
+			gradientClasses,
+			glowClasses,
+			interactionClass,
+			surfaceFillClass
+		]"
 		:style="gradientStyles">
+		<g-gradient-border-layer
+			v-if="hasBorder"
+			class="g-gradient__border"
+			:mask-id="borderMaskId"
+			:border-radius="borderRadius"
+			:border-width="borderWidth"
+			:placement="placement"
+			:rounded="rounded" />
+		<g-gradient-border-layer
+			v-if="showGlow"
+			class="g-gradient__glow"
+			:mask-id="glowMaskId"
+			:border-radius="borderRadius"
+			:border-width="borderWidth"
+			:placement="placement"
+			:rounded="rounded"
+			:glow-blur="4" />
 		<div class="g-gradient__slot">
 			<slot></slot>
 		</div>
-	</div>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -31,16 +59,24 @@
 	@use '@/styles/mixins/disabled' as disabled;
 
 	.g-gradient {
+		--g-gradient-border-top: var(--g-border-width);
+		--g-gradient-border-right: var(--g-border-width);
+		--g-gradient-border-bottom: var(--g-border-width);
+		--g-gradient-border-left: var(--g-border-width);
+
+		isolation: isolate;
 		position: relative;
 
 		overflow: visible;
 
+		box-sizing: border-box;
 		width: fit-content;
 		height: fit-content;
-		padding: 1px;
+		padding: var(--g-gradient-border-top) var(--g-gradient-border-right)
+			var(--g-gradient-border-bottom) var(--g-gradient-border-left);
 		border-radius: v-bind('containerBorderRadius');
 
-		background: var(--g-gradient-current, var(--g-gradient-main));
+		background: transparent;
 		box-shadow: none;
 
 		transition:
@@ -50,37 +86,39 @@
 			box-shadow var(--g-token-duration-slow)
 				var(--g-token-easing-standard);
 
-		@for $i from 0 through 10 {
-			&_border_#{$i} {
-				padding: #{$i}px;
-			}
+		&__border {
+			z-index: 1;
 		}
 
-		&::before {
-			content: '';
-
-			position: absolute;
-			z-index: -1;
-			left: 0;
-
-			width: 100%;
-			height: 100%;
-			border-radius: v-bind('containerBorderRadius');
-
+		&__glow {
+			z-index: 0;
+			transform: translateY(0);
 			opacity: 0;
-			background: var(--g-gradient-current, var(--g-gradient-main));
-			filter: blur(5px);
-
-			transition: all var(--g-token-duration-base)
-				var(--g-token-easing-emphasized);
+			transition:
+				transform var(--g-token-duration-base)
+					var(--g-token-easing-emphasized),
+				opacity var(--g-token-duration-base)
+					var(--g-token-easing-emphasized);
 		}
 
 		&__slot {
+			position: relative;
+			z-index: 2;
+
 			overflow: hidden;
+
 			border-radius: v-bind('surfaceBorderRadius');
-			background-color: var(--g-token-color-surface);
+
 			transition: transform var(--g-token-duration-slow)
 				var(--g-token-easing-emphasized);
+		}
+
+		&_surface-theme &__slot {
+			background-color: var(--g-token-color-surface);
+		}
+
+		&_surface-transparent &__slot {
+			background-color: transparent;
 		}
 
 		&_shadow {
@@ -92,87 +130,43 @@
 			}
 		}
 
-		&_glow {
-			position: relative;
-
-			&::before {
-				content: '';
-
-				position: absolute;
-				z-index: -1;
-				top: 0;
-				left: 0;
-				transform: translateY(0);
-
-				opacity: 0.6;
-				filter: blur(2px);
-
-				transition: transform var(--g-token-duration-base)
-					var(--g-token-easing-emphasized);
-			}
+		&_glow &__glow {
+			opacity: 1;
 		}
 
-		&_animate-glow::before {
-			animation: g-gradient-glow-pulse 1.8s ease-in-out infinite;
-		}
-
-		&:not(.g-gradient_disabled):hover,
-		&:not(.g-gradient_disabled).g-gradient_active {
+		&_interactive:not(.g-gradient_disabled):hover,
+		&_interactive:not(.g-gradient_disabled).g-gradient_active {
 			transform: translateY(-2px);
 			transition: transform var(--g-token-duration-base)
 				var(--g-token-easing-emphasized);
 
-			&::before {
+			.g-gradient__glow {
 				transform: translateY(2px);
 			}
 		}
 
 		&_top {
-			padding: 0;
-			padding-top: v-bind('padding');
+			--g-gradient-border-right: 0;
+			--g-gradient-border-bottom: 0;
+			--g-gradient-border-left: 0;
 		}
 
 		&_bottom {
-			padding: 0;
-			padding-bottom: v-bind('padding');
+			--g-gradient-border-top: 0;
+			--g-gradient-border-right: 0;
+			--g-gradient-border-left: 0;
 		}
 
 		&_left {
-			padding: 0;
-			padding-left: v-bind('padding');
+			--g-gradient-border-top: 0;
+			--g-gradient-border-right: 0;
+			--g-gradient-border-bottom: 0;
 		}
 
 		&_right {
-			padding: 0;
-			padding-right: v-bind('padding');
-		}
-
-		&_transparent {
-			background: transparent;
-		}
-
-		&_error {
-			background: var(--g-gradient-error);
-
-			&::before {
-				background: var(--g-gradient-error);
-			}
-		}
-
-		&_warning {
-			background: var(--g-gradient-warning);
-
-			&::before {
-				background: var(--g-gradient-warning);
-			}
-		}
-
-		&_success {
-			background: var(--g-gradient-success);
-
-			&::before {
-				background: var(--g-gradient-success);
-			}
+			--g-gradient-border-top: 0;
+			--g-gradient-border-bottom: 0;
+			--g-gradient-border-left: 0;
 		}
 
 		&_inherit-width {
@@ -185,41 +179,30 @@
 			.g-gradient__slot {
 				@include rounded.rounded();
 			}
-
-			&.g-gradient_glow::before {
-				@include rounded.rounded();
-			}
 		}
 
 		&_disabled {
 			@include disabled.disabled();
 
 			filter: saturate(0.8);
+		}
+	}
 
-			&::before {
-				@include disabled.disabled();
-
-				filter: saturate(0.8);
-			}
+	@media (prefers-reduced-motion: no-preference) {
+		.g-gradient_animate-glow .g-gradient__glow {
+			animation: g-gradient-glow-pulse 1.8s ease-in-out infinite;
 		}
 	}
 
 	@keyframes g-gradient-glow-pulse {
 		0%,
 		100% {
-			opacity: 0.45;
-			filter: blur(2px);
+			opacity: 0.6;
 		}
 
 		50% {
-			opacity: 0.85;
-			filter: blur(7px);
+			opacity: 0.95;
 		}
-	}
-
-	.g-gradient_border_0 {
-		padding: 0;
-		background: transparent;
 	}
 
 	@include rounded.rounded('g-gradient');

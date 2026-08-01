@@ -6,6 +6,7 @@
 	import DocsLiveExample from '@docs/components/DocsLiveExample.vue';
 	import DocsLiveExampleTabs from '@docs/components/DocsLiveExampleTabs.vue';
 	import DocsPropsTable from '@docs/components/DocsPropsTable.vue';
+	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import {
 		componentApi,
 		componentApiCssVariables,
@@ -22,6 +23,9 @@
 	);
 	const componentPage = computed(() =>
 		componentPages.find((page) => page.id === component.value?.id)
+	);
+	const catalogItem = computed(() =>
+		componentCatalog.find((item) => item.id === component.value?.id)
 	);
 	const group = computed(() =>
 		componentGroups.find((item) => item.id === component.value?.group)
@@ -107,7 +111,12 @@
 		class="docs-page docs-component-detail">
 		<header class="docs-page__header">
 			<p class="docs-page__eyebrow">{{ group?.title || 'Component' }}</p>
-			<h1>{{ component.title }}</h1>
+			<div class="docs-component-detail__heading">
+				<h1>{{ component.title }}</h1>
+				<docs-release-badge
+					v-if="catalogItem?.badge"
+					:badge="catalogItem.badge" />
+			</div>
 			<p>{{ component.description }}</p>
 		</header>
 
@@ -351,6 +360,19 @@
 
 			width: 100%;
 			min-width: 0;
+		}
+
+		&__heading {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-3);
+			align-items: center;
+
+			min-width: 0;
+
+			h1 {
+				min-width: 0;
+			}
 		}
 
 		&__badge {

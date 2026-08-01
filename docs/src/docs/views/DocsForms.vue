@@ -167,7 +167,7 @@ ${scriptClose}
 			type="submit"
 			label="Create account"
 			:disabled="v$.$pending"
-			variant="filled" />
+			variant="gradient" />
 	</form>
 </template>`;
 

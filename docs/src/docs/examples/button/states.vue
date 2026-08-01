@@ -7,7 +7,6 @@
 	<div class="docs-page__preview">
 		<g-button
 			label="Success"
-			variant="filled"
 			state="success" />
 		<g-button
 			label="Warning"
@@ -24,7 +23,6 @@
 			active-color="pink" />
 		<g-button
 			label="Disabled"
-			variant="filled"
 			disabled />
 	</div>
 </template>

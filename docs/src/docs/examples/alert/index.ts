@@ -6,8 +6,12 @@ import Colors from './colors.vue';
 import colorsCode from './colors.vue?raw';
 import States from './states.vue';
 import statesCode from './states.vue?raw';
+import Texture from './texture.vue';
+import textureCode from './texture.vue?raw';
 import Slots from './slots.vue';
 import slotsCode from './slots.vue?raw';
+import Gradient from './gradient.vue';
+import gradientCode from './gradient.vue?raw';
 import type { DocsLiveExample } from '@docs/types';
 import { toPublicExampleCode } from '@docs/utils/code';
 
@@ -38,9 +42,21 @@ export const alertExamples: DocsLiveExample[] = [
 		code: toPublicExampleCode(statesCode)
 	},
 	{
+		id: 'texture',
+		label: 'Texture',
+		component: Texture,
+		code: toPublicExampleCode(textureCode)
+	},
+	{
 		id: 'slots',
 		label: 'Slots',
 		component: Slots,
 		code: toPublicExampleCode(slotsCode)
+	},
+	{
+		id: 'gradient',
+		label: 'Gradient',
+		component: Gradient,
+		code: toPublicExampleCode(gradientCode)
 	}
 ];

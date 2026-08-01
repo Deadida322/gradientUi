@@ -4,6 +4,7 @@ import {
 	resolveGradientValue,
 	type GColor
 } from '@/use/colorResolver';
+import { createLinearGradient } from '@/theme/gradient';
 import type { Directive } from 'vue';
 
 export type GradientTextBindingValue =
@@ -120,7 +121,7 @@ function getOptions(
 		gradient:
 			value.gradient ??
 			(colors.length
-				? createLinearGradient(colors, value.direction)
+				? createResolvedGradient(colors, value.direction)
 				: undefined) ??
 			resolveGradientValue(value.state ?? value.color) ??
 			DEFAULT_GRADIENT,
@@ -139,13 +140,17 @@ function getGradientColors(value: Exclude<GradientTextBindingValue, GColor>) {
 	);
 }
 
-function createLinearGradient(colors: GColor[], direction = DEFAULT_DIRECTION) {
+function createResolvedGradient(
+	colors: GColor[],
+	direction = DEFAULT_DIRECTION
+) {
 	const gradientColors =
 		colors.length === 1 ? [colors[0], colors[0]] : colors;
 
-	return `linear-gradient(${direction}, ${gradientColors
-		.map((color) => resolveColorValue(color))
-		.join(', ')})`;
+	return createLinearGradient(
+		gradientColors.map((color) => resolveColorValue(color)),
+		direction
+	);
 }
 
 function getTargets(el: HTMLElement, selector: string | undefined) {

@@ -7,9 +7,6 @@
 	<div class="docs-page__preview">
 		<g-button label="Default" />
 		<g-button
-			label="Filled"
-			variant="filled" />
-		<g-button
 			label="Tonal"
 			variant="tonal" />
 		<g-button
@@ -18,5 +15,9 @@
 		<g-button
 			label="Text"
 			variant="text" />
+		<g-button
+			label="Glass"
+			variant="glass"
+			:backdrop-blur="6" />
 	</div>
 </template>

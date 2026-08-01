@@ -11,6 +11,8 @@
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useVariant } from '@/use/variant';
 	import { createComponentId } from '@/utils/createComponentId';
+	import { useGlass } from '@/use/glass';
+	import { useMaterial } from '@/use/material';
 	import {
 		makeExpansionProps,
 		type GExpansionEmits,
@@ -29,7 +31,7 @@
 			openedIcon: 'chevron-down',
 			closedIcon: 'chevron-down',
 			eager: false,
-			borderWidth: 0,
+			borderWidth: undefined,
 			glow: false,
 			animateGlow: false,
 			shadow: false,
@@ -89,8 +91,11 @@
 		'g-expansion'
 	);
 	const {
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers('g-expansion');
 	const expansionColor = computed(() => {
@@ -106,17 +111,54 @@
 		active: () => expanded.value,
 		activeState: () => props.activeState
 	});
+	const { glassStyles } = useGlass(props);
+	const { getMorphBlobStyle, materialStyles, morphBlobs, morphEnabled } =
+		useMaterial({
+			baseClass: 'g-expansion',
+			color: resolvedColor,
+			state: resolvedState,
+			kind: 'surface',
+			recipe: () => props.gradientRecipe,
+			effects: () =>
+				Boolean(
+					props.variant === 'gradient' ||
+					props.shadow ||
+					props.dropShadow ||
+					props.shadowOptions ||
+					props.dropShadowOptions ||
+					props.morph ||
+					props.morphOptions
+				),
+			animations: () => Boolean(props.animationOptions),
+			shadow: () => props.shadowOptions,
+			dropShadow: () => props.dropShadowOptions,
+			animation: () => props.animationOptions,
+			morph: () => props.morphOptions ?? props.morph
+		});
 	const stateClass = computed(() =>
 		resolvedState.value ? `g-expansion_state-${resolvedState.value}` : ''
 	);
-	const gradientBorderRadius = computed(() => (props.rounded ? 20 : 10));
+	const gradientBorderRadius = computed(
+		() => props.borderRadius ?? (props.rounded ? 20 : 10)
+	);
 	const headerId = createComponentId('g-expansion-header');
 	const contentId = createComponentId('g-expansion-content');
-	const resolvedGradientBorderWidth = computed(() =>
-		expanded.value && props.activeBorderWidth !== undefined
-			? props.activeBorderWidth
-			: props.borderWidth
-	);
+	const resolvedGradientBorderWidth = computed(() => {
+		const borderWidth =
+			expanded.value && props.activeBorderWidth !== undefined
+				? props.activeBorderWidth
+				: props.borderWidth;
+
+		return (
+			borderWidth ??
+			(props.variant === 'outlined' ||
+			props.variant === 'glass' ||
+			resolvedGradientGlow.value ||
+			resolvedGradientAnimateGlow.value
+				? 1
+				: 0)
+		);
+	});
 	const resolvedGradientGlow = computed(() =>
 		expanded.value && props.activeGlow !== undefined
 			? props.activeGlow
@@ -168,11 +210,13 @@
 					borderRadius: gradientBorderRadius.value,
 					glow: resolvedGradientGlow.value,
 					animateGlow: resolvedGradientAnimateGlow.value,
-					shadow: resolvedGradientShadow.value,
+					shadow: false,
 					color: resolvedColor.value,
 					state: resolvedState.value,
 					placement: resolvedGradientPlacement.value,
-					inheritWidth: true
+					gradientRecipe: props.gradientRecipe,
+					inheritWidth: true,
+					surfaceFill: 'transparent' as const
 				}
 			: {}
 	);
@@ -240,12 +284,25 @@
 				roundedClass,
 				selectedClass,
 				{
-					'g-expansion_gradient': hasGradientSurface
+					'g-expansion_gradient': hasGradientSurface,
+					[`g-expansion_texture-${props.texture}`]:
+						props.texture !== 'none'
 				}
 			]"
-			:style="colorStyles">
+			:style="[colorStyles, materialStyles, glassStyles]">
 			<div :class="surfaceUnderlayClasses"></div>
+			<div
+				v-if="morphEnabled"
+				:class="surfaceMaterialMorphClasses"
+				aria-hidden="true">
+				<div
+					v-for="(blob, index) in morphBlobs"
+					:key="index"
+					:class="surfaceMaterialMorphBlobClasses"
+					:style="getMorphBlobStyle(blob)"></div>
+			</div>
 			<div :class="surfaceOverlayClasses"></div>
+			<div :class="surfaceTextureClasses"></div>
 			<div
 				class="g-expansion__surface-content"
 				:class="surfaceContentClasses">
@@ -435,14 +492,14 @@
 			color: var(--g-token-expansion-content-color);
 		}
 
-		&_filled .g-expansion__text,
-		&_filled .g-expansion__content,
+		&_gradient .g-expansion__text,
+		&_gradient .g-expansion__content,
 		&_default .g-expansion__text,
 		&_default .g-expansion__content {
 			color: color-mix(in srgb, currentcolor 82%, transparent);
 		}
 
-		&_filled .g-expansion__actions,
+		&_gradient .g-expansion__actions,
 		&_default .g-expansion__actions {
 			color: currentcolor;
 		}
@@ -451,6 +508,8 @@
 		&_tonal .g-expansion__content,
 		&_outlined .g-expansion__text,
 		&_outlined .g-expansion__content,
+		&_glass .g-expansion__text,
+		&_glass .g-expansion__content,
 		&_text .g-expansion__text,
 		&_text .g-expansion__content {
 			color: color-mix(in srgb, currentcolor 72%, transparent);
@@ -458,6 +517,7 @@
 
 		&_tonal .g-expansion__actions,
 		&_outlined .g-expansion__actions,
+		&_glass .g-expansion__actions,
 		&_text .g-expansion__actions {
 			color: currentcolor;
 		}
@@ -570,8 +630,9 @@
 
 	@include actionSurface.action-surface-layers('g-expansion', true);
 	@include actionSurface.action-state-overrides('g-expansion');
-	@include variants.variant-filled('g-expansion');
+	@include variants.variant-gradient('g-expansion');
 	@include variants.variant-tonal('g-expansion', none);
-	@include variants.variant-outlined('g-expansion', outline, none);
+	@include variants.variant-outlined('g-expansion', null, none);
 	@include variants.variant-text('g-expansion', none);
+	@include variants.variant-glass('g-expansion', none);
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T extends NavValue = NavValue">
 	import { computed, ref } from 'vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useGlass } from '@/use/glass';
 	import { provideNavList } from './context';
 	import {
 		makeNavListProps,
@@ -37,10 +38,12 @@
 	const { colorStyles, resolvedGradient } = useSurfaceColor({
 		color: () => resolvedActiveColor.value
 	});
+	const { glassStyles } = useGlass(props);
 	const navStyles = computed(
 		() =>
 			({
 				...colorStyles.value,
+				...glassStyles.value,
 				'--g-nav-list-active-gradient': resolvedGradient.value,
 				'--g-nav-list-width': toUnit(props.width, '100%')
 			}) as Record<string, string>
@@ -118,6 +121,8 @@
 </template>
 
 <style scoped lang="scss">
+	@use '@/styles/mixins/glass' as glass;
+
 	.g-nav-list {
 		--g-nav-list-padding-block: 20px;
 		--g-nav-list-padding-inline: 18px;
@@ -147,26 +152,8 @@
 					var(--g-token-color-on-surface) 8%,
 					transparent
 				);
-			background:
-				radial-gradient(
-					120% 110% at 100% 0%,
-					color-mix(in srgb, white 72%, transparent),
-					transparent 58%
-				),
-				linear-gradient(
-					180deg,
-					color-mix(
-						in srgb,
-						var(--g-token-color-surface) 58%,
-						transparent
-					),
-					color-mix(
-						in srgb,
-						var(--g-token-color-surface) 36%,
-						transparent
-					)
-				);
-			backdrop-filter: blur(12px);
+
+			@include glass.glass-surface;
 		}
 
 		&__items {

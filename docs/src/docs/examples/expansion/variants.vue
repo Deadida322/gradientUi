@@ -7,10 +7,10 @@
 	<div class="docs-component-detail__stack">
 		<g-expansion
 			default-open
-			title="Filled"
+			title="gradient"
 			text="A stronger surface for important disclosure."
-			variant="filled">
-			Filled expansions work well for prominent settings or onboarding
+			variant="gradient">
+			gradient expansions work well for prominent settings or onboarding
 			sections.
 		</g-expansion>
 		<g-expansion
@@ -31,6 +31,14 @@
 			variant="text">
 			Text expansions are best when the parent surface already frames the
 			list.
+		</g-expansion>
+		<g-expansion
+			title="Glass"
+			text="A translucent disclosure over page content."
+			variant="glass"
+			color="deep-purple"
+			:backdrop-blur="6">
+			Glass expansions preserve the context visible behind the surface.
 		</g-expansion>
 	</div>
 </template>

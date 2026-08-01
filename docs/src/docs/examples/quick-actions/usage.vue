@@ -16,6 +16,7 @@
 			icon="plus"
 			active-icon="close"
 			contained
+			variant="outlined"
 			:offset="16"
 			:options="actions" />
 	</div>

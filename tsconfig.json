@@ -1,18 +1,18 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["src/**/*.ts", "src/**/*.vue"],
-  "compilerOptions": {
-      "composite": true,
-      "noImplicitAny": false,
-      "lib": ["ESNext", "DOM"],
-      "paths": {
-          "@/*": ["./src/*"]
-      }
-  },
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"include": ["src/**/*.ts", "src/**/*.vue"],
+	"compilerOptions": {
+		"composite": true,
+		"noImplicitAny": false,
+		"lib": ["ESNext", "DOM"],
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
 
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+	"references": [
+		{
+			"path": "./tsconfig.node.json"
+		}
+	]
 }

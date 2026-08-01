@@ -1,8 +1,10 @@
 import type { Sizes } from '@/types/CommonTypes';
 import type { GColor } from '@/use/color';
+import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
 import type { GGradienStates } from '../GGradient/types';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';
+import { makeMaterialSurfaceProps } from '@/use/materialSurface';
 
 export interface GBadgeProps {
 	size?: Sizes;
@@ -13,9 +15,10 @@ export interface GBadgeProps {
 	content?: string | number;
 	position?: GBadgePositions;
 	location?: GBadgeLocation;
+	texture?: GSurfaceTexture;
 }
 
-export type GBadgeVariants = 'filled' | 'tonal' | 'primary';
+export type GBadgeVariants = 'gradient' | 'tonal' | 'primary' | 'glass';
 export type GBadgePositions = 'floating' | 'inline';
 export type GBadgeLocation =
 	| 'top-left'
@@ -24,6 +27,11 @@ export type GBadgeLocation =
 	| 'bottom-right';
 
 export const makeBadgeProps = propsFactory({
+	...makeMaterialSurfaceProps({
+		borderRadius: 999,
+		rounded: true
+	}),
+	...makeSurfaceTextureProps(),
 	size: {
 		type: String as PropType<Sizes>,
 		default: 'm'

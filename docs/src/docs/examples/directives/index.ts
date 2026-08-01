@@ -22,6 +22,12 @@ import RippleDisabled from './ripple-disabled.vue';
 import rippleDisabledCode from './ripple-disabled.vue?raw';
 import RippleOptions from './ripple-options.vue';
 import rippleOptionsCode from './ripple-options.vue?raw';
+import Specular from './specular.vue';
+import specularCode from './specular.vue?raw';
+import SpecularDisabled from './specular-disabled.vue';
+import specularDisabledCode from './specular-disabled.vue?raw';
+import SpecularOptions from './specular-options.vue';
+import specularOptionsCode from './specular-options.vue?raw';
 import Tooltip from './tooltip.vue';
 import tooltipCode from './tooltip.vue?raw';
 import TooltipFocus from './tooltip-focus.vue';
@@ -133,5 +139,26 @@ export const rippleDirectiveExamples: DocsLiveExample[] = [
 		label: 'Disabled',
 		component: RippleDisabled,
 		code: toPublicExampleCode(rippleDisabledCode)
+	}
+];
+
+export const specularDirectiveExamples: DocsLiveExample[] = [
+	{
+		id: 'specular-basic',
+		label: 'Basic',
+		component: Specular,
+		code: toPublicExampleCode(specularCode)
+	},
+	{
+		id: 'specular-options',
+		label: 'Options',
+		component: SpecularOptions,
+		code: toPublicExampleCode(specularOptionsCode)
+	},
+	{
+		id: 'specular-disabled',
+		label: 'Disabled',
+		component: SpecularDisabled,
+		code: toPublicExampleCode(specularDisabledCode)
 	}
 ];

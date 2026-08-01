@@ -25,7 +25,7 @@
 		<div class="docs-page__preview">
 			<g-button
 				label="Show"
-				variant="filled"
+				variant="gradient"
 				@click="tooltip?.show()" />
 			<g-button
 				label="Hide"

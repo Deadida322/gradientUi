@@ -3,87 +3,88 @@
 	import GButton from '@/components/ui/GButton/GButton.vue';
 	import GTooltip from '@/components/ui/GTooltip/GTooltip.vue';
 	import { computed } from 'vue';
-	import { generateGradientCSS } from '@/theme/generateGradient';
+	import { createGradientFromColor } from '@/theme/gradient';
+	import type { GColor } from '@/use/color';
 
 	const materialButtonColors = [
-		'red40',
-		'pink40',
-		'purple40',
-		'deep-purple-40',
-		'indigo40',
-		'blue40',
-		'light-blue-40',
-		'cyan40',
-		'teal40',
-		'green40',
-		'light-green-40',
-		'lime40',
-		'yellow40',
-		'amber40',
-		'orange40',
-		'deep-orange-40',
-		'brown40',
-		'grey40',
-		'blue-grey-40'
-	];
+		'red-500',
+		'pink-500',
+		'purple-500',
+		'deep-purple-500',
+		'indigo-500',
+		'blue-500',
+		'light-blue-500',
+		'cyan-500',
+		'teal-500',
+		'green-500',
+		'light-green-500',
+		'lime-500',
+		'yellow-500',
+		'amber-500',
+		'orange-500',
+		'deep-orange-500',
+		'brown-500',
+		'grey-500',
+		'blue-grey-500'
+	] as const satisfies readonly GColor[];
 	const materialButtonTones = [
-		'red20',
-		'red30',
-		'red40',
-		'red50',
-		'red60',
-		'red70',
-		'red80',
-		'red90',
-		'red100'
-	];
+		'red-800',
+		'red-700',
+		'red-500',
+		'red-400',
+		'red-300',
+		'red-200',
+		'red-100',
+		'red-50',
+		'red-50'
+	] as const satisfies readonly GColor[];
 	const materialButtonToneRows = [
-		'red20',
-		'red40',
-		'red60',
-		'red80',
-		'orange20',
-		'orange40',
-		'orange60',
-		'orange80',
-		'green20',
-		'green40',
-		'green60',
-		'green80',
-		'teal20',
-		'teal40',
-		'teal60',
-		'teal80',
-		'blue20',
-		'blue40',
-		'blue60',
-		'blue80',
-		'deep-purple-20',
-		'deep-purple-40',
-		'deep-purple-60',
-		'deep-purple-80'
-	];
+		'red-800',
+		'red-500',
+		'red-300',
+		'red-100',
+		'orange-800',
+		'orange-500',
+		'orange-300',
+		'orange-100',
+		'green-800',
+		'green-500',
+		'green-300',
+		'green-100',
+		'teal-800',
+		'teal-500',
+		'teal-300',
+		'teal-100',
+		'blue-800',
+		'blue-500',
+		'blue-300',
+		'blue-100',
+		'deep-purple-800',
+		'deep-purple-500',
+		'deep-purple-300',
+		'deep-purple-100'
+	] as const satisfies readonly GColor[];
 	const gradientButtonColors = [
-		'red40',
-		'red70',
-		'pink40',
-		'orange40',
-		'orange70',
-		'amber40',
-		'green40',
-		'green70',
-		'teal40',
-		'teal70',
-		'blue40',
-		'blue70',
-		'deep-purple-40',
-		'deep-purple-70',
-		'blue-grey-40',
-		'blue-grey-70'
-	];
+		'red-500',
+		'red-200',
+		'pink-500',
+		'orange-500',
+		'orange-200',
+		'amber-500',
+		'green-500',
+		'green-200',
+		'teal-500',
+		'teal-200',
+		'blue-500',
+		'blue-200',
+		'deep-purple-500',
+		'deep-purple-200',
+		'blue-grey-500',
+		'blue-grey-200'
+	] as const satisfies readonly GColor[];
 
 	const gradient = computed(() => {
-		return generateGradientCSS('#704bfd', 135);
+		return createGradientFromColor('#704bfd');
 	});
 </script>
 
@@ -122,7 +123,7 @@
 			:offset="20"
 			content="Tooltip content">
 			<g-button
-				variant="filled"
+				variant="gradient"
 				label="Default">
 			</g-button>
 		</g-tooltip>
@@ -156,12 +157,12 @@
 	<div class="buttons buttons_custom-color">
 		<g-button
 			color="primary"
-			variant="filled"
+			variant="gradient"
 			label="Primary">
 		</g-button>
 		<g-button
 			color="success"
-			variant="filled"
+			variant="gradient"
 			label="Success">
 		</g-button>
 		<g-button
@@ -185,22 +186,22 @@
 			label="Hex tonal">
 		</g-button>
 		<g-button
-			color="red40"
-			variant="filled"
+			color="red-500"
+			variant="gradient"
 			label="Red 40">
 		</g-button>
 		<g-button
-			color="deep-purple-40"
+			color="deep-purple-500"
 			variant="tonal"
 			label="Deep purple 40">
 		</g-button>
 		<g-button
-			color="teal70"
-			variant="filled"
+			color="teal-200"
+			variant="gradient"
 			label="Teal 70">
 		</g-button>
 		<g-button
-			color="source40"
+			color="source-500"
 			variant="outlined"
 			label="Source 40">
 		</g-button>
@@ -210,7 +211,7 @@
 			v-for="color in materialButtonColors"
 			:key="color"
 			:color="color"
-			variant="filled"
+			variant="gradient"
 			size="s"
 			:label="color">
 		</g-button>
@@ -250,7 +251,7 @@
 			v-for="color in materialButtonTones"
 			:key="color"
 			:color="color"
-			variant="filled"
+			variant="gradient"
 			size="s"
 			:label="color">
 		</g-button>
@@ -283,7 +284,7 @@
 	</g-text>
 	<div class="buttons">
 		<g-button
-			variant="filled"
+			variant="gradient"
 			rounded
 			label="Rounded">
 		</g-button>
@@ -305,22 +306,22 @@
 	</div>
 	<div class="buttons">
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="1"
 			label="border-radius-1">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="8"
 			label="border-radius-8">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="12"
 			label="border-radius-12">
 		</g-button>
 		<g-button
-			variant="filled"
+			variant="gradient"
 			border-radius="16"
 			label="border-radius-16">
 		</g-button>
@@ -332,7 +333,7 @@
 	<div class="buttons">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			rounded
 			label="Glow">
 		</g-button>
@@ -357,7 +358,7 @@
 		<g-button
 			glow
 			size="s"
-			variant="filled"
+			variant="gradient"
 			rounded
 			border-width="1"
 			label="border-width-1">
@@ -393,7 +394,7 @@
 	<div class="buttons">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			border-width="1"
 			placement="bottom"
 			label="Bottom">
@@ -431,7 +432,7 @@
 	<div class="buttons">
 		<g-button
 			glow
-			variant="filled"
+			variant="gradient"
 			border-width="1"
 			placement="bottom"
 			append="heart"

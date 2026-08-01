@@ -1,8 +1,11 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import { makeBadgeProps } from './types';
+	import { useMaterial } from '@/use/material';
 	import { useSurfaceLayers } from '@/use/surface';
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useGlass } from '@/use/glass';
+	import GGradient from '../GGradient/GGradient.vue';
 
 	const props = defineProps(makeBadgeProps());
 	defineSlots<{
@@ -10,14 +13,62 @@
 		content?: () => unknown;
 	}>();
 	const { colorStyles } = useSurfaceColor(props);
+	const { glassStyles } = useGlass(props);
 	const {
+		surfaceMaterialMorphBlobClasses,
+		surfaceMaterialMorphClasses,
 		surfaceOverlayClasses,
 		surfaceUnderlayClasses,
+		surfaceTextureClasses,
 		surfaceContentClasses
 	} = useSurfaceLayers('g-badge__surface');
 	const normalizedVariant = computed(() =>
-		props.variant === 'primary' ? 'filled' : props.variant
+		props.variant === 'primary' ? 'gradient' : props.variant
 	);
+	const { getMorphBlobStyle, materialStyles, morphBlobs, morphEnabled } =
+		useMaterial({
+			baseClass: 'g-badge__surface',
+			color: () => props.color ?? props.state,
+			kind: 'action',
+			recipe: () => props.gradientRecipe,
+			effects: () =>
+				Boolean(
+					normalizedVariant.value === 'gradient' ||
+					props.shadow ||
+					props.dropShadow ||
+					props.shadowOptions ||
+					props.dropShadowOptions ||
+					props.morph ||
+					props.morphOptions
+				),
+			animations: () => Boolean(props.animationOptions),
+			shadow: () => props.shadowOptions,
+			dropShadow: () => props.dropShadowOptions,
+			animation: () => props.animationOptions,
+			morph: () => props.morphOptions ?? props.morph
+		});
+	const badgeSurfaceStyles = computed(() => ({
+		...colorStyles.value,
+		...materialStyles.value,
+		...glassStyles.value
+	}));
+	const badgeFrameProps = computed(() => ({
+		animateGlow: props.animateGlow,
+		borderRadius: props.borderRadius,
+		borderWidth:
+			props.borderWidth ??
+			(props.glow || props.animateGlow || props.variant === 'glass'
+				? 1
+				: 0),
+		color: props.color,
+		glow: props.glow,
+		gradientRecipe: props.gradientRecipe,
+		interactive: false,
+		placement: props.placement,
+		rounded: props.rounded,
+		state: props.state,
+		surfaceFill: 'transparent' as const
+	}));
 </script>
 
 <template>
@@ -35,29 +86,47 @@
 			:class="{
 				[`g-badge__content_${props.size}`]: true
 			}">
-			<div
-				class="g-badge__surface"
-				:class="{
-					[`g-badge__surface_${normalizedVariant}`]: true,
-					'g-badge__surface_dot': props.dot
-				}"
-				:style="colorStyles">
-				<span :class="surfaceUnderlayClasses"></span>
-				<span :class="surfaceOverlayClasses"></span>
-				<span :class="surfaceContentClasses">
-					<slot
-						v-if="!props.dot"
-						name="content">
-						{{ props.content }}
-					</slot>
-				</span>
-			</div>
+			<g-gradient
+				class="g-badge__frame"
+				v-bind="badgeFrameProps">
+				<div
+					class="g-badge__surface"
+					:class="{
+						[`g-badge__surface_${normalizedVariant}`]: true,
+						'g-badge__surface_dot': props.dot,
+						[`g-badge__surface_texture-${props.texture}`]:
+							props.texture !== 'none'
+					}"
+					:style="badgeSurfaceStyles">
+					<span :class="surfaceUnderlayClasses"></span>
+					<span
+						v-if="morphEnabled"
+						:class="surfaceMaterialMorphClasses"
+						aria-hidden="true">
+						<span
+							v-for="(blob, index) in morphBlobs"
+							:key="index"
+							:class="surfaceMaterialMorphBlobClasses"
+							:style="getMorphBlobStyle(blob)"></span>
+					</span>
+					<span :class="surfaceOverlayClasses"></span>
+					<span :class="surfaceTextureClasses"></span>
+					<span :class="surfaceContentClasses">
+						<slot
+							v-if="!props.dot"
+							name="content">
+							{{ props.content }}
+						</slot>
+					</span>
+				</div>
+			</g-gradient>
 		</div>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 	@use '@/styles/mixins/action-surface' as actionSurface;
+	@use '@/styles/mixins/variants' as variants;
 
 	.g-badge {
 		position: relative;
@@ -97,6 +166,10 @@
 			}
 		}
 
+		&__frame {
+			display: inline-flex;
+		}
+
 		&__surface {
 			--g-surface-underlay-color: var(--g-surface-color);
 			--g-surface-underlay-opacity: 1;
@@ -120,16 +193,6 @@
 			color: var(--g-surface-content-color);
 
 			background: transparent;
-
-			&_filled {
-				--g-surface-underlay-color: var(--g-color);
-				--g-surface-underlay-opacity: 1;
-				--g-surface-overlay-color: var(--g-on-color);
-				--g-surface-overlay-opacity: 0;
-				--g-surface-content-color: var(--g-on-color);
-
-				background: transparent;
-			}
 
 			&_dot {
 				width: 10px;
@@ -210,4 +273,15 @@
 	}
 
 	@include actionSurface.action-surface-layers('g-badge__surface', true);
+	@include variants.variant-gradient('g-badge__surface');
+	@include variants.variant-tonal('g-badge__surface');
+	@include variants.variant-glass('g-badge__surface');
+
+	.g-badge__surface_glass {
+		--g-glass-highlight-opacity: 30%;
+		--g-glass-surface-top-opacity: 18%;
+		--g-glass-surface-bottom-opacity: 9%;
+
+		border-color: transparent;
+	}
 </style>

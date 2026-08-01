@@ -13,7 +13,7 @@
 			text="The operation completed without issues." />
 		<g-alert
 			state="warning"
-			variant="filled"
+			variant="gradient"
 			icon="alert-outline"
 			title="Warning"
 			text="Review this before continuing." />

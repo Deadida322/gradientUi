@@ -7,7 +7,6 @@
 	<div class="docs-component-detail__intro">
 		<g-button
 			label="Create project"
-			variant="filled"
 			color="primary"
 			prepend="plus" />
 		<g-button

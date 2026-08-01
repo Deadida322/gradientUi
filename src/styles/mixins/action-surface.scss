@@ -4,7 +4,9 @@
 		background-color: transparent;
 
 		&__surface-underlay,
-		&__surface-overlay {
+		&__surface-material-morph,
+		&__surface-overlay,
+		&__surface-texture {
 			pointer-events: none;
 			position: absolute;
 			inset: 0;
@@ -13,17 +15,61 @@
 
 		&__surface-underlay {
 			z-index: 0;
+
 			opacity: var(--g-surface-underlay-opacity, 0);
 			background: var(--g-surface-underlay-color, transparent);
+
 			transition:
 				opacity var(--g-token-duration-hover)
 					var(--g-token-easing-standard),
 				background-color var(--g-token-duration-hover)
 					var(--g-token-easing-standard);
+			animation: var(--g-gradient-current-animation, none);
+		}
+
+		&_animation-shift {
+			.#{$prefix}__surface-underlay {
+				background-size: var(
+					--g-surface-underlay-background-size,
+					220% 220%
+				);
+			}
+		}
+
+		&__surface-material-morph {
+			z-index: 1;
+
+			overflow: hidden;
+
+			opacity: 0.82;
+			filter: var(--g-gradient-material-filter, none);
+			mix-blend-mode: hard-light;
+		}
+
+		&__surface-material-morph-blob {
+			position: absolute;
+			transform-origin: var(--g-gradient-morph-origin-x)
+				var(--g-gradient-morph-origin-y);
+			transform: translate(-50%, -50%);
+
+			aspect-ratio: 1;
+			border-radius: 999px;
+
+			opacity: var(--g-gradient-morph-opacity);
+			background: radial-gradient(
+				circle,
+				var(--g-gradient-morph-blob-color) 0%,
+				transparent 72%
+			);
+			filter: blur(var(--g-gradient-morph-blur));
+
+			animation: var(--g-gradient-morph-animation)
+				var(--g-gradient-morph-duration, 9000ms) ease-in-out infinite
+				alternate;
 		}
 
 		&__surface-overlay {
-			z-index: 1;
+			z-index: 2;
 			opacity: var(--g-surface-overlay-opacity, 0);
 			background: var(--g-surface-overlay-color, currentcolor);
 			transition:
@@ -33,9 +79,39 @@
 					var(--g-token-easing-standard);
 		}
 
+		&__surface-texture {
+			z-index: 3;
+
+			opacity: 0;
+			background-image: var(
+				--g-surface-texture-fine-image,
+				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .82'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23noise)'/%3E%3C/svg%3E")
+			);
+			background-position: var(--g-surface-texture-fine-position, 0 0);
+			background-size: var(--g-surface-texture-fine-size, 200px 200px);
+			mix-blend-mode: var(
+				--g-surface-texture-blend-mode,
+				var(--g-token-surface-texture-noise-blend-mode, hard-light)
+			);
+
+			transition: opacity var(--g-token-duration-hover)
+				var(--g-token-easing-standard);
+		}
+
 		&__surface-content {
 			position: relative;
-			z-index: 2;
+			z-index: 4;
+		}
+
+		&_texture-noise {
+			--g-surface-texture-opacity: var(
+				--g-token-surface-texture-noise-opacity,
+				0.34
+			);
+
+			.#{$prefix}__surface-texture {
+				opacity: var(--g-surface-texture-opacity);
+			}
 		}
 
 		@if $clip {
