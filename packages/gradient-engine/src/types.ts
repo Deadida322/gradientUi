@@ -56,17 +56,31 @@ export interface GradientShadowOptions {
 }
 
 export type GradientMorphPreset = 'soft' | 'liquid' | 'ripple';
+export type GradientMorphBlendMode =
+	| 'hard-light'
+	| 'normal'
+	| 'overlay'
+	| 'screen'
+	| 'soft-light';
 
 export interface GradientMorphOptions {
 	id?: string;
 	preset?: GradientMorphPreset;
+	blendMode?: GradientMorphBlendMode;
 	blobCount?: number;
+	blobOpacity?: number;
 	blur?: number;
 	contrast?: number;
 	duration?: number | string;
 	opacity?: number;
 	scale?: number;
 	selector?: string;
+}
+
+export interface GradientMorphMarkupOptions extends GradientMorphOptions {
+	width?: number;
+	height?: number;
+	rx?: number;
 }
 
 export interface GradientMorphBlob {

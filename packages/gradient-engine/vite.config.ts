@@ -11,7 +11,8 @@ export default defineConfig({
 				formatters: resolve(__dirname, 'src/formatters/index.ts'),
 				effects: resolve(__dirname, 'src/effects/index.ts'),
 				animation: resolve(__dirname, 'src/animation/index.ts'),
-				material: resolve(__dirname, 'src/material.ts')
+				material: resolve(__dirname, 'src/material.ts'),
+				'design-tokens': resolve(__dirname, 'src/designTokens.ts')
 			},
 			name: 'GradientEngine',
 			formats: ['es', 'cjs'],

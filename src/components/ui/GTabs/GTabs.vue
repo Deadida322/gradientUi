@@ -48,10 +48,13 @@
 	const { colorStyles, resolvedGradient } = useSurfaceColor({
 		color: () => resolvedActiveColor.value
 	});
-	const tabsStyles = computed(() => ({
-		...colorStyles.value,
+	const tabsIndicatorStyles = computed(() => ({
 		'--g-tabs-indicator-gradient': resolvedGradient.value
 	}));
+	const tabsStyles = computed(() => [
+		colorStyles.value,
+		tabsIndicatorStyles.value
+	]);
 	const disabledClass = useDisabled(props, 'g-tabs');
 	const roundedClass = useRounded(props, 'g-tabs');
 	const sizeClass = useSize(props, 'g-tabs');

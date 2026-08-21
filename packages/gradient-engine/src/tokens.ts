@@ -134,6 +134,9 @@ export interface CreatedGradientMaterial {
 }
 
 const DEFAULT_TOKEN_RECIPES = ['glare', 'soft', 'mesh'] as const;
+const DEFAULT_MATERIAL_CACHE_LIMIT = 128;
+let materialCacheLimit = DEFAULT_MATERIAL_CACHE_LIMIT;
+const materialCache = new Map<string, CreatedGradientMaterial>();
 
 const toKebabCase = (value: string) =>
 	value.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
@@ -181,6 +184,59 @@ const hashString = (value: string) => {
 
 	return (hash >>> 0).toString(36);
 };
+
+const getMaterialCacheKey = (
+	seed: ColorInput,
+	options: GradientMaterialOptions
+) => stableSerialize({ options, seed });
+
+const getCachedMaterial = (key: string) => {
+	const cachedMaterial = materialCache.get(key);
+
+	if (!cachedMaterial) return undefined;
+
+	materialCache.delete(key);
+	materialCache.set(key, cachedMaterial);
+
+	return cachedMaterial;
+};
+
+const setCachedMaterial = (key: string, material: CreatedGradientMaterial) => {
+	if (materialCacheLimit <= 0) return material;
+
+	materialCache.set(key, material);
+
+	while (materialCache.size > materialCacheLimit) {
+		const oldestKey = materialCache.keys().next().value;
+
+		if (oldestKey === undefined) break;
+
+		materialCache.delete(oldestKey);
+	}
+
+	return material;
+};
+
+export const clearGradientMaterialCache = () => {
+	materialCache.clear();
+};
+
+export const setGradientMaterialCacheLimit = (limit: number) => {
+	materialCacheLimit = Math.max(0, Math.floor(limit));
+
+	while (materialCache.size > materialCacheLimit) {
+		const oldestKey = materialCache.keys().next().value;
+
+		if (oldestKey === undefined) break;
+
+		materialCache.delete(oldestKey);
+	}
+};
+
+export const getGradientMaterialCacheStats = () => ({
+	limit: materialCacheLimit,
+	size: materialCache.size
+});
 
 const toScopedCssText = (
 	className: string,
@@ -476,6 +532,11 @@ export const createGradientMaterial = (
 	seed: ColorInput,
 	options: GradientMaterialOptions = {}
 ): CreatedGradientMaterial => {
+	const cacheKey = getMaterialCacheKey(seed, options);
+	const cachedMaterial = getCachedMaterial(cacheKey);
+
+	if (cachedMaterial) return cachedMaterial;
+
 	const { className, id, recipe = 'glare', ...presetOptions } = options;
 	const preset = createGradientPreset(seed, recipe, presetOptions);
 	const morphBlobs =
@@ -504,7 +565,7 @@ export const createGradientMaterial = (
 		style.animation = `var(${preset.animation.cssVar})`;
 	}
 
-	return {
+	return setCachedMaterial(cacheKey, {
 		animation: preset.animation,
 		className: stableClassName,
 		cssText: toScopedCssText(
@@ -521,5 +582,5 @@ export const createGradientMaterial = (
 		morphBlobs,
 		preset,
 		style
-	};
+	});
 };

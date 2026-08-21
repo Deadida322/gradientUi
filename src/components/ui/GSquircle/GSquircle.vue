@@ -38,10 +38,10 @@
 		animations: () => Boolean(props.animationOptions),
 		animation: () => props.animationOptions
 	});
-	const squircleStyles = computed(() => ({
-		...colorStyles.value,
-		...materialStyles.value
-	}));
+	const squircleStyles = computed(() => [
+		colorStyles.value,
+		materialStyles.value
+	]);
 	const fillSurface = computed(() =>
 		props.variant === 'tonal'
 			? 'var(--g-surface-color)'

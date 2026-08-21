@@ -1,0 +1,24 @@
+{
+	"name": "@gradient-ui/figma-plugin",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"description": "Figma plugin for syncing Gradient UI generated design tokens.",
+	"scripts": {
+		"build": "vite build --config vite.main.config.ts && vite build --config vite.ui.config.ts && node scripts/build-ui.mjs",
+		"clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+		"dev:main": "vite build --config vite.main.config.ts --watch",
+		"dev:ui": "vite build --config vite.ui.config.ts --watch",
+		"release:check": "npm run type-check && npm run build",
+		"type-check": "tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.ui.json --noEmit"
+	},
+	"dependencies": {
+		"@gradient-ui/gradient-engine": "^0.5.0",
+		"vue": "^3.5.20"
+	},
+	"devDependencies": {
+		"@figma/plugin-typings": "^1.108.0",
+		"@vitejs/plugin-vue": "^5.1.2",
+		"vue-tsc": "^2.0.29"
+	}
+}

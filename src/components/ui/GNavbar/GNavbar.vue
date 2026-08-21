@@ -61,15 +61,18 @@
 	const { colorStyles, resolvedGradient } = useSurfaceColor({
 		color: () => resolvedActiveColor.value
 	});
-	const navbarStyles = computed<CSSProperties>(
+	const navbarIndicatorStyles = computed<CSSProperties>(
 		() =>
 			({
-				...colorStyles.value,
 				'--g-navbar-indicator-gradient': resolvedGradient.value,
 				'--g-navbar-indicator-left': `${indicator.value.left}px`,
 				'--g-navbar-indicator-width': `${indicator.value.width}px`
 			}) as CSSProperties
 	);
+	const navbarStyles = computed(() => [
+		colorStyles.value,
+		navbarIndicatorStyles.value
+	]);
 	const navbarClasses = computed(() => ({
 		[`g-navbar_${props.density}`]: true,
 		'g-navbar_hidden': hidden.value,

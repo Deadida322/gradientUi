@@ -51,10 +51,7 @@ export const makeGradientProps = propsFactory({
 	...makeGradientSurfaceProps()
 });
 
-type GGradientProps = ExtractPropTypes<
-	ReturnType<typeof makeGradientBorderProps> &
-		ReturnType<typeof makeGradientSurfaceProps>
->;
+type GGradientProps = ExtractPropTypes<ReturnType<typeof makeGradientProps>>;
 
 export function useGradient(props: GGradientProps) {
 	const borderWidthPx = usePx(toRef(props, 'borderWidth'));
@@ -72,11 +69,14 @@ export function useGradient(props: GGradientProps) {
 	const resolvedGradient = useResolveGradientValue(
 		() => props.color ?? props.state
 	);
-	const hasBorder = computed(() => Number(props.borderWidth) > 0);
+	const hasBorder = computed(
+		() => Number.parseFloat(String(props.borderWidth)) > 0
+	);
 	const { gradientMaterial, gradientMaterialStyles } = useGradientMaterial({
 		color: () => props.color ?? props.state,
 		kind: () => props.materialKind,
-		recipe: () => props.gradientRecipe
+		recipe: () => (hasBorder.value ? props.gradientRecipe : undefined),
+		options: () => (hasBorder.value ? {} : undefined)
 	});
 	const gradientClasses = computed(() => {
 		return {
@@ -88,13 +88,16 @@ export function useGradient(props: GGradientProps) {
 		};
 	});
 
-	const gradientStyles = computed(() => ({
-		...(hasBorder.value
-			? gradientMaterialStyles.value
-			: { '--g-gradient-current': resolvedGradient.value }),
+	const gradientBoxStyles = computed(() => ({
 		'--g-border-radius': borderRadiusPx.value,
 		'--g-border-width': borderWidthPx.value
 	}));
+	const gradientStyles = computed(() => [
+		hasBorder.value && gradientMaterialStyles.value
+			? gradientMaterialStyles.value
+			: { '--g-gradient-current': resolvedGradient.value },
+		gradientBoxStyles.value
+	]);
 
 	return {
 		borderWidthPx,

@@ -39,15 +39,18 @@
 		color: () => resolvedActiveColor.value
 	});
 	const { glassStyles } = useGlass(props);
-	const navStyles = computed(
+	const navLayoutStyles = computed(
 		() =>
 			({
-				...colorStyles.value,
-				...glassStyles.value,
 				'--g-nav-list-active-gradient': resolvedGradient.value,
 				'--g-nav-list-width': toUnit(props.width, '100%')
 			}) as Record<string, string>
 	);
+	const navStyles = computed(() => [
+		colorStyles.value,
+		glassStyles.value,
+		navLayoutStyles.value
+	]);
 	const navClasses = computed(() => ({
 		[`g-nav-list_${props.placement}`]: true,
 		[`g-nav-list_align-${props.align}`]: true,

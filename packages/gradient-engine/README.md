@@ -41,6 +41,10 @@ const material = createGradientMaterial('#704aff', {
 `createGradientMaterial` returns a richer object for components: CSS variables,
 CSS text, optional keyframes, effects and the underlying gradient model.
 
+Material output is memoized by seed and material options. Repeated calls with
+the same input reuse the same pure result instead of recalculating palettes,
+stops, shadows, morph blobs and keyframes.
+
 ## API Layers
 
 The package is split into small subpath exports:
@@ -129,6 +133,21 @@ material.animation;
 This lets a Vue, React or vanilla adapter decide how to apply the result:
 inline styles, a generated stylesheet, CSS variables, SSR-injected CSS or a
 client runtime registry.
+
+The material cache is intentionally small and bounded. Use the cache helpers
+when a long-running tool needs explicit control:
+
+```ts
+import {
+	clearGradientMaterialCache,
+	getGradientMaterialCacheStats,
+	setGradientMaterialCacheLimit
+} from '@gradient-ui/gradient-engine/material';
+
+setGradientMaterialCacheLimit(256);
+console.log(getGradientMaterialCacheStats());
+clearGradientMaterialCache();
+```
 
 ## SVG
 

@@ -47,12 +47,15 @@
 		borderRadius: () => props.borderRadius,
 		padding: () => props.padding
 	});
-	const materialRootStyles = computed(() => ({
-		...materialStyles.value,
-		...glassStyles.value,
+	const materialBorderAnimationStyles = computed(() => ({
 		'--g-gradient-border-animation':
 			'var(--g-gradient-material-animation, none)'
 	}));
+	const materialRootStyles = computed(() => [
+		materialStyles.value,
+		props.variant === 'glass' ? glassStyles.value : undefined,
+		materialBorderAnimationStyles.value
+	]);
 </script>
 
 <template>
@@ -142,7 +145,10 @@
 
 		opacity: 0.82;
 		filter: var(--g-gradient-material-filter, none);
-		mix-blend-mode: hard-light;
+		mix-blend-mode: var(
+			--g-gradient-material-morph-blend-mode,
+			hard-light
+		);
 	}
 
 	.g-gradient-material__morph-blob {

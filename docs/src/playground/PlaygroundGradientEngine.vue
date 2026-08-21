@@ -23,6 +23,7 @@
 		type GradientPresetName,
 		type GradientRecipe,
 		type GradientAnimationPreset,
+		type GradientMorphBlendMode,
 		type GradientMorphPreset,
 		type GradientType
 	} from '@/theme';
@@ -80,6 +81,13 @@
 		{ label: 'Liquid', value: 'liquid' },
 		{ label: 'Ripple', value: 'ripple' }
 	] as const satisfies readonly SelectOption<GradientMorphPreset>[];
+	const morphBlendModes = [
+		{ label: 'Hard light', value: 'hard-light' },
+		{ label: 'Normal', value: 'normal' },
+		{ label: 'Overlay', value: 'overlay' },
+		{ label: 'Screen', value: 'screen' },
+		{ label: 'Soft light', value: 'soft-light' }
+	] as const satisfies readonly SelectOption<GradientMorphBlendMode>[];
 	const morphPresetDefaults = {
 		soft: {
 			blobCount: '5',
@@ -141,6 +149,7 @@
 	const filterBlur = ref('16');
 	const filterY = ref('6');
 	const morphPreset = ref<GradientMorphPreset>('soft');
+	const morphBlendMode = ref<GradientMorphBlendMode>('hard-light');
 	const morphBlobCount = ref('5');
 	const morphBlur = ref('40');
 	const morphContrast = ref('18');
@@ -246,6 +255,7 @@
 		toGradientDropShadow(model.value, filterOptions.value)
 	);
 	const morphOptions = computed(() => ({
+		blendMode: morphBlendMode.value,
 		blobCount: Math.max(2, Math.round(toNumber(morphBlobCount.value, 5))),
 		blur: toNumber(morphBlur.value, 40),
 		contrast: toNumber(morphContrast.value, 18),
@@ -384,6 +394,7 @@ const filter = toGradientDropShadow(model, {
 
 const filterMarkup = toGradientMorphFilterMarkup({
 	id: 'playground-gradient-morph',
+	blendMode: '${morphBlendMode.value}',
 	preset: '${morphPreset.value}',
 	blobCount: ${morphOptions.value.blobCount},
 	blur: ${morphOptions.value.blur},
@@ -394,12 +405,14 @@ const filterMarkup = toGradientMorphFilterMarkup({
 
 const blobs = createGradientMorphBlobs(model, {
 	preset: '${morphPreset.value}',
+	blendMode: '${morphBlendMode.value}',
 	blobCount: ${morphOptions.value.blobCount}
 });
 
 const css = toGradientMorphCSS(model, {
 	selector: '.gradient-card',
 	id: 'playground-gradient-morph',
+	blendMode: '${morphBlendMode.value}',
 	preset: '${morphPreset.value}'
 });`
 	);
@@ -819,6 +832,10 @@ const animationCss = toGradientAnimationCSS({
 							v-model="morphPreset"
 							label="Preset"
 							:items="morphPresets" />
+						<g-select
+							v-model="morphBlendMode"
+							label="Blend mode"
+							:items="morphBlendModes" />
 						<g-input
 							v-model="morphBlobCount"
 							type="range"
@@ -871,6 +888,9 @@ const animationCss = toGradientAnimationCSS({
 							class="gradient-engine__morph-blobs"
 							:style="{
 								filter: morphFilter,
+								mixBlendMode: morphOptions.blendMode,
+								'--gradient-engine-morph-blend-mode':
+									morphOptions.blendMode,
 								opacity: morphOptions.opacity
 							}">
 							<span
@@ -1476,6 +1496,7 @@ const animationCss = toGradientAnimationCSS({
 		&__morph-sample {
 			aspect-ratio: 1.6;
 			width: min(72%, 260px);
+			height: fit-content;
 			border-radius: 18px;
 		}
 
@@ -1499,7 +1520,10 @@ const animationCss = toGradientAnimationCSS({
 		&__morph-blobs {
 			position: absolute;
 			inset: -18%;
-			mix-blend-mode: hard-light;
+			mix-blend-mode: var(
+				--gradient-engine-morph-blend-mode,
+				hard-light
+			);
 		}
 
 		&__morph-blob {

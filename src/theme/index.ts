@@ -65,6 +65,7 @@ export {
 	type GradientModel,
 	type GradientMaterialOptions,
 	type GradientMorphBlob,
+	type GradientMorphBlendMode,
 	type GradientMorphOptions,
 	type GradientMorphPreset,
 	type GradientOptions,

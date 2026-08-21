@@ -75,6 +75,11 @@
 			"import": "./dist/material.mjs",
 			"require": "./dist/material.cjs"
 		},
+		"./design-tokens": {
+			"types": "./dist/types/designTokens.d.ts",
+			"import": "./dist/design-tokens.mjs",
+			"require": "./dist/design-tokens.cjs"
+		},
 		"./package.json": "./package.json"
 	},
 	"typesVersions": {
@@ -93,6 +98,9 @@
 			],
 			"material": [
 				"dist/types/material.d.ts"
+			],
+			"design-tokens": [
+				"dist/types/designTokens.d.ts"
 			],
 			"*": [
 				"dist/types/index.d.ts"

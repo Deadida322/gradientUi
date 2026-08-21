@@ -1,12 +1,22 @@
 import { clamp, toCssDuration } from '../utils';
+import { toCssGradient } from '../formatters/css';
 import type {
 	GradientModel,
 	GradientMorphBlob,
+	GradientMorphMarkupOptions,
 	GradientMorphOptions,
 	GradientMorphPreset
 } from '../types';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+const XHTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
+
+const escapeAttribute = (value: string) =>
+	value
+		.replace(/&/g, '&amp;')
+		.replace(/"/g, '&quot;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;');
 
 const morphPresets = {
 	soft: {
@@ -51,6 +61,8 @@ const getMorphOptions = (options: GradientMorphOptions = {}) => {
 			2,
 			Math.round(options.blobCount ?? preset.blobCount)
 		),
+		blendMode: options.blendMode ?? 'hard-light',
+		blobOpacity: clamp(options.blobOpacity ?? 1, 0, 1.6),
 		blur: clamp(options.blur ?? preset.blur, 0, 80),
 		contrast: clamp(options.contrast ?? preset.contrast, 0, 36),
 		duration: options.duration ?? preset.duration,
@@ -195,14 +207,14 @@ export const createGradientMorphBlobs = (
 	model: GradientModel,
 	options: GradientMorphOptions = {}
 ): GradientMorphBlob[] => {
-	const { blobCount, duration, scale } = getMorphOptions(options);
+	const { blobCount, blobOpacity, duration, scale } = getMorphOptions(options);
 	const durationMs = getDurationMs(duration);
 
 	return Array.from({ length: blobCount }, (_, index) => {
 		const path = blobPaths[index % blobPaths.length];
 		const sizeJitter = getNoiseRange(index, 1, 0.88, 1.16);
 		const durationJitter = getNoiseRange(index, 2, 0.86, 1.24);
-		const opacity = getNoiseRange(index, 3, 0.72, 1);
+		const opacity = clamp(getNoiseRange(index, 3, 0.72, 1) * blobOpacity);
 		const blur = getNoiseRange(index, 4, 0, 4);
 		const size = (34 + (index % 4) * 9) * scale * sizeJitter;
 
@@ -262,7 +274,7 @@ export const toGradientMorphCSS = (
 	options: GradientMorphOptions = {}
 ) => {
 	const selector = options.selector ?? '.g-gradient-morph';
-	const { opacity } = getMorphOptions(options);
+	const { blendMode, opacity } = getMorphOptions(options);
 	const blobs = createGradientMorphBlobs(model, options);
 
 	return `${selector} {
@@ -275,7 +287,7 @@ ${selector}__blobs {
 	inset: -18%;
 	opacity: ${opacity};
 	filter: ${toGradientMorphFilter(options)};
-	mix-blend-mode: hard-light;
+	mix-blend-mode: ${blendMode};
 }
 
 ${selector}__blob {
@@ -310,7 +322,8 @@ ${blobs
 	--g-gradient-morph-rotate-to: ${blob.rotateTo}deg;
 	--g-gradient-morph-scale-mid: ${blob.scaleMid};
 	--g-gradient-morph-scale: ${blob.scaleTo};
-	animation-delay: ${blob.delay}ms;
+	--g-gradient-morph-delay: ${blob.delay}ms;
+	animation-delay: var(--g-gradient-morph-delay);
 	animation-duration: ${toCssDuration(blob.duration)};
 }`
 	)
@@ -357,4 +370,125 @@ ${blobs
 		transform: translate(calc(-50% + var(--g-gradient-morph-x2)), calc(-50% + var(--g-gradient-morph-y2))) rotate(var(--g-gradient-morph-rotate-to)) scale(var(--g-gradient-morph-scale));
 	}
 }`;
+};
+
+export const toGradientMorphMarkup = (
+	model: GradientModel,
+	options: GradientMorphMarkupOptions = {}
+) => {
+	const id = options.id ?? 'g-gradient-morph';
+	const width = options.width ?? 360;
+	const height = options.height ?? 240;
+	const rx = options.rx ?? 24;
+	const filterId = `${id}-filter`;
+	const filter = toGradientMorphFilter({ ...options, id: filterId });
+	const blobs = createGradientMorphBlobs(model, options);
+	const { blendMode, opacity } = getMorphOptions(options);
+
+	return `<svg xmlns="${SVG_NAMESPACE}" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img">
+  <defs>
+    <clipPath id="${id}-clip">
+      <rect width="${width}" height="${height}" rx="${rx}" />
+    </clipPath>
+  </defs>
+  <foreignObject width="${width}" height="${height}" clip-path="url(#${id}-clip)">
+    <div xmlns="${XHTML_NAMESPACE}" class="g-gradient-material">
+      ${toGradientMorphFilterMarkup({ ...options, id: `${id}-filter` })}
+      <style>
+.g-gradient-material {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	width: ${width}px;
+	height: ${height}px;
+	border-radius: ${rx}px;
+}
+
+.g-gradient-material__surface {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	border-radius: ${rx}px;
+	background: ${escapeAttribute(toCssGradient(model))};
+}
+
+.g-gradient-material__morph {
+	--g-gradient-material-morph-bleed: 18%;
+	position: absolute;
+	z-index: 1;
+	inset: calc(-1 * var(--g-gradient-material-morph-bleed));
+	width: calc(100% + 2 * var(--g-gradient-material-morph-bleed));
+	height: calc(100% + 2 * var(--g-gradient-material-morph-bleed));
+	opacity: ${opacity};
+	filter: ${filter};
+	mix-blend-mode: ${blendMode};
+}
+
+.g-gradient-material__morph-blob {
+	position: absolute;
+	transform-origin: var(--g-gradient-morph-origin-x) var(--g-gradient-morph-origin-y);
+	transform: translate(-50%, -50%);
+	aspect-ratio: 1;
+	border-radius: 999px;
+	opacity: var(--g-gradient-morph-opacity);
+	background: radial-gradient(circle, var(--g-gradient-morph-blob-color) 0%, transparent 72%);
+	filter: blur(var(--g-gradient-morph-blur));
+	animation: var(--g-gradient-morph-animation) var(--g-gradient-morph-duration, 9000ms) ease-in-out infinite alternate;
+}
+
+${blobs
+	.map(
+		(blob, index) => `.g-gradient-material__morph-blob:nth-child(${index + 1}) {
+	left: ${blob.x}%;
+	top: ${blob.y}%;
+	width: ${blob.size}%;
+	--g-gradient-morph-blob-color: ${blob.color};
+	--g-gradient-morph-x: ${blob.dx}%;
+	--g-gradient-morph-x2: ${blob.dx2}%;
+	--g-gradient-morph-y: ${blob.dy}%;
+	--g-gradient-morph-y2: ${blob.dy2}%;
+	--g-gradient-morph-origin-x: ${blob.originX};
+	--g-gradient-morph-origin-y: ${blob.originY};
+	--g-gradient-morph-animation: ${blob.animationName};
+	--g-gradient-morph-blur: ${blob.blur}px;
+	--g-gradient-morph-opacity: ${blob.opacity};
+	--g-gradient-morph-rotate-mid: ${blob.rotateMid}deg;
+	--g-gradient-morph-rotate-to: ${blob.rotateTo}deg;
+	--g-gradient-morph-scale-mid: ${blob.scaleMid};
+	--g-gradient-morph-scale: ${blob.scaleTo};
+	--g-gradient-morph-delay: ${blob.delay}ms;
+	animation-delay: var(--g-gradient-morph-delay);
+	animation-duration: ${toCssDuration(blob.duration)};
+}`
+	)
+	.join('\n\n')}
+
+@keyframes g-gradient-morph-drift {
+	0% { transform: translate(-50%, -50%) scale(0.92); }
+	42% { transform: translate(calc(-50% + var(--g-gradient-morph-x)), calc(-50% + var(--g-gradient-morph-y))) scale(var(--g-gradient-morph-scale)); }
+	100% { transform: translate(calc(-50% + var(--g-gradient-morph-x2)), calc(-50% + var(--g-gradient-morph-y2))) scale(var(--g-gradient-morph-scale-mid)); }
+}
+
+@keyframes g-gradient-morph-float {
+	0% { transform: translate(-50%, -50%) scale(1); }
+	50% { transform: translate(calc(-50% + var(--g-gradient-morph-x)), calc(-50% + var(--g-gradient-morph-y))) scale(var(--g-gradient-morph-scale-mid)); }
+	100% { transform: translate(calc(-50% + var(--g-gradient-morph-x2)), calc(-50% + var(--g-gradient-morph-y2))) scale(var(--g-gradient-morph-scale)); }
+}
+
+@keyframes g-gradient-morph-orbit {
+	0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.96); }
+	50% { transform: translate(calc(-50% + var(--g-gradient-morph-x)), calc(-50% + var(--g-gradient-morph-y))) rotate(var(--g-gradient-morph-rotate-mid)) scale(var(--g-gradient-morph-scale-mid)); }
+	100% { transform: translate(calc(-50% + var(--g-gradient-morph-x2)), calc(-50% + var(--g-gradient-morph-y2))) rotate(var(--g-gradient-morph-rotate-to)) scale(var(--g-gradient-morph-scale)); }
+}
+      </style>
+      <span class="g-gradient-material__surface">
+        <span class="g-gradient-material__morph">
+          ${blobs.map(() => '<span class="g-gradient-material__morph-blob"></span>').join('\n          ')}
+        </span>
+      </span>
+    </div>
+  </foreignObject>
+</svg>`;
 };

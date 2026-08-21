@@ -2,6 +2,7 @@ export {
 	createGradientMorphBlobs,
 	toGradientMorphCSS,
 	toGradientMorphFilter,
-	toGradientMorphFilterMarkup
+	toGradientMorphFilterMarkup,
+	toGradientMorphMarkup
 } from './morph';
 export { toGradientBoxShadow, toGradientDropShadow } from './shadow';

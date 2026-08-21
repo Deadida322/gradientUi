@@ -51,6 +51,8 @@ const getMorphOptions = (options: GradientMorphOptions = {}) => {
 			2,
 			Math.round(options.blobCount ?? preset.blobCount)
 		),
+		blendMode: options.blendMode ?? 'hard-light',
+		blobOpacity: clamp(options.blobOpacity ?? 1, 0, 1.6),
 		blur: clamp(options.blur ?? preset.blur, 0, 80),
 		contrast: clamp(options.contrast ?? preset.contrast, 0, 36),
 		duration: options.duration ?? preset.duration,
@@ -195,14 +197,14 @@ export const createGradientMorphBlobs = (
 	model: GradientModel,
 	options: GradientMorphOptions = {}
 ): GradientMorphBlob[] => {
-	const { blobCount, duration, scale } = getMorphOptions(options);
+	const { blobCount, blobOpacity, duration, scale } = getMorphOptions(options);
 	const durationMs = getDurationMs(duration);
 
 	return Array.from({ length: blobCount }, (_, index) => {
 		const path = blobPaths[index % blobPaths.length];
 		const sizeJitter = getNoiseRange(index, 1, 0.88, 1.16);
 		const durationJitter = getNoiseRange(index, 2, 0.86, 1.24);
-		const opacity = getNoiseRange(index, 3, 0.72, 1);
+		const opacity = clamp(getNoiseRange(index, 3, 0.72, 1) * blobOpacity);
 		const blur = getNoiseRange(index, 4, 0, 4);
 		const size = (34 + (index % 4) * 9) * scale * sizeJitter;
 
@@ -262,7 +264,7 @@ export const toGradientMorphCSS = (
 	options: GradientMorphOptions = {}
 ) => {
 	const selector = options.selector ?? '.g-gradient-morph';
-	const { opacity } = getMorphOptions(options);
+	const { blendMode, opacity } = getMorphOptions(options);
 	const blobs = createGradientMorphBlobs(model, options);
 
 	return `${selector} {
@@ -275,7 +277,7 @@ ${selector}__blobs {
 	inset: -18%;
 	opacity: ${opacity};
 	filter: ${toGradientMorphFilter(options)};
-	mix-blend-mode: hard-light;
+	mix-blend-mode: ${blendMode};
 }
 
 ${selector}__blob {

@@ -52,6 +52,9 @@
 		surfaceUnderlayClasses,
 		surfaceTextureClasses,
 		surfaceContentClasses,
+		hasSurfaceOverlay,
+		hasSurfaceTexture,
+		hasSurfaceUnderlay,
 		morphBlobs,
 		morphEnabled,
 		getMorphBlobStyle
@@ -80,7 +83,9 @@
 			]"
 			:style="surfaceStyles"
 			v-bind="{ ...tagAttrs, ...attrs }">
-			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="hasSurfaceUnderlay"
+				:class="surfaceUnderlayClasses"></span>
 			<span
 				v-if="morphEnabled"
 				:class="surfaceMaterialMorphClasses"
@@ -91,8 +96,12 @@
 					:class="surfaceMaterialMorphBlobClasses"
 					:style="getMorphBlobStyle(blob)"></span>
 			</span>
-			<span :class="surfaceOverlayClasses"></span>
-			<span :class="surfaceTextureClasses"></span>
+			<span
+				v-if="hasSurfaceOverlay"
+				:class="surfaceOverlayClasses"></span>
+			<span
+				v-if="hasSurfaceTexture"
+				:class="surfaceTextureClasses"></span>
 			<span
 				class="g-button__content"
 				:class="surfaceContentClasses">
