@@ -20,7 +20,6 @@ export default defineConfig({
 				`${entryName}.${format === 'es' ? 'mjs' : 'cjs'}`
 		},
 		rollupOptions: {
-			external: ['@material/material-color-utilities'],
 			output: {
 				exports: 'named'
 			}

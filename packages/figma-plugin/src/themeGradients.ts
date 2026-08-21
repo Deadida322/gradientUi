@@ -4,7 +4,17 @@ import {
 } from '@gradient-ui/gradient-engine/core';
 import type { CreatedDesignTokens } from '@gradient-ui/gradient-engine/design-tokens';
 
-type ThemeGradientShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+type ThemeGradientShade =
+	| 50
+	| 100
+	| 200
+	| 300
+	| 400
+	| 500
+	| 600
+	| 700
+	| 800
+	| 900;
 
 interface ThemeGradientEntry {
 	model: GradientModel;
@@ -27,11 +37,9 @@ const isColorShade = (value: number): value is ThemeGradientShade =>
 const escapeRegExp = (value: string) =>
 	value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const getPaletteGradientModel = (
-	tokens: CreatedDesignTokens,
-	name: string
-) => {
-	const semantic = SEMANTIC_GRADIENTS[name as keyof typeof SEMANTIC_GRADIENTS];
+const getPaletteGradientModel = (tokens: CreatedDesignTokens, name: string) => {
+	const semantic =
+		SEMANTIC_GRADIENTS[name as keyof typeof SEMANTIC_GRADIENTS];
 
 	if (semantic) {
 		const palette = tokens.colorSystem.palettes[semantic.palette];
@@ -53,7 +61,8 @@ const getPaletteGradientModel = (
 	const shade = Number(name.slice(paletteName.length) || DEFAULT_SHADE);
 	const palette = tokens.colorSystem.palettes[paletteName];
 
-	if (!palette || !Number.isFinite(shade) || !isColorShade(shade)) return null;
+	if (!palette || !Number.isFinite(shade) || !isColorShade(shade))
+		return null;
 
 	return createGradientModel(palette.colors, { shade });
 };

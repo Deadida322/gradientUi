@@ -1,6 +1,6 @@
 {
 	"name": "@gradient-ui/core",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"private": false,
 	"scripts": {
 		"dev": "vite --config docs/vite.config.ts",
@@ -29,8 +29,8 @@
 		"prepack": "npm run build:lib"
 	},
 	"dependencies": {
-		"@gradient-ui/gradient-engine": "^0.5.0",
 		"@floating-ui/vue": "^1.1.10",
+		"@gradient-ui/gradient-engine": "^0.6.0",
 		"@mdi/js": "^7.4.47",
 		"gib-validate": "^1.1.0"
 	},

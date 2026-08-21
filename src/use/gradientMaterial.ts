@@ -1,5 +1,6 @@
 import {
 	COLOR_SHADES,
+	DEFAULT_GRADIENT_MORPH_BLEND_MODE,
 	createGradientMaterial,
 	createPalette,
 	type CreatedGradientMaterial,
@@ -204,7 +205,7 @@ const createFallbackVars = (
 		'--g-gradient-material-drop-shadow': EMPTY_FILTER,
 		'--g-gradient-material-filter': EMPTY_FILTER,
 		'--g-gradient-material-morph-blend-mode':
-			morphOptions?.blendMode ?? 'hard-light',
+			morphOptions?.blendMode ?? DEFAULT_GRADIENT_MORPH_BLEND_MODE,
 		'--g-gradient-material-animation': animations
 			? 'var(--g-gradient-animation, none)'
 			: EMPTY_ANIMATION,
@@ -245,7 +246,10 @@ const createMaterialVars = (
 					? `var(${dropShadow})`
 					: EMPTY_FILTER,
 		'--g-gradient-material-morph-blend-mode':
-			morphOptions?.blendMode ?? 'hard-light',
+			effects && material.effects?.morph?.blendModeCssVar
+				? `var(${material.effects.morph.blendModeCssVar})`
+				: (morphOptions?.blendMode ??
+					DEFAULT_GRADIENT_MORPH_BLEND_MODE),
 		'--g-gradient-material-animation':
 			animations && animation ? `var(${animation})` : EMPTY_ANIMATION,
 		'--g-gradient-current': 'var(--g-gradient-material-background)',

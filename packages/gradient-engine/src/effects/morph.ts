@@ -3,9 +3,14 @@ import { toCssGradient } from '../formatters/css';
 import type {
 	GradientModel,
 	GradientMorphBlob,
+	GradientMorphBlendMode,
 	GradientMorphMarkupOptions,
 	GradientMorphOptions,
 	GradientMorphPreset
+} from '../types';
+import {
+	DEFAULT_GRADIENT_MORPH_BLEND_MODE,
+	GRADIENT_MORPH_BLEND_MODES
 } from '../types';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
@@ -53,6 +58,19 @@ const morphPresets = {
 	>
 >;
 
+const gradientMorphBlendModeSet = new Set<string>(GRADIENT_MORPH_BLEND_MODES);
+
+export const isGradientMorphBlendMode = (
+	value: string
+): value is GradientMorphBlendMode => gradientMorphBlendModeSet.has(value);
+
+export const resolveGradientMorphBlendMode = (
+	value: string | undefined
+): GradientMorphBlendMode =>
+	value && isGradientMorphBlendMode(value)
+		? value
+		: DEFAULT_GRADIENT_MORPH_BLEND_MODE;
+
 const getMorphOptions = (options: GradientMorphOptions = {}) => {
 	const preset = morphPresets[options.preset ?? 'soft'];
 
@@ -61,7 +79,7 @@ const getMorphOptions = (options: GradientMorphOptions = {}) => {
 			2,
 			Math.round(options.blobCount ?? preset.blobCount)
 		),
-		blendMode: options.blendMode ?? 'hard-light',
+		blendMode: resolveGradientMorphBlendMode(options.blendMode),
 		blobOpacity: clamp(options.blobOpacity ?? 1, 0, 1.6),
 		blur: clamp(options.blur ?? preset.blur, 0, 80),
 		contrast: clamp(options.contrast ?? preset.contrast, 0, 36),
@@ -207,7 +225,8 @@ export const createGradientMorphBlobs = (
 	model: GradientModel,
 	options: GradientMorphOptions = {}
 ): GradientMorphBlob[] => {
-	const { blobCount, blobOpacity, duration, scale } = getMorphOptions(options);
+	const { blobCount, blobOpacity, duration, scale } =
+		getMorphOptions(options);
 	const durationMs = getDurationMs(duration);
 
 	return Array.from({ length: blobCount }, (_, index) => {
@@ -440,7 +459,10 @@ export const toGradientMorphMarkup = (
 
 ${blobs
 	.map(
-		(blob, index) => `.g-gradient-material__morph-blob:nth-child(${index + 1}) {
+		(
+			blob,
+			index
+		) => `.g-gradient-material__morph-blob:nth-child(${index + 1}) {
 	left: ${blob.x}%;
 	top: ${blob.y}%;
 	width: ${blob.size}%;

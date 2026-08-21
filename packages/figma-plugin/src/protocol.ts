@@ -1,5 +1,6 @@
 import type { DesignTokenOptions } from '@gradient-ui/gradient-engine/design-tokens';
 import type {
+	GradientMorphBlendMode,
 	GradientMorphPreset,
 	GradientRecipe,
 	GradientType
@@ -28,7 +29,7 @@ export interface GeneratorSettings {
 	glowX: number;
 	glowY: number;
 	morphBlur: number;
-	morphBlendMode: 'hard-light' | 'normal' | 'overlay' | 'screen' | 'soft-light';
+	morphBlendMode: GradientMorphBlendMode;
 	morphBlobCount: number;
 	morphBlobOpacity: number;
 	morphContrast: number;

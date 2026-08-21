@@ -1,4 +1,8 @@
-import type { PluginCommand, PluginToUiMessage, UiToPluginMessage } from '../protocol';
+import type {
+	PluginCommand,
+	PluginToUiMessage,
+	UiToPluginMessage
+} from '../protocol';
 import {
 	applyCurrentGradientStrokeToSelection,
 	applyCurrentGradientToSelection,
@@ -68,7 +72,9 @@ export const runCommand = async (
 	}
 
 	if (command === 'apply-current-gradient') {
-		const count = applyCurrentGradientToSelection(message.settings.generator);
+		const count = applyCurrentGradientToSelection(
+			message.settings.generator
+		);
 		postMessage({
 			command,
 			message: `Applied current gradient to ${count} selected layers.`,
@@ -100,7 +106,9 @@ export const runCommand = async (
 	}
 
 	if (command === 'create-current-preview') {
-		const count = await createCurrentGradientPreview(message.settings.generator);
+		const count = await createCurrentGradientPreview(
+			message.settings.generator
+		);
 		postMessage({
 			command,
 			message: `Created ${count} current gradient preview.`,
@@ -110,7 +118,9 @@ export const runCommand = async (
 	}
 
 	if (command === 'create-current-morph') {
-		const count = await createCurrentMorphArtwork(message.settings.generator);
+		const count = await createCurrentMorphArtwork(
+			message.settings.generator
+		);
 		postMessage({
 			command,
 			message: `Created morph variants with ${count} layers.`,
@@ -128,5 +138,4 @@ export const runCommand = async (
 		});
 		return;
 	}
-
 };

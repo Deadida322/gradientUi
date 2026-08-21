@@ -1,5 +1,6 @@
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { Buffer } from 'node:buffer';
 
 const packageRoot = resolve(import.meta.dirname, '..');
 const templatePath = resolve(packageRoot, 'src/ui.html');

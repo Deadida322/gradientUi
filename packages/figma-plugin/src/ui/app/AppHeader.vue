@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { usePluginAppContext } from './context';
+	import { usePluginAppContext } from './context';
 
-const app = usePluginAppContext();
+	const app = usePluginAppContext();
 </script>
 
 <template>
@@ -12,20 +12,20 @@ const app = usePluginAppContext();
 </template>
 
 <style scoped>
-.header {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-	justify-content: space-between;
-}
+	.header {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+		justify-content: space-between;
+	}
 
-.header h1 {
-	margin: 0;
-	font-size: 14px;
-}
+	.header h1 {
+		margin: 0;
+		font-size: 14px;
+	}
 
-.status {
-	min-height: 18px;
-	color: var(--figma-color-text-secondary);
-}
+	.status {
+		min-height: 18px;
+		color: var(--figma-color-text-secondary);
+	}
 </style>

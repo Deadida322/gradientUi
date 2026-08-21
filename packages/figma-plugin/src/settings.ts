@@ -1,7 +1,4 @@
-import {
-	DEFAULT_PLUGIN_SETTINGS,
-	type PluginSettings
-} from './protocol';
+import { DEFAULT_PLUGIN_SETTINGS, type PluginSettings } from './protocol';
 
 const SETTINGS_KEY = 'gradient-ui.settings';
 

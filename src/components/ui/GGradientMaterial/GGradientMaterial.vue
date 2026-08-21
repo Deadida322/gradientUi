@@ -145,10 +145,7 @@
 
 		opacity: 0.82;
 		filter: var(--g-gradient-material-filter, none);
-		mix-blend-mode: var(
-			--g-gradient-material-morph-blend-mode,
-			hard-light
-		);
+		mix-blend-mode: var(--g-gradient-material-morph-blend-mode, hard-light);
 	}
 
 	.g-gradient-material__morph-blob {

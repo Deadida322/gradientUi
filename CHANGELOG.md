@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.5.0-rc
+## 0.5.0
 
-Gradient UI `0.5` is a release-candidate line focused on the new color,
+Gradient UI `0.5.0` is a stable release focused on the new color,
 material and gradient architecture.
 
 ### Added
@@ -37,8 +37,7 @@ material and gradient architecture.
 
 ### Package Notes
 
-- `@gradient-ui/gradient-engine@0.5.0` is intended to be published as a
-  standalone package.
+- `@gradient-ui/gradient-engine@0.6.0` is used as the standalone engine package.
 - The engine package is framework-free and does not mount DOM nodes by itself.
 - SSR support should use generated `cssVars`, `cssText` and `keyframes`, while
   client adapters mount optional runtime effects.

@@ -1,3 +1,3 @@
-interface CanvasGradient {}
+type CanvasGradient = unknown;
 
-interface CanvasRenderingContext2D {}
+type CanvasRenderingContext2D = unknown;

@@ -20,6 +20,8 @@
 		toSvgPathAnimationMarkup,
 		toSvgSourceAnimationMarkup,
 		gradientPresets,
+		DEFAULT_GRADIENT_MORPH_BLEND_MODE,
+		GRADIENT_MORPH_BLEND_MODES,
 		type GradientPresetName,
 		type GradientRecipe,
 		type GradientAnimationPreset,
@@ -81,13 +83,28 @@
 		{ label: 'Liquid', value: 'liquid' },
 		{ label: 'Ripple', value: 'ripple' }
 	] as const satisfies readonly SelectOption<GradientMorphPreset>[];
-	const morphBlendModes = [
-		{ label: 'Hard light', value: 'hard-light' },
-		{ label: 'Normal', value: 'normal' },
-		{ label: 'Overlay', value: 'overlay' },
-		{ label: 'Screen', value: 'screen' },
-		{ label: 'Soft light', value: 'soft-light' }
-	] as const satisfies readonly SelectOption<GradientMorphBlendMode>[];
+	const morphBlendModeLabels = {
+		color: 'Color',
+		'color-burn': 'Color burn',
+		'color-dodge': 'Color dodge',
+		darken: 'Darken',
+		difference: 'Difference',
+		exclusion: 'Exclusion',
+		'hard-light': 'Hard light',
+		hue: 'Hue',
+		lighten: 'Lighten',
+		luminosity: 'Luminosity',
+		multiply: 'Multiply',
+		normal: 'Normal',
+		overlay: 'Overlay',
+		saturation: 'Saturation',
+		screen: 'Screen',
+		'soft-light': 'Soft light'
+	} satisfies Record<GradientMorphBlendMode, string>;
+	const morphBlendModes = GRADIENT_MORPH_BLEND_MODES.map((value) => ({
+		label: morphBlendModeLabels[value],
+		value
+	})) satisfies readonly SelectOption<GradientMorphBlendMode>[];
 	const morphPresetDefaults = {
 		soft: {
 			blobCount: '5',
@@ -149,7 +166,9 @@
 	const filterBlur = ref('16');
 	const filterY = ref('6');
 	const morphPreset = ref<GradientMorphPreset>('soft');
-	const morphBlendMode = ref<GradientMorphBlendMode>('hard-light');
+	const morphBlendMode = ref<GradientMorphBlendMode>(
+		DEFAULT_GRADIENT_MORPH_BLEND_MODE
+	);
 	const morphBlobCount = ref('5');
 	const morphBlur = ref('40');
 	const morphContrast = ref('18');
@@ -1520,10 +1539,7 @@ const animationCss = toGradientAnimationCSS({
 		&__morph-blobs {
 			position: absolute;
 			inset: -18%;
-			mix-blend-mode: var(
-				--gradient-engine-morph-blend-mode,
-				hard-light
-			);
+			mix-blend-mode: var(--gradient-engine-morph-blend-mode, hard-light);
 		}
 
 		&__morph-blob {

@@ -5,7 +5,10 @@ import { usePluginSettings } from './usePluginSettings';
 
 export const usePluginApp = () => {
 	const settings = usePluginSettings();
-	const preview = useGeneratorPreview(settings.state, settings.selectedPreset);
+	const preview = useGeneratorPreview(
+		settings.state,
+		settings.selectedPreset
+	);
 	const bridge = usePluginBridge(
 		settings.state,
 		settings.statusText,

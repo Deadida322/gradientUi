@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { usePluginAppContext } from './context';
+	import { usePluginAppContext } from './context';
 
-const app = usePluginAppContext();
+	const app = usePluginAppContext();
 </script>
 
 <template>
@@ -33,37 +33,37 @@ const app = usePluginAppContext();
 </template>
 
 <style scoped>
-.tabs {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 6px;
+	.tabs {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 6px;
 
-	padding: 4px;
-	border: 1px solid var(--figma-color-border);
-	border-radius: 8px;
+		padding: 4px;
+		border: 1px solid var(--figma-color-border);
+		border-radius: 8px;
 
-	background: var(--figma-color-bg-secondary);
-}
+		background: var(--figma-color-bg-secondary);
+	}
 
-.tab {
-	cursor: pointer;
+	.tab {
+		cursor: pointer;
 
-	width: 100%;
-	min-height: 30px;
-	padding: 6px 8px;
-	border: 0;
-	border-radius: 6px;
+		width: 100%;
+		min-height: 30px;
+		padding: 6px 8px;
+		border: 0;
+		border-radius: 6px;
 
-	font: inherit;
-	font-weight: 700;
-	color: var(--figma-color-text-secondary);
+		font: inherit;
+		font-weight: 700;
+		color: var(--figma-color-text-secondary);
 
-	background: transparent;
-}
+		background: transparent;
+	}
 
-.tab_active {
-	color: var(--figma-color-text);
-	background: var(--figma-color-bg);
-	box-shadow: inset 0 0 0 1px var(--figma-color-border);
-}
+	.tab_active {
+		color: var(--figma-color-text);
+		background: var(--figma-color-bg);
+		box-shadow: inset 0 0 0 1px var(--figma-color-border);
+	}
 </style>

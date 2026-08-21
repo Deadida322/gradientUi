@@ -56,12 +56,28 @@ export interface GradientShadowOptions {
 }
 
 export type GradientMorphPreset = 'soft' | 'liquid' | 'ripple';
+export const GRADIENT_MORPH_BLEND_MODES = [
+	'normal',
+	'multiply',
+	'screen',
+	'overlay',
+	'darken',
+	'lighten',
+	'color-dodge',
+	'color-burn',
+	'hard-light',
+	'soft-light',
+	'difference',
+	'exclusion',
+	'hue',
+	'saturation',
+	'color',
+	'luminosity'
+] as const;
 export type GradientMorphBlendMode =
-	| 'hard-light'
-	| 'normal'
-	| 'overlay'
-	| 'screen'
-	| 'soft-light';
+	(typeof GRADIENT_MORPH_BLEND_MODES)[number];
+export const DEFAULT_GRADIENT_MORPH_BLEND_MODE =
+	'hard-light' satisfies GradientMorphBlendMode;
 
 export interface GradientMorphOptions {
 	id?: string;

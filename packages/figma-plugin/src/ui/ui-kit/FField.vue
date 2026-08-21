@@ -1,7 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-	label: string;
-}>();
+	defineProps<{
+		label: string;
+	}>();
 </script>
 
 <template>
@@ -12,13 +12,13 @@ defineProps<{
 </template>
 
 <style scoped>
-.field {
-	display: grid;
-	gap: 5px;
-	font-weight: 600;
-}
+	.field {
+		display: grid;
+		gap: 5px;
+		font-weight: 600;
+	}
 
-.field span {
-	color: var(--figma-color-text-secondary);
-}
+	.field span {
+		color: var(--figma-color-text-secondary);
+	}
 </style>

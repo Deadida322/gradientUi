@@ -5,10 +5,7 @@ import {
 import { colorInputToRgb } from './figmaColor';
 import { gradientPaintFromModel } from './figmaGradient';
 import { createModelFromGeneratorSettings } from './generatorModel';
-import {
-	GENERATOR_PLUGIN_DATA_KEY,
-	setGradientRelaunchData
-} from './relaunch';
+import { GENERATOR_PLUGIN_DATA_KEY, setGradientRelaunchData } from './relaunch';
 import type { GeneratorSettings } from './protocol';
 
 const DEFAULT_SIZE = {
@@ -21,9 +18,20 @@ type MorphPhase = 'End' | 'Mid' | 'Start';
 const phases = ['Start', 'Mid', 'End'] as const satisfies readonly MorphPhase[];
 
 const blendModeMap = {
+	color: 'COLOR',
+	'color-burn': 'COLOR_BURN',
+	'color-dodge': 'COLOR_DODGE',
+	darken: 'DARKEN',
+	difference: 'DIFFERENCE',
+	exclusion: 'EXCLUSION',
 	'hard-light': 'HARD_LIGHT',
+	hue: 'HUE',
+	lighten: 'LIGHTEN',
+	luminosity: 'LUMINOSITY',
+	multiply: 'MULTIPLY',
 	normal: 'NORMAL',
 	overlay: 'OVERLAY',
+	saturation: 'SATURATION',
 	screen: 'SCREEN',
 	'soft-light': 'SOFT_LIGHT'
 } as const satisfies Record<GeneratorSettings['morphBlendMode'], BlendMode>;
@@ -93,7 +101,10 @@ const appendMorphBlob = (
 	const size = baseSize * transform.scale;
 	const centerX = (DEFAULT_SIZE.width * (blob.x + transform.dx)) / 100;
 	const centerY = (DEFAULT_SIZE.height * (blob.y + transform.dy)) / 100;
-	const opacity = Math.min(1, Math.max(0, blob.opacity * settings.morphOpacity));
+	const opacity = Math.min(
+		1,
+		Math.max(0, blob.opacity * settings.morphOpacity)
+	);
 
 	frame.appendChild(ellipse);
 	ellipse.name = `Morph blob ${index + 1}`;
@@ -213,7 +224,9 @@ export const createCurrentMorphFrame = (settings: GeneratorSettings) => {
 	return blobs.length + 2;
 };
 
-export const createCurrentMorphArtwork = async (settings: GeneratorSettings) => {
+export const createCurrentMorphArtwork = async (
+	settings: GeneratorSettings
+) => {
 	const variants = phases.map((phase, index) =>
 		createMorphVariant(settings, phase, index)
 	);
@@ -229,7 +242,10 @@ export const createCurrentMorphArtwork = async (settings: GeneratorSettings) => 
 	componentSet.name = `Gradient UI Morph / ${settings.recipe}`;
 	componentSet.x = figma.viewport.center.x - componentSet.width / 2;
 	componentSet.y = figma.viewport.center.y - componentSet.height / 2;
-	componentSet.setPluginData(GENERATOR_PLUGIN_DATA_KEY, JSON.stringify(settings));
+	componentSet.setPluginData(
+		GENERATOR_PLUGIN_DATA_KEY,
+		JSON.stringify(settings)
+	);
 	setGradientRelaunchData(componentSet);
 
 	await Promise.all(
@@ -238,7 +254,9 @@ export const createCurrentMorphArtwork = async (settings: GeneratorSettings) => 
 				{
 					actions: [
 						{
-							destinationId: components[(index + 1) % components.length]?.id ?? null,
+							destinationId:
+								components[(index + 1) % components.length]
+									?.id ?? null,
 							navigation: 'CHANGE_TO',
 							transition: {
 								duration: transitionDuration,
@@ -318,7 +336,10 @@ export const createCurrentMorphRasterFrames = async (
 				type: 'IMAGE'
 			}
 		];
-		frame.setPluginData(GENERATOR_PLUGIN_DATA_KEY, JSON.stringify(settings));
+		frame.setPluginData(
+			GENERATOR_PLUGIN_DATA_KEY,
+			JSON.stringify(settings)
+		);
 		setGradientRelaunchData(frame);
 
 		figma.currentPage.selection = [frame];
@@ -334,7 +355,10 @@ export const createCurrentMorphRasterFrames = async (
 
 			frame.name = `State=${index + 1}`;
 			frame.resize(size.width, size.height);
-			frame.x = figma.viewport.center.x - size.width / 2 + index * (size.width + 48);
+			frame.x =
+				figma.viewport.center.x -
+				size.width / 2 +
+				index * (size.width + 48);
 			frame.y = figma.viewport.center.y - size.height / 2;
 			frame.cornerRadius = 24;
 			frame.clipsContent = true;
@@ -345,7 +369,10 @@ export const createCurrentMorphRasterFrames = async (
 					type: 'IMAGE'
 				}
 			];
-			frame.setPluginData(GENERATOR_PLUGIN_DATA_KEY, JSON.stringify(settings));
+			frame.setPluginData(
+				GENERATOR_PLUGIN_DATA_KEY,
+				JSON.stringify(settings)
+			);
 			setGradientRelaunchData(frame);
 
 			return figma.createComponentFromNode(frame);
@@ -360,7 +387,10 @@ export const createCurrentMorphRasterFrames = async (
 	componentSet.name = `Gradient UI Morph Raster / ${settings.recipe}`;
 	componentSet.x = figma.viewport.center.x - componentSet.width / 2;
 	componentSet.y = figma.viewport.center.y - componentSet.height / 2;
-	componentSet.setPluginData(GENERATOR_PLUGIN_DATA_KEY, JSON.stringify(settings));
+	componentSet.setPluginData(
+		GENERATOR_PLUGIN_DATA_KEY,
+		JSON.stringify(settings)
+	);
 	setGradientRelaunchData(componentSet);
 
 	await Promise.all(
@@ -369,7 +399,9 @@ export const createCurrentMorphRasterFrames = async (
 				{
 					actions: [
 						{
-							destinationId: components[(index + 1) % components.length]?.id ?? null,
+							destinationId:
+								components[(index + 1) % components.length]
+									?.id ?? null,
 							navigation: 'CHANGE_TO',
 							transition: {
 								duration: transitionDuration,

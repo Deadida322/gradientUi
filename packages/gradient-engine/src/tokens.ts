@@ -8,6 +8,7 @@ import {
 import { changeTone, getComplementaryColor, shiftHue } from './colorMath';
 import {
 	createGradientMorphBlobs,
+	resolveGradientMorphBlendMode,
 	toGradientMorphFilter,
 	toGradientMorphFilterMarkup
 } from './effects/morph';
@@ -24,6 +25,7 @@ import {
 } from './presets';
 import type {
 	GradientAnimationOptions,
+	GradientMorphBlendMode,
 	GradientMorphBlob,
 	GradientMorphOptions,
 	GradientModel,
@@ -61,6 +63,8 @@ export interface GradientEffectTokenEntry {
 		value: string;
 		cssVar: string;
 		svg: string;
+		blendMode: GradientMorphBlendMode;
+		blendModeCssVar: string;
 	};
 }
 
@@ -368,6 +372,9 @@ const createTokenEffectEntry = (
 ): GradientEffectTokenEntry => {
 	if (!model) return {};
 	const morphId = `${cssVarName.replace(/^--/, '')}-morph`;
+	const morphBlendMode = resolveGradientMorphBlendMode(
+		options?.morph?.blendMode
+	);
 	const morphOptions = {
 		...options?.morph,
 		id: options?.morph?.id ?? morphId
@@ -386,6 +393,8 @@ const createTokenEffectEntry = (
 			)
 		},
 		morph: {
+			blendMode: morphBlendMode,
+			blendModeCssVar: `${cssVarName}-morph-blend-mode`,
 			cssVar: `${cssVarName}-morph`,
 			svg: toGradientMorphFilterMarkup(morphOptions),
 			value: toGradientMorphFilter(morphOptions)
@@ -466,6 +475,7 @@ export const createGradientPreset = (
 
 	if (effects?.morph) {
 		cssVars[effects.morph.cssVar] = effects.morph.value;
+		cssVars[effects.morph.blendModeCssVar] = effects.morph.blendMode;
 	}
 
 	if (animation) {

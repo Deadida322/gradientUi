@@ -41,15 +41,18 @@ const withMainGradientToken = (
 export const createPluginTokens = (
 	settings: PluginSettings
 ): CreatedDesignTokens =>
-	withMainGradientToken(createDesignTokens({
-		colors: settings.colors,
-		gradientTokens: settings.gradientTokens ?? {
-			effects: true,
-			recipes: ['glare', 'soft', 'mesh']
-		},
-		mode: settings.mode,
-		seed: settings.seed
-	}), settings);
+	withMainGradientToken(
+		createDesignTokens({
+			colors: settings.colors,
+			gradientTokens: settings.gradientTokens ?? {
+				effects: true,
+				recipes: ['glare', 'soft', 'mesh']
+			},
+			mode: settings.mode,
+			seed: settings.seed
+		}),
+		settings
+	);
 
 export const createPluginTokenSet = (
 	settings: PluginSettings

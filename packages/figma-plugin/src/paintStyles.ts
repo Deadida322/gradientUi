@@ -36,7 +36,9 @@ export const syncPaintStyles = async (tokens: CreatedDesignTokens) => {
 		count += 1;
 	}
 
-	for (const [name, gradient] of Object.entries(tokens.gradientTokens.gradients)) {
+	for (const [name, gradient] of Object.entries(
+		tokens.gradientTokens.gradients
+	)) {
 		if (!gradient.model) continue;
 
 		const style = getOrCreatePaintStyle(

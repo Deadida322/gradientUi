@@ -48,7 +48,8 @@ figma.ui.onmessage = (message: UiToPluginMessage) => {
 			(error: unknown) => {
 				postMessage({
 					command: message.command,
-					message: error instanceof Error ? error.message : String(error),
+					message:
+						error instanceof Error ? error.message : String(error),
 					type: 'error'
 				});
 			}
@@ -56,11 +57,13 @@ figma.ui.onmessage = (message: UiToPluginMessage) => {
 		return;
 	}
 
-	void runCommand(message.command, message, postMessage).catch((error: unknown) => {
-		postMessage({
-			command: message.command,
-			message: error instanceof Error ? error.message : String(error),
-			type: 'error'
-		});
-	});
+	void runCommand(message.command, message, postMessage).catch(
+		(error: unknown) => {
+			postMessage({
+				command: message.command,
+				message: error instanceof Error ? error.message : String(error),
+				type: 'error'
+			});
+		}
+	);
 };

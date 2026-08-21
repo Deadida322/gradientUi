@@ -219,8 +219,9 @@ morph SVG filters.
 
 ## Version
 
-`0.5.0` is the first standalone release line for the engine extracted from
-Gradient UI.
+`0.5.0` was the first standalone release line for the engine extracted from
+Gradient UI. `0.6.0` adds the public morph blend-mode API used by the
+`0.5.0` core release line.
 
 ## License
 

@@ -1,5 +1,7 @@
 export {
 	createGradientMorphBlobs,
+	isGradientMorphBlendMode,
+	resolveGradientMorphBlendMode,
 	toGradientMorphCSS,
 	toGradientMorphFilter,
 	toGradientMorphFilterMarkup,

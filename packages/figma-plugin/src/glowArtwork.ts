@@ -1,9 +1,6 @@
 import { createModelFromGeneratorSettings } from './generatorModel';
 import { gradientPaintFromModel } from './figmaGradient';
-import {
-	GENERATOR_PLUGIN_DATA_KEY,
-	setGradientRelaunchData
-} from './relaunch';
+import { GENERATOR_PLUGIN_DATA_KEY, setGradientRelaunchData } from './relaunch';
 import type { GeneratorSettings } from './protocol';
 
 const DEFAULT_SIZE = {

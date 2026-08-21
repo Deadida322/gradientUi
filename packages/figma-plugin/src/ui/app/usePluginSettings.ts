@@ -1,5 +1,9 @@
 import { reactive, ref, watch } from 'vue';
-import { gradientPresets, type GradientPresetName } from '@gradient-ui/gradient-engine/core';
+import {
+	DEFAULT_GRADIENT_MORPH_BLEND_MODE,
+	gradientPresets,
+	type GradientPresetName
+} from '@gradient-ui/gradient-engine/core';
 import { DEFAULT_PLUGIN_SETTINGS, type PluginSettings } from '../../protocol';
 import { morphPresetDefaults, type ActiveTab } from './constants';
 import { clone, toNumber } from './utils';
@@ -18,7 +22,10 @@ export const usePluginSettings = () => {
 		const preset = gradientPresets[selectedPreset.value];
 		state.generator.recipe = preset.gradient.recipe;
 		state.generator.type = preset.gradient.type ?? 'linear';
-		state.generator.direction = toNumber(preset.gradient.direction ?? 135, 135);
+		state.generator.direction = toNumber(
+			preset.gradient.direction ?? 135,
+			135
+		);
 		state.generator.position =
 			'position' in preset.gradient
 				? (preset.gradient.position ?? 'center')
@@ -30,7 +37,10 @@ export const usePluginSettings = () => {
 					? (preset.dropShadow.x as string | number | undefined)
 					: undefined;
 			state.generator.glowOpacity = preset.dropShadow.opacity ?? 0.62;
-			state.generator.glowBlur = toNumber(preset.dropShadow.blur ?? 18, 18);
+			state.generator.glowBlur = toNumber(
+				preset.dropShadow.blur ?? 18,
+				18
+			);
 			state.generator.glowX = toNumber(glowX ?? 0, 0);
 			state.generator.glowY = toNumber(preset.dropShadow.y ?? 6, 6);
 		}
@@ -45,7 +55,7 @@ export const usePluginSettings = () => {
 		state.generator.morphDuration = preset.duration;
 		state.generator.morphOpacity = preset.opacity;
 		state.generator.morphScale = preset.scale;
-		state.generator.morphBlendMode = 'hard-light';
+		state.generator.morphBlendMode = DEFAULT_GRADIENT_MORPH_BLEND_MODE;
 		state.generator.morphBlobOpacity = 1;
 	};
 

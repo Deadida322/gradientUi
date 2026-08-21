@@ -3,7 +3,9 @@
 		.#{$prefix}_rounded {
 			border-radius: var(--g-token-radius-pill);
 		}
-	} @else {
+	}
+
+ @else {
 		border-radius: var(--g-token-radius-pill);
 	}
 }

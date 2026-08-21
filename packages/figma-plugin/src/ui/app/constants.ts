@@ -1,5 +1,9 @@
-import { gradientPresets } from '@gradient-ui/gradient-engine/core';
+import {
+	GRADIENT_MORPH_BLEND_MODES,
+	gradientPresets
+} from '@gradient-ui/gradient-engine/core';
 import type {
+	GradientMorphBlendMode,
 	GradientMorphPreset,
 	GradientPresetName,
 	GradientRecipe,
@@ -98,13 +102,29 @@ export const morphPresetDefaults = {
 	}
 >;
 
-export const morphBlendModes = [
-	{ label: 'Screen', value: 'screen' },
-	{ label: 'Hard light', value: 'hard-light' },
-	{ label: 'Overlay', value: 'overlay' },
-	{ label: 'Soft light', value: 'soft-light' },
-	{ label: 'Normal', value: 'normal' }
-] as const satisfies readonly Option<PluginSettings['generator']['morphBlendMode']>[];
+const morphBlendModeLabels = {
+	'color-burn': 'Color burn',
+	'color-dodge': 'Color dodge',
+	darken: 'Darken',
+	difference: 'Difference',
+	exclusion: 'Exclusion',
+	'hard-light': 'Hard light',
+	hue: 'Hue',
+	lighten: 'Lighten',
+	luminosity: 'Luminosity',
+	multiply: 'Multiply',
+	normal: 'Normal',
+	overlay: 'Overlay',
+	saturation: 'Saturation',
+	screen: 'Screen',
+	'soft-light': 'Soft light',
+	color: 'Color'
+} satisfies Record<GradientMorphBlendMode, string>;
+
+export const morphBlendModes = GRADIENT_MORPH_BLEND_MODES.map((value) => ({
+	label: morphBlendModeLabels[value],
+	value
+})) satisfies readonly Option<PluginSettings['generator']['morphBlendMode']>[];
 
 export const presetItems = Object.entries(gradientPresets).map(
 	([value, preset]) => ({

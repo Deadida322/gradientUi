@@ -1,8 +1,5 @@
 import { loadSettings } from '../settings';
-import {
-	GENERATOR_PLUGIN_DATA_KEY,
-	OPEN_GENERATOR_COMMAND
-} from '../relaunch';
+import { GENERATOR_PLUGIN_DATA_KEY, OPEN_GENERATOR_COMMAND } from '../relaunch';
 import type { GeneratorSettings, PluginSettings } from '../protocol';
 
 const getSelectionGeneratorSettings = () => {

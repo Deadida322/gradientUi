@@ -3,10 +3,7 @@ import { gradientPaintFromModel } from './figmaGradient';
 import { createModelFromGeneratorSettings } from './generatorModel';
 import { solidPaintFromChannels } from './figmaColor';
 import { getThemeGradientEntries } from './themeGradients';
-import {
-	GENERATOR_PLUGIN_DATA_KEY,
-	setGradientRelaunchData
-} from './relaunch';
+import { GENERATOR_PLUGIN_DATA_KEY, setGradientRelaunchData } from './relaunch';
 import type { GeneratorSettings } from './protocol';
 
 const PREVIEW_PAGE_NAME = 'Gradient UI Tokens';
@@ -67,7 +64,10 @@ export const createPreviewPage = async (tokens: CreatedDesignTokens) => {
 	await createText(`Gradient UI / ${tokens.seed} / ${tokens.mode}`, 32, 32);
 
 	let index = 0;
-	for (const [name, value] of Object.entries(tokens.tokens.colors).slice(0, 40)) {
+	for (const [name, value] of Object.entries(tokens.tokens.colors).slice(
+		0,
+		40
+	)) {
 		const x = 32 + (index % 8) * 120;
 		const y = 72 + Math.floor(index / 8) * 104;
 		createSwatch(name, solidPaintFromChannels(value), x, y);
@@ -79,7 +79,9 @@ export const createPreviewPage = async (tokens: CreatedDesignTokens) => {
 	await createText('Gradient recipes', 32, gradientY);
 
 	let gradientIndex = 0;
-	for (const [name, gradient] of Object.entries(tokens.gradientTokens.gradients)) {
+	for (const [name, gradient] of Object.entries(
+		tokens.gradientTokens.gradients
+	)) {
 		if (!gradient.model) continue;
 
 		const x = 32 + gradientIndex * 160;
@@ -101,7 +103,8 @@ export const createPreviewPage = async (tokens: CreatedDesignTokens) => {
 	let themeGradientIndex = 0;
 	for (const gradient of getThemeGradientEntries(tokens)) {
 		const x = 32 + (themeGradientIndex % 8) * 120;
-		const y = themeGradientY + 32 + Math.floor(themeGradientIndex / 8) * 104;
+		const y =
+			themeGradientY + 32 + Math.floor(themeGradientIndex / 8) * 104;
 		createSwatch(
 			gradient.name,
 			gradientPaintFromModel(gradient.model),

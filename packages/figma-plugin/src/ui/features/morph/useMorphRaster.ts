@@ -13,7 +13,8 @@ export const useMorphRaster = (
 
 	const createMorphRasterMarkup = (timeMs: number) =>
 		(
-			morphPreviewRef.value?.querySelector('svg')?.outerHTML ?? morphMarkup.value
+			morphPreviewRef.value?.querySelector('svg')?.outerHTML ??
+			morphMarkup.value
 		)
 			.split('animation-delay: var(--g-gradient-morph-delay);')
 			.join(
@@ -71,7 +72,9 @@ export const useMorphRaster = (
 
 					void blob
 						.arrayBuffer()
-						.then((buffer) => resolve(Array.from(new Uint8Array(buffer))))
+						.then((buffer) =>
+							resolve(Array.from(new Uint8Array(buffer)))
+						)
 						.catch(reject);
 				}, 'image/png');
 			};
@@ -108,7 +111,8 @@ export const useMorphRaster = (
 
 			for (let index = 0; index < frameCount; index += 1) {
 				statusText.value = 'Rendering morph background...';
-				const timeMs = (state.generator.morphDuration / frameCount) * index;
+				const timeMs =
+					(state.generator.morphDuration / frameCount) * index;
 				const frame = await renderMorphSvgBytes(timeMs);
 				frames.push(frame.map((byte) => Number(byte)));
 				await new Promise((resolve) => window.setTimeout(resolve, 0));
@@ -130,7 +134,8 @@ export const useMorphRaster = (
 			);
 		} catch (error: unknown) {
 			runningCommand.value = null;
-			statusText.value = error instanceof Error ? error.message : String(error);
+			statusText.value =
+				error instanceof Error ? error.message : String(error);
 		}
 	};
 

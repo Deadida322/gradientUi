@@ -1,10 +1,7 @@
 import type { CreatedDesignTokens } from '@gradient-ui/gradient-engine/design-tokens';
 import { gradientPaintFromModel } from './figmaGradient';
 import { createModelFromGeneratorSettings } from './generatorModel';
-import {
-	GENERATOR_PLUGIN_DATA_KEY,
-	setGradientRelaunchData
-} from './relaunch';
+import { GENERATOR_PLUGIN_DATA_KEY, setGradientRelaunchData } from './relaunch';
 import type { GeneratorSettings } from './protocol';
 
 const canSetFills = (node: SceneNode): node is GeometryMixin & SceneNode =>

@@ -54,7 +54,10 @@ export const usePluginBridge = (
 			}
 
 			if (message.type === 'error') {
-				if (!message.command || message.command === runningCommand.value) {
+				if (
+					!message.command ||
+					message.command === runningCommand.value
+				) {
 					runningCommand.value = null;
 				}
 				statusText.value = message.message;

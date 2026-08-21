@@ -9,7 +9,11 @@ import {
 	type CreatedGradientTokens,
 	type GradientTokenOptions
 } from './tokens';
-import { createSemanticTokens, type ThemeMode, type ThemeTokens } from './scheme';
+import {
+	createSemanticTokens,
+	type ThemeMode,
+	type ThemeTokens
+} from './scheme';
 
 export const DEFAULT_SEED = '#4e51ff';
 
@@ -32,9 +36,8 @@ export interface CreatedDesignTokens {
 	gradientTokens: CreatedGradientTokens;
 }
 
-export const normalizeDesignTokenSeed = (
-	seed: ColorInput = DEFAULT_SEED
-) => colorToHex(seed, DEFAULT_SEED);
+export const normalizeDesignTokenSeed = (seed: ColorInput = DEFAULT_SEED) =>
+	colorToHex(seed, DEFAULT_SEED);
 
 export const createDesignTokens = (
 	options: DesignTokenOptions = {}
