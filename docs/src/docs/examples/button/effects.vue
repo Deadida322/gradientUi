@@ -28,7 +28,7 @@
 				variant="tonal"
 				color="cyan"
 				texture="noise" />
-			<span class="docs-component-detail__badge">0.5.0 RC</span>
+			<span class="docs-component-detail__badge">0.5.0</span>
 		</span>
 	</div>
 </template>

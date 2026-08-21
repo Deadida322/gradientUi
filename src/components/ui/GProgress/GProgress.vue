@@ -30,11 +30,14 @@
 			((index + 1) / segmentCount.value) * 100
 		}%`
 	});
-	const progressStyles = computed(() => ({
-		...gradientStyles.value,
+	const progressValueStyles = computed(() => ({
 		'--g-progress-value': percentage.value,
 		'--g-progress-track-width': computedWidth.value
 	}));
+	const progressStyles = computed(() => [
+		gradientStyles.value,
+		progressValueStyles.value
+	]);
 	const observeParentWidth = () => {
 		observer = new ResizeObserver((entries) => {
 			for (const entry of entries) {

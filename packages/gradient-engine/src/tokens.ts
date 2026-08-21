@@ -8,6 +8,7 @@ import {
 import { changeTone, getComplementaryColor, shiftHue } from './colorMath';
 import {
 	createGradientMorphBlobs,
+	resolveGradientMorphBlendMode,
 	toGradientMorphFilter,
 	toGradientMorphFilterMarkup
 } from './effects/morph';
@@ -24,6 +25,7 @@ import {
 } from './presets';
 import type {
 	GradientAnimationOptions,
+	GradientMorphBlendMode,
 	GradientMorphBlob,
 	GradientMorphOptions,
 	GradientModel,
@@ -61,6 +63,8 @@ export interface GradientEffectTokenEntry {
 		value: string;
 		cssVar: string;
 		svg: string;
+		blendMode: GradientMorphBlendMode;
+		blendModeCssVar: string;
 	};
 }
 
@@ -134,6 +138,9 @@ export interface CreatedGradientMaterial {
 }
 
 const DEFAULT_TOKEN_RECIPES = ['glare', 'soft', 'mesh'] as const;
+const DEFAULT_MATERIAL_CACHE_LIMIT = 128;
+let materialCacheLimit = DEFAULT_MATERIAL_CACHE_LIMIT;
+const materialCache = new Map<string, CreatedGradientMaterial>();
 
 const toKebabCase = (value: string) =>
 	value.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
@@ -181,6 +188,59 @@ const hashString = (value: string) => {
 
 	return (hash >>> 0).toString(36);
 };
+
+const getMaterialCacheKey = (
+	seed: ColorInput,
+	options: GradientMaterialOptions
+) => stableSerialize({ options, seed });
+
+const getCachedMaterial = (key: string) => {
+	const cachedMaterial = materialCache.get(key);
+
+	if (!cachedMaterial) return undefined;
+
+	materialCache.delete(key);
+	materialCache.set(key, cachedMaterial);
+
+	return cachedMaterial;
+};
+
+const setCachedMaterial = (key: string, material: CreatedGradientMaterial) => {
+	if (materialCacheLimit <= 0) return material;
+
+	materialCache.set(key, material);
+
+	while (materialCache.size > materialCacheLimit) {
+		const oldestKey = materialCache.keys().next().value;
+
+		if (oldestKey === undefined) break;
+
+		materialCache.delete(oldestKey);
+	}
+
+	return material;
+};
+
+export const clearGradientMaterialCache = () => {
+	materialCache.clear();
+};
+
+export const setGradientMaterialCacheLimit = (limit: number) => {
+	materialCacheLimit = Math.max(0, Math.floor(limit));
+
+	while (materialCache.size > materialCacheLimit) {
+		const oldestKey = materialCache.keys().next().value;
+
+		if (oldestKey === undefined) break;
+
+		materialCache.delete(oldestKey);
+	}
+};
+
+export const getGradientMaterialCacheStats = () => ({
+	limit: materialCacheLimit,
+	size: materialCache.size
+});
 
 const toScopedCssText = (
 	className: string,
@@ -312,6 +372,9 @@ const createTokenEffectEntry = (
 ): GradientEffectTokenEntry => {
 	if (!model) return {};
 	const morphId = `${cssVarName.replace(/^--/, '')}-morph`;
+	const morphBlendMode = resolveGradientMorphBlendMode(
+		options?.morph?.blendMode
+	);
 	const morphOptions = {
 		...options?.morph,
 		id: options?.morph?.id ?? morphId
@@ -330,6 +393,8 @@ const createTokenEffectEntry = (
 			)
 		},
 		morph: {
+			blendMode: morphBlendMode,
+			blendModeCssVar: `${cssVarName}-morph-blend-mode`,
 			cssVar: `${cssVarName}-morph`,
 			svg: toGradientMorphFilterMarkup(morphOptions),
 			value: toGradientMorphFilter(morphOptions)
@@ -410,6 +475,7 @@ export const createGradientPreset = (
 
 	if (effects?.morph) {
 		cssVars[effects.morph.cssVar] = effects.morph.value;
+		cssVars[effects.morph.blendModeCssVar] = effects.morph.blendMode;
 	}
 
 	if (animation) {
@@ -476,6 +542,11 @@ export const createGradientMaterial = (
 	seed: ColorInput,
 	options: GradientMaterialOptions = {}
 ): CreatedGradientMaterial => {
+	const cacheKey = getMaterialCacheKey(seed, options);
+	const cachedMaterial = getCachedMaterial(cacheKey);
+
+	if (cachedMaterial) return cachedMaterial;
+
 	const { className, id, recipe = 'glare', ...presetOptions } = options;
 	const preset = createGradientPreset(seed, recipe, presetOptions);
 	const morphBlobs =
@@ -504,7 +575,7 @@ export const createGradientMaterial = (
 		style.animation = `var(${preset.animation.cssVar})`;
 	}
 
-	return {
+	return setCachedMaterial(cacheKey, {
 		animation: preset.animation,
 		className: stableClassName,
 		cssText: toScopedCssText(
@@ -521,5 +592,5 @@ export const createGradientMaterial = (
 		morphBlobs,
 		preset,
 		style
-	};
+	});
 };

@@ -4,6 +4,7 @@ import type {
 	GradientAnimationOptions,
 	GradientMorphBlob,
 	GradientMorphOptions,
+	GradientMaterialOptions,
 	GradientShadowOptions,
 	GradientTokenRecipe
 } from '@/theme';
@@ -66,6 +67,7 @@ export interface UseMaterialOptions {
 	dropShadow?: MaybeRefOrGetter<GradientShadowOptions | undefined>;
 	animation?: MaybeRefOrGetter<GradientAnimationOptions | undefined>;
 	morph?: MaybeRefOrGetter<boolean | GradientMorphOptions | undefined>;
+	options?: MaybeRefOrGetter<GradientMaterialOptions | undefined>;
 	borderRadius?: MaybeRefOrGetter<StringeredNumber | undefined>;
 	padding?: MaybeRefOrGetter<StringeredNumber | undefined>;
 }
@@ -169,7 +171,8 @@ export const useMaterial = (options: UseMaterialOptions = {}) => {
 		shadow: () => toValue(options.shadow),
 		dropShadow: () => toValue(options.dropShadow),
 		animation: () => toValue(options.animation),
-		morph: morphOptions
+		morph: morphOptions,
+		options: () => toValue(options.options)
 	});
 	const { morphBlobs, morphEnabled } = useGradientRuntime({
 		enabled: () => Boolean(hasAnimations.value || hasMorph.value),
@@ -177,11 +180,21 @@ export const useMaterial = (options: UseMaterialOptions = {}) => {
 		morph: hasMorph
 	});
 	const materialClasses = computed(() => [`${baseClass.value}_surface`]);
-	const materialStyles = computed<CSSProperties>(() => ({
-		...gradientMaterialStyles.value,
-		'--g-gradient-material-radius': borderRadius.value,
-		'--g-gradient-material-padding': padding.value
-	}));
+	const materialStyles = computed<CSSProperties | undefined>(() => {
+		const styles: CSSProperties = {
+			...(gradientMaterialStyles.value ?? {})
+		};
+
+		if (borderRadius.value) {
+			styles['--g-gradient-material-radius'] = borderRadius.value;
+		}
+
+		if (padding.value) {
+			styles['--g-gradient-material-padding'] = padding.value;
+		}
+
+		return Object.keys(styles).length ? styles : undefined;
+	});
 
 	return {
 		getMorphBlobStyle,

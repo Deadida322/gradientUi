@@ -1,0 +1,32 @@
+{
+	"extends": "../../tsconfig.node.json",
+	"include": [
+		"src/figmaColor.ts",
+		"src/figmaGradient.ts",
+		"src/generatorModel.ts",
+		"src/glowArtwork.ts",
+		"src/main.ts",
+		"src/morphArtwork.ts",
+		"src/paintStyles.ts",
+		"src/preview.ts",
+		"src/protocol.ts",
+		"src/selection.ts",
+		"src/settings.ts",
+		"src/types/canvas.d.ts",
+		"src/tokenFactory.ts",
+		"src/tokenNames.ts",
+		"src/variables.ts"
+	],
+	"compilerOptions": {
+		"composite": false,
+		"declaration": false,
+		"emitDeclarationOnly": false,
+		"lib": ["ES2020"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noEmit": true,
+		"strict": true,
+		"target": "ES2020",
+		"types": ["@figma/plugin-typings"]
+	}
+}

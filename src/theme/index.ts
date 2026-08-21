@@ -22,11 +22,11 @@ export {
 } from './palette';
 
 // Gradients
-export * as gradientAnimation from './gradient/animation';
-export * as gradientCore from './gradient/core';
-export * as gradientEffects from './gradient/effects';
-export * as gradientFormatters from './gradient/formatters';
-export * as gradientMaterial from './gradient/material';
+export * as gradientAnimation from '@gradient-ui/gradient-engine/animation';
+export * as gradientCore from '@gradient-ui/gradient-engine/core';
+export * as gradientEffects from '@gradient-ui/gradient-engine/effects';
+export * as gradientFormatters from '@gradient-ui/gradient-engine/formatters';
+export * as gradientMaterial from '@gradient-ui/gradient-engine/material';
 export {
 	createGradient,
 	createGradientModel,
@@ -36,10 +36,14 @@ export {
 	createGradientPreset,
 	createGradientTokens,
 	createLinearGradient,
+	DEFAULT_GRADIENT_MORPH_BLEND_MODE,
 	defineGradientPreset,
 	defineGradientPresetRegistry,
 	getGradientPreset,
+	GRADIENT_MORPH_BLEND_MODES,
 	gradientPresets,
+	isGradientMorphBlendMode,
+	resolveGradientMorphBlendMode,
 	toCssGradient,
 	toGradientAnimationCSS,
 	toGradientBoxShadow,
@@ -65,6 +69,7 @@ export {
 	type GradientModel,
 	type GradientMaterialOptions,
 	type GradientMorphBlob,
+	type GradientMorphBlendMode,
 	type GradientMorphOptions,
 	type GradientMorphPreset,
 	type GradientOptions,
@@ -82,7 +87,7 @@ export {
 	type SvgGradientOptions,
 	type SvgPathAnimationOptions,
 	type SvgSourceAnimationOptions
-} from './gradient';
+} from '@gradient-ui/gradient-engine';
 
 // Generated token systems
 export {

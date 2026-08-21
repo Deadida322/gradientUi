@@ -1,0 +1,16 @@
+{
+	"name": "Gradient UI Tokens",
+	"id": "gradient-ui-tokens",
+	"api": "1.0.0",
+	"main": "dist/code.js",
+	"ui": "dist/ui.html",
+	"editorType": ["figma"],
+	"documentAccess": "dynamic-page",
+	"relaunchButtons": [
+		{
+			"command": "open-generator",
+			"name": "Open Gradient UI generator",
+			"multipleSelection": true
+		}
+	]
+}

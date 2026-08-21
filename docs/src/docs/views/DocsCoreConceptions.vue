@@ -248,7 +248,7 @@ const material = gradientMaterial.createGradientTokens('#704bfd', {
 
 			<div class="docs-core__actions">
 				<g-button
-					label="filled action"
+					label="Default action"
 					gradient-recipe="analogous" />
 				<g-button
 					label="Tonal action"

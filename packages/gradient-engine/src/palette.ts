@@ -11,6 +11,10 @@ export const COLOR_SHADES = [
 
 export type ColorShade = (typeof COLOR_SHADES)[number];
 export type ColorPalette = Record<ColorShade, string>;
+export interface ColorPalettePair {
+	colors: ColorPalette;
+	onColors: ColorPalette;
+}
 
 export const SHADE_TONES: Record<ColorShade, number> = {
 	50: 90,
@@ -25,18 +29,35 @@ export const SHADE_TONES: Record<ColorShade, number> = {
 	900: 10
 };
 
+export const ON_SHADE_TONES: Record<ColorShade, number> = Object.fromEntries(
+	COLOR_SHADES.map((shade) => [shade, SHADE_TONES[shade] >= 60 ? 10 : 100])
+) as Record<ColorShade, number>;
+
 const createTonalPalette = (seed: ColorInput) => {
 	const hex = colorToHex(seed, '#000000');
 	return themeFromSourceColor(argbFromHex(hex)).palettes.primary;
 };
 
-export const createPalette = (seed: ColorInput): ColorPalette => {
+const createPaletteFromTones = (
+	seed: ColorInput,
+	tones: Record<ColorShade, number>
+) => {
 	const tonalPalette = createTonalPalette(seed);
-
 	return Object.fromEntries(
 		COLOR_SHADES.map((shade) => [
 			shade,
-			hexFromArgb(tonalPalette.tone(SHADE_TONES[shade]))
+			hexFromArgb(tonalPalette.tone(tones[shade]))
 		])
 	) as ColorPalette;
 };
+
+export const createPalette = (seed: ColorInput): ColorPalette =>
+	createPaletteFromTones(seed, SHADE_TONES);
+
+export const createOnPalette = (seed: ColorInput): ColorPalette =>
+	createPaletteFromTones(seed, ON_SHADE_TONES);
+
+export const createPalettePair = (seed: ColorInput): ColorPalettePair => ({
+	colors: createPalette(seed),
+	onColors: createOnPalette(seed)
+});

@@ -5,16 +5,13 @@ import type {
 	GradientShadowOptions,
 	GradientTokenRecipe
 } from '@/theme';
-import { computed, type CSSProperties } from 'vue';
+import { computed } from 'vue';
 import type { GColor } from './color';
 import { makeGlassProps, useGlass, type GlassProps } from './glass';
 import { makeGradientProps, type GGlow } from './gradient';
 import type { Placement, StringeredNumber } from '@/types/CommonTypes';
-import {
-	makeMaterialProps,
-	useMaterial,
-	type UseMaterialOptions
-} from './material';
+import { makeMaterialProps, type UseMaterialOptions } from './material';
+import { useSurfaceMaterial } from './surfaceMaterial';
 import { useSurfaceLayers } from './surface';
 import { useSurfaceColor } from './surfaceColor';
 import { propsFactory } from '@/utils/propsFactory';
@@ -57,33 +54,19 @@ export const useMaterialSurface = (
 	const { colorStyles, resolvedColor, resolvedState } =
 		useSurfaceColor(props);
 	const { glassStyles } = useGlass(props);
-	const material = useMaterial({
+	const material = useSurfaceMaterial(props, {
 		baseClass,
 		color: resolvedColor,
 		state: resolvedState,
 		kind: options.kind ?? 'surface',
-		recipe: () => props.gradientRecipe,
-		effects: () =>
-			Boolean(
-				props.variant === 'gradient' ||
-				props.shadow ||
-				props.dropShadow ||
-				props.shadowOptions ||
-				props.dropShadowOptions ||
-				props.morph ||
-				props.morphOptions
-			),
-		animations: () => Boolean(props.animationOptions),
-		shadow: () => props.shadowOptions,
-		dropShadow: () => props.dropShadowOptions,
-		animation: () => props.animationOptions,
-		morph: () => props.morphOptions ?? props.morph
+		variant: () => props.variant,
+		morphScope: 'always'
 	});
-	const surfaceStyles = computed<CSSProperties>(() => ({
-		...colorStyles.value,
-		...material.materialStyles.value,
-		...glassStyles.value
-	}));
+	const surfaceStyles = computed(() => [
+		colorStyles.value,
+		material.materialStyles.value,
+		props.variant === 'glass' ? glassStyles.value : undefined
+	]);
 	const materialFrameProps = computed(() => ({
 		animateGlow: props.animateGlow,
 		borderRadius: props.borderRadius,

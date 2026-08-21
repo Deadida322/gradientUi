@@ -1,1 +1,1 @@
-export * from './gradient/index';
+export * from '@gradient-ui/gradient-engine';

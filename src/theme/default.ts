@@ -1,9 +1,11 @@
-import { colorToHex } from './color';
-import { createColorSystem } from './colorSystem';
 import { applyTokensToCSS } from './cssTokens';
-import { createSemanticTokens } from './scheme';
 import type { ThemeColorExtensions, ThemeMode, ThemeTokens } from './types';
 import type { ColorInput } from '@/types/Colors';
+import {
+	DEFAULT_SEED,
+	createDesignTokens,
+	normalizeDesignTokenSeed
+} from '@gradient-ui/gradient-engine';
 import {
 	inject,
 	provide,
@@ -15,7 +17,7 @@ import {
 	type ShallowRef
 } from 'vue';
 
-export const DEFAULT_SEED = '#4e51ff';
+export { DEFAULT_SEED };
 
 export interface SeedTheme {
 	seedColor: ColorInput;
@@ -59,8 +61,6 @@ const THEME_CLASS = 'g-theme--material';
 const MODE_CLASS_PREFIX = 'g-theme--';
 const ThemeSymbol: InjectionKey<GradientUITheme> = Symbol('gradient-theme');
 
-const normalizeSeed = (seed: ColorInput) => colorToHex(seed, DEFAULT_SEED);
-
 const createTokenStyle = (tokens: ThemeTokens, prefix: string) =>
 	applyTokensToCSS(tokens, {
 		className: THEME_CLASS,
@@ -91,15 +91,12 @@ export const createDefaultTheme = (
 	);
 	root.classList.add(`${MODE_CLASS_PREFIX}${mode}`);
 
-	const normalizedSeed = normalizeSeed(seed);
-	const colorSystem = createColorSystem(normalizedSeed, {
-		colors: options.colors
+	const generated = createDesignTokens({
+		colors: options.colors,
+		mode,
+		seed: normalizeDesignTokenSeed(seed)
 	});
-	const tokens = {
-		theme: createSemanticTokens(normalizedSeed, mode),
-		colors: colorSystem.colors,
-		gradients: colorSystem.gradients
-	};
+	const { tokens } = generated;
 
 	return {
 		tokens,
