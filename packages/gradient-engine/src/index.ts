@@ -1,7 +1,11 @@
 export * from './core';
 export * from './color';
+export * from './colorSeeds';
+export * from './colorSystem';
 export * from './palette';
+export * from './scheme';
 export * from './formatters';
 export * from './effects';
 export { toGradientAnimationCSS } from './animation';
 export * from './material';
+export * from './designTokens';

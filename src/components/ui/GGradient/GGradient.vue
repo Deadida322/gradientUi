@@ -8,7 +8,9 @@
 	const instanceId = useId().replaceAll(':', '');
 	const borderMaskId = `g-gradient-border-${instanceId}`;
 	const glowMaskId = `g-gradient-glow-${instanceId}`;
-	const hasBorder = computed(() => Number(props.borderWidth) > 0);
+	const hasBorder = computed(
+		() => Number.parseFloat(String(props.borderWidth)) > 0
+	);
 	const showGlow = computed(
 		() => hasBorder.value && Boolean(props.glow || props.animateGlow)
 	);

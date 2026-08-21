@@ -12,7 +12,7 @@ import {
 import { useSurfaceColor } from './surfaceColor';
 import type { GColor } from './color';
 import { type GVariant } from './variant';
-import { useMaterial } from './material';
+import { useSurfaceMaterial } from './surfaceMaterial';
 import type {
 	GradientAnimationOptions,
 	GradientMorphOptions,
@@ -89,28 +89,44 @@ export function useActionSurface(
 			? props.activeVariant
 			: props.variant
 	);
+	const hasMaterialSurface = computed(
+		() => resolvedVariant.value === 'gradient'
+	);
+	const hasSurfaceUnderlay = computed(() =>
+		Boolean(
+			resolvedVariant.value === 'default' ||
+			resolvedVariant.value === 'tonal' ||
+			hasMaterialSurface.value
+		)
+	);
+	const hasSurfaceOverlay = computed(() =>
+		Boolean(
+			!props.disabled ||
+			isActive.value ||
+			isSelected.value ||
+			toValue(options.focused)
+		)
+	);
+	const hasSurfaceTexture = computed(
+		() => props.texture !== undefined && props.texture !== 'none'
+	);
 	const {
 		getMorphBlobStyle,
 		gradientMaterial,
 		materialStyles: gradientMaterialStyles,
 		morphBlobs,
 		morphEnabled
-	} = useMaterial({
+	} = useSurfaceMaterial(props, {
 		color: resolvedColor,
+		variant: resolvedVariant,
 		kind: 'action',
-		recipe: () => props.gradientRecipe,
-		effects: () => resolvedVariant.value === 'gradient',
-		animations: () => Boolean(props.animationOptions),
-		shadow: () => props.shadowOptions,
-		dropShadow: () => props.dropShadowOptions,
-		animation: () => props.animationOptions,
-		morph: () => props.morphOptions ?? props.morph
+		morphScope: 'always'
 	});
-	const surfaceStyles = computed(() => ({
-		...colorStyles.value,
-		...gradientMaterialStyles.value,
-		...glassStyles.value
-	}));
+	const surfaceStyles = computed(() => [
+		colorStyles.value,
+		gradientMaterialStyles.value,
+		resolvedVariant.value === 'glass' ? glassStyles.value : undefined
+	]);
 	const actionSurfaceClasses = computed(() => {
 		const isFocused = Boolean(toValue(options.focused));
 		const animationPreset = props.animationOptions?.preset;
@@ -133,6 +149,9 @@ export function useActionSurface(
 		actionSurfaceClasses,
 		getMorphBlobStyle,
 		gradientMaterial,
+		hasSurfaceOverlay,
+		hasSurfaceTexture,
+		hasSurfaceUnderlay,
 		morphBlobs,
 		morphEnabled,
 		resolvedColor,

@@ -9,6 +9,13 @@ export interface RgbColor {
 const clamp = (value: number, min = 0, max = 1) =>
 	Math.min(max, Math.max(min, value));
 
+const toLinear = (value: number) => {
+	const channel = value / 255;
+	return channel <= 0.04045
+		? channel / 12.92
+		: ((channel + 0.055) / 1.055) ** 2.4;
+};
+
 const parseHex = (value: string): RgbColor | null => {
 	const hex = value.slice(1);
 	const normalized =
@@ -79,4 +86,21 @@ export const colorToHex = (input: ColorInput, fallback: string) => {
 	}
 
 	return rgbToHex(color);
+};
+
+const relativeLuminance = (color: RgbColor) =>
+	0.2126 * toLinear(color.r) +
+	0.7152 * toLinear(color.g) +
+	0.0722 * toLinear(color.b);
+
+export const getContrastingColor = (color: ColorInput) => {
+	const parsed = parseColor(color);
+
+	if (!parsed) return '#ffffff';
+
+	const luminance = relativeLuminance(parsed);
+	const whiteContrast = 1.05 / (luminance + 0.05);
+	const darkContrast = (luminance + 0.05) / 0.055;
+
+	return whiteContrast >= darkContrast ? '#ffffff' : '#0d0d12';
 };

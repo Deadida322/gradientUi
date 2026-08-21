@@ -1,6 +1,6 @@
-# Gradient UI 0.5 RC
+# Gradient UI 0.5.0
 
-This release candidate introduces the new color, material and gradient
+This stable release introduces the new color, material and gradient
 architecture.
 
 ## Highlights

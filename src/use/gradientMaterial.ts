@@ -1,5 +1,6 @@
 import {
 	COLOR_SHADES,
+	DEFAULT_GRADIENT_MORPH_BLEND_MODE,
 	createGradientMaterial,
 	createPalette,
 	type CreatedGradientMaterial,
@@ -193,7 +194,8 @@ const getGradientForeground = (
 const createFallbackVars = (
 	color: GColor | GGradienStates | undefined,
 	effects: boolean,
-	animations: boolean
+	animations: boolean,
+	morphOptions?: GradientMorphOptions
 ): CSSProperties =>
 	({
 		'--g-gradient-material-background': resolveGradientValue(color),
@@ -202,6 +204,8 @@ const createFallbackVars = (
 		'--g-gradient-material-shadow': effects ? DEFAULT_SHADOW : EMPTY_SHADOW,
 		'--g-gradient-material-drop-shadow': EMPTY_FILTER,
 		'--g-gradient-material-filter': EMPTY_FILTER,
+		'--g-gradient-material-morph-blend-mode':
+			morphOptions?.blendMode ?? DEFAULT_GRADIENT_MORPH_BLEND_MODE,
 		'--g-gradient-material-animation': animations
 			? 'var(--g-gradient-animation, none)'
 			: EMPTY_ANIMATION,
@@ -215,7 +219,8 @@ const createMaterialVars = (
 	material: CreatedGradientMaterial,
 	effects: boolean,
 	animations: boolean,
-	color: GColor | GGradienStates | undefined
+	color: GColor | GGradienStates | undefined,
+	morphOptions?: GradientMorphOptions
 ): CSSProperties => {
 	const shadow = material.effects?.boxShadow?.cssVar;
 	const dropShadow = material.effects?.dropShadow?.cssVar;
@@ -240,6 +245,11 @@ const createMaterialVars = (
 				: effects && dropShadow
 					? `var(${dropShadow})`
 					: EMPTY_FILTER,
+		'--g-gradient-material-morph-blend-mode':
+			effects && material.effects?.morph?.blendModeCssVar
+				? `var(${material.effects.morph.blendModeCssVar})`
+				: (morphOptions?.blendMode ??
+					DEFAULT_GRADIENT_MORPH_BLEND_MODE),
 		'--g-gradient-material-animation':
 			animations && animation ? `var(${animation})` : EMPTY_ANIMATION,
 		'--g-gradient-current': 'var(--g-gradient-material-background)',
@@ -257,6 +267,17 @@ export const useGradientMaterial = (
 	const effects = computed(() => Boolean(toValue(options.effects)));
 	const animations = computed(() => Boolean(toValue(options.animations)));
 	const resolvedColor = computed(() => toValue(options.color));
+	const recipe = computed(() => toValue(options.recipe));
+	const morph = computed(() => toValue(options.morph));
+	const shouldGenerateMaterial = computed(() =>
+		Boolean(
+			effects.value ||
+			animations.value ||
+			recipe.value ||
+			morph.value ||
+			toValue(options.options)
+		)
+	);
 	const materialSeed = computed(() =>
 		resolveMaterialSeed(
 			resolvedColor.value,
@@ -264,6 +285,8 @@ export const useGradientMaterial = (
 		)
 	);
 	const material = computed<CreatedGradientMaterial | null>(() => {
+		if (!shouldGenerateMaterial.value) return null;
+
 		const seed = materialSeed.value;
 
 		if (!seed) return null;
@@ -274,20 +297,22 @@ export const useGradientMaterial = (
 			animations: animations.value,
 			dropShadow: toValue(options.dropShadow),
 			effects: effects.value,
-			morph: toValue(options.morph),
-			recipe:
-				toValue(options.recipe) ?? MATERIAL_RECIPE_BY_KIND[kind.value],
+			morph: morph.value,
+			recipe: recipe.value ?? MATERIAL_RECIPE_BY_KIND[kind.value],
 			shadow: toValue(options.shadow)
 		});
 	});
-	const gradientMaterialStyles = computed<CSSProperties>(() => {
+	const gradientMaterialStyles = computed<CSSProperties | undefined>(() => {
 		const generatedMaterial = material.value;
 
 		if (!generatedMaterial) {
+			if (!shouldGenerateMaterial.value) return undefined;
+
 			return createFallbackVars(
 				resolvedColor.value,
 				effects.value,
-				animations.value
+				animations.value,
+				morph.value
 			);
 		}
 
@@ -295,7 +320,8 @@ export const useGradientMaterial = (
 			generatedMaterial,
 			effects.value,
 			animations.value,
-			resolvedColor.value
+			resolvedColor.value,
+			morph.value
 		);
 	});
 

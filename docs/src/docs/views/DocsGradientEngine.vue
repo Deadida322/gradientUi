@@ -341,6 +341,13 @@ const criticalCss = surfaceMaterial.cssText;`;
 				'Morph motion and filter profile for gooey animated backgrounds.'
 		},
 		{
+			name: 'blendMode',
+			type: 'GradientMorphBlendMode',
+			defaultValue: 'hard-light',
+			description:
+				'CSS mix-blend-mode used by generated morph layers and mapped to Figma blend modes in the plugin.'
+		},
+		{
 			name: 'blobCount',
 			type: 'number',
 			defaultValue: 'preset',

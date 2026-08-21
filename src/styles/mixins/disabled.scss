@@ -4,7 +4,9 @@
 			pointer-events: none;
 			opacity: var(--g-token-opacity-soft);
 		}
-	} @else {
+	}
+
+ @else {
 		pointer-events: none;
 		opacity: var(--g-token-opacity-soft);
 	}

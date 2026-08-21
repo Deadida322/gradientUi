@@ -11,9 +11,9 @@ The npm package is published as `@gradient-ui/core`.
 
 Documentation: https://gradient-ui-docs.netlify.app/docs/get-started
 
-## 0.5 RC
+## 0.5.0
 
-Gradient UI `0.5` is the release-candidate line for the new color and gradient
+Gradient UI `0.5.0` is the stable release for the new color and gradient
 architecture.
 
 - The standalone `@gradient-ui/gradient-engine` package powers gradient
@@ -25,10 +25,10 @@ architecture.
   still resolve semantic colors such as `primary`, `error`, `warning` and
   `success`.
 
-Install the RC when validating the next version:
+Install the stable package:
 
 ```bash
-npm install @gradient-ui/core@rc
+npm install @gradient-ui/core
 ```
 
 The gradient engine can also be installed independently:

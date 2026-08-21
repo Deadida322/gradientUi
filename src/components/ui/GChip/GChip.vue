@@ -29,6 +29,9 @@
 		surfaceUnderlayClasses,
 		surfaceTextureClasses,
 		surfaceContentClasses,
+		hasSurfaceOverlay,
+		hasSurfaceTexture,
+		hasSurfaceUnderlay,
 		morphBlobs,
 		morphEnabled,
 		getMorphBlobStyle
@@ -48,7 +51,9 @@
 			class="g-chip"
 			:class="actionSurfaceClasses"
 			:style="surfaceStyles">
-			<span :class="surfaceUnderlayClasses"></span>
+			<span
+				v-if="hasSurfaceUnderlay"
+				:class="surfaceUnderlayClasses"></span>
 			<span
 				v-if="morphEnabled"
 				:class="surfaceMaterialMorphClasses"
@@ -59,8 +64,12 @@
 					:class="surfaceMaterialMorphBlobClasses"
 					:style="getMorphBlobStyle(blob)"></span>
 			</span>
-			<span :class="surfaceOverlayClasses"></span>
-			<span :class="surfaceTextureClasses"></span>
+			<span
+				v-if="hasSurfaceOverlay"
+				:class="surfaceOverlayClasses"></span>
+			<span
+				v-if="hasSurfaceTexture"
+				:class="surfaceTextureClasses"></span>
 			<div
 				class="g-chip__content"
 				:class="surfaceContentClasses">

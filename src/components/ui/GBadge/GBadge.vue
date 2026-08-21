@@ -47,11 +47,11 @@
 			animation: () => props.animationOptions,
 			morph: () => props.morphOptions ?? props.morph
 		});
-	const badgeSurfaceStyles = computed(() => ({
-		...colorStyles.value,
-		...materialStyles.value,
-		...glassStyles.value
-	}));
+	const badgeSurfaceStyles = computed(() => [
+		colorStyles.value,
+		materialStyles.value,
+		normalizedVariant.value === 'glass' ? glassStyles.value : undefined
+	]);
 	const badgeFrameProps = computed(() => ({
 		animateGlow: props.animateGlow,
 		borderRadius: props.borderRadius,

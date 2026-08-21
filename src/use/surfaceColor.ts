@@ -43,13 +43,16 @@ export function useSurfaceColor(props: SurfaceColorProps) {
 	});
 	const { colorStyles } = useColor({ color: resolvedColor });
 	const resolvedGradient = useResolveGradientValue(resolvedColor);
-	const gradientStyles = computed<CSSProperties>(
+	const gradientCurrentStyles = computed<CSSProperties>(
 		() =>
 			({
-				...colorStyles.value,
 				'--g-gradient-current': resolvedGradient.value
 			}) as CSSProperties
 	);
+	const gradientStyles = computed(() => [
+		colorStyles.value,
+		gradientCurrentStyles.value
+	]);
 
 	return {
 		resolvedColor,
@@ -57,6 +60,7 @@ export function useSurfaceColor(props: SurfaceColorProps) {
 		resolvedGradient,
 		colorStyles,
 		surfaceColorStyles: colorStyles,
+		gradientCurrentStyles,
 		gradientStyles
 	};
 }

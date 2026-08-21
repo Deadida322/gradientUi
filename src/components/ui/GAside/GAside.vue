@@ -39,11 +39,9 @@
 		color: () => resolvedActiveColor.value
 	});
 	const { glassStyles } = useGlass(props);
-	const asideStyles = computed(
+	const asideLayoutStyles = computed(
 		() =>
 			({
-				...colorStyles.value,
-				...glassStyles.value,
 				'--g-aside-active-gradient': resolvedGradient.value,
 				'--g-aside-top': toUnit(props.top, '88px'),
 				'--g-aside-offset': toUnit(props.offset, '24px'),
@@ -51,6 +49,11 @@
 				'--g-aside-radius': toUnit(props.radius, '28px')
 			}) as Record<string, string>
 	);
+	const asideStyles = computed(() => [
+		colorStyles.value,
+		glassStyles.value,
+		asideLayoutStyles.value
+	]);
 	const asideClasses = computed(() => ({
 		[`g-aside_${props.placement}`]: true,
 		[`g-aside_align-${props.align}`]: true,

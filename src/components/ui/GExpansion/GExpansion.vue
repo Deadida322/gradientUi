@@ -12,7 +12,7 @@
 	import { useVariant } from '@/use/variant';
 	import { createComponentId } from '@/utils/createComponentId';
 	import { useGlass } from '@/use/glass';
-	import { useMaterial } from '@/use/material';
+	import { useSurfaceMaterial } from '@/use/surfaceMaterial';
 	import {
 		makeExpansionProps,
 		type GExpansionEmits,
@@ -112,28 +112,14 @@
 		activeState: () => props.activeState
 	});
 	const { glassStyles } = useGlass(props);
+	const hasMaterialSurface = computed(() => props.variant === 'gradient');
 	const { getMorphBlobStyle, materialStyles, morphBlobs, morphEnabled } =
-		useMaterial({
+		useSurfaceMaterial(props, {
 			baseClass: 'g-expansion',
 			color: resolvedColor,
 			state: resolvedState,
 			kind: 'surface',
-			recipe: () => props.gradientRecipe,
-			effects: () =>
-				Boolean(
-					props.variant === 'gradient' ||
-					props.shadow ||
-					props.dropShadow ||
-					props.shadowOptions ||
-					props.dropShadowOptions ||
-					props.morph ||
-					props.morphOptions
-				),
-			animations: () => Boolean(props.animationOptions),
-			shadow: () => props.shadowOptions,
-			dropShadow: () => props.dropShadowOptions,
-			animation: () => props.animationOptions,
-			morph: () => props.morphOptions ?? props.morph
+			variant: () => props.variant
 		});
 	const stateClass = computed(() =>
 		resolvedState.value ? `g-expansion_state-${resolvedState.value}` : ''
@@ -169,39 +155,49 @@
 			? props.activeAnimateGlow
 			: props.animateGlow
 	);
-	const resolvedGradientShadow = computed(() =>
-		expanded.value && props.activeShadow !== undefined
-			? props.activeShadow
-			: props.shadow
-	);
 	const resolvedGradientPlacement = computed(() =>
 		expanded.value && props.activePlacement !== undefined
 			? props.activePlacement
 			: props.placement
 	);
+	const hasSurfaceUnderlay = computed(() =>
+		Boolean(
+			props.variant === 'default' ||
+			props.variant === 'tonal' ||
+			hasMaterialSurface.value
+		)
+	);
+	const hasSurfaceOverlay = computed(
+		() => !resolvedDisabled.value && !resolvedReadonly.value
+	);
+	const hasSurfaceTexture = computed(
+		() => props.texture !== undefined && props.texture !== 'none'
+	);
 	const actionIcon = computed(() =>
 		expanded.value ? props.openedIcon : props.closedIcon
 	);
-	const hasGradientSurface = computed(() => {
-		const borderWidth = resolvedGradientBorderWidth.value;
-		const hasBorder =
-			borderWidth !== undefined &&
-			borderWidth !== null &&
-			borderWidth !== '' &&
-			borderWidth !== 0 &&
-			borderWidth !== '0';
-
-		return Boolean(
-			hasBorder ||
-			resolvedGradientGlow.value ||
-			resolvedGradientShadow.value ||
-			resolvedState.value ||
+	const hasBorderValue = (borderWidth: unknown) =>
+		borderWidth !== undefined &&
+		borderWidth !== null &&
+		borderWidth !== '' &&
+		borderWidth !== 0 &&
+		borderWidth !== '0';
+	const hasGradientHost = computed(() =>
+		Boolean(
+			hasBorderValue(props.borderWidth) ||
+			hasBorderValue(props.activeBorderWidth) ||
+			props.variant === 'outlined' ||
+			props.variant === 'glass' ||
+			props.glow ||
+			props.activeGlow !== undefined ||
+			props.shadow ||
+			props.activeShadow !== undefined ||
 			props.animateGlow ||
-			props.activeAnimateGlow
-		);
-	});
+			props.activeAnimateGlow !== undefined
+		)
+	);
 	const gradientSurfaceProps = computed(() =>
-		hasGradientSurface.value
+		hasGradientHost.value
 			? {
 					active: expanded.value,
 					disabled: resolvedDisabled.value,
@@ -271,7 +267,7 @@
 
 <template>
 	<component
-		:is="hasGradientSurface ? GGradient : 'div'"
+		:is="hasGradientHost ? GGradient : 'div'"
 		class="g-expansion__surface"
 		v-bind="gradientSurfaceProps">
 		<article
@@ -284,13 +280,15 @@
 				roundedClass,
 				selectedClass,
 				{
-					'g-expansion_gradient': hasGradientSurface,
+					'g-expansion_has-gradient': hasGradientHost,
 					[`g-expansion_texture-${props.texture}`]:
 						props.texture !== 'none'
 				}
 			]"
 			:style="[colorStyles, materialStyles, glassStyles]">
-			<div :class="surfaceUnderlayClasses"></div>
+			<div
+				v-if="hasSurfaceUnderlay"
+				:class="surfaceUnderlayClasses"></div>
 			<div
 				v-if="morphEnabled"
 				:class="surfaceMaterialMorphClasses"
@@ -301,8 +299,12 @@
 					:class="surfaceMaterialMorphBlobClasses"
 					:style="getMorphBlobStyle(blob)"></div>
 			</div>
-			<div :class="surfaceOverlayClasses"></div>
-			<div :class="surfaceTextureClasses"></div>
+			<div
+				v-if="hasSurfaceOverlay"
+				:class="surfaceOverlayClasses"></div>
+			<div
+				v-if="hasSurfaceTexture"
+				:class="surfaceTextureClasses"></div>
 			<div
 				class="g-expansion__surface-content"
 				:class="surfaceContentClasses">
@@ -394,7 +396,7 @@
 			box-shadow var(--g-token-duration-base)
 				var(--g-token-easing-standard);
 
-		&_gradient {
+		&_has-gradient {
 			box-shadow: none;
 		}
 
