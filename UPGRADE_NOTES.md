@@ -1,6 +1,6 @@
 
 
-# Gradient UI 0.7.0
+# Gradient UI 0.8.0
 
 ### Added
 

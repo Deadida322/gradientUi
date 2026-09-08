@@ -7,9 +7,9 @@ export const docsNextReleaseBadge: DocsReleaseBadgeMeta = {
 };
 
 export const docsUpcomingReleaseBadge: DocsReleaseBadgeMeta = {
-	label: '0.7.0',
+	label: '0.8.0',
 	tone: 'new',
-	title: 'Planned for the next 0.7.0 release.'
+	title: 'Planned for the next 0.8.0 release.'
 };
 
 export const docsTestingBadge: DocsReleaseBadgeMeta = {
