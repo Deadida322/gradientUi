@@ -7,17 +7,15 @@
 		Multiple extends boolean = false,
 		ReturnObject extends boolean = false
 	">
-	import { computed, ref, toRef } from 'vue';
+	import { ref, toRefs } from 'vue';
 	import GFieldBase from '../GFieldBase/GFieldBase.vue';
 	import GDropdown from '../GDropdown/GDropdown.vue';
 	import GMenu from '../GMenu/GMenu.vue';
 	import GIcon from '../GIcon/GIcon.vue';
-	import { useBooleanProp } from '@/use/booleanProp';
-	import { useFormControl } from '@/use/form/control';
-	import { useSelectMenuSlot } from '@/use/select/menuSlot';
+	import { useTextFieldComponent } from '@/use/form/textFieldComponent';
 	import { useSelectController } from '@/use/select/controller';
+	import { useSelectFieldControl } from '@/use/select/fieldControl';
 	import type { SelectionValue } from '@/use/select/types';
-	import { useVisibleProps } from '@/use/visibleProps';
 	import type { GSelectProps, GSelectSlots } from './types';
 
 	type ModelValue = SelectionValue<T, V, Multiple, ReturnObject>;
@@ -28,9 +26,9 @@
 			size: 'm'
 		}
 	);
+	const propsRefs = toRefs(props);
 	const slots = defineSlots<GSelectSlots<T, V>>();
-	const slotNames = ['default', 'prepend', 'append', 'message'] as const;
-	const visibleSlotNames = useVisibleProps(slots, slotNames);
+	const { id, visibleSlotNames } = useTextFieldComponent(slots);
 	const emit = defineEmits<{
 		(e: 'update:modelValue', value: ModelValue): void;
 		(e: 'focus', event: FocusEvent): void;
@@ -38,48 +36,30 @@
 		(e: 'clear'): void;
 	}>();
 
-	const id = `g-select-${Math.random().toString(36).slice(2, 10)}`;
 	const open = ref(false);
 
-	const isMultiple = useBooleanProp(toRef(props, 'multiple'));
 	const {
+		isMultiple,
 		menuItems,
-		resolveMenuItem,
+		getSlotItem,
 		isMenuItemSelected,
 		handleSelect,
 		selectedItems,
 		hasSelection,
 		selectionText
 	} = useSelectController<T, V, Multiple, ReturnObject>(
-		{
-			items: toRef(props, 'items'),
-			modelValue: toRef(props, 'modelValue'),
-			multiple: toRef(props, 'multiple'),
-			returnObject: toRef(props, 'returnObject'),
-			closeOnSelect: toRef(props, 'closeOnSelect'),
-			labelKey: toRef(props, 'labelKey'),
-			valueKey: toRef(props, 'valueKey'),
-			itemChildren: toRef(props, 'itemChildren')
-		},
+		propsRefs,
 		(e, value) => emit(e, value)
 	);
-	const { getSlotItem } = useSelectMenuSlot<T, V>(resolveMenuItem);
 
-	const {
-		focused,
-		$v,
-		disabled,
-		computedMessage,
-		hasValidationError,
-		onFocus,
-		onBlur,
-		onInputValidation
-	} = useFormControl<ModelValue>({
-		modelValue: computed(() => props.modelValue),
-		rules: computed(() => props.rules),
-		message: computed(() => props.message),
-		disabled: computed(() => props.disabled)
-	});
+	const { $v, onFocus, onBlur, onInputValidation, fieldProps } =
+		useSelectFieldControl<ModelValue>({
+			...propsRefs,
+			id,
+			focused: open,
+			hasValue: hasSelection,
+			multiline: false
+		});
 
 	function onSelect(item: Parameters<typeof handleSelect>[0]) {
 		handleSelect(item, () => {
@@ -101,26 +81,9 @@
 	function handleClear() {
 		const nextValue = (isMultiple.value ? [] : null) as ModelValue;
 		emit('update:modelValue', nextValue);
-		open.value = false;
 		onInputValidation();
 		emit('clear');
 	}
-
-	const fieldProps = computed(() => ({
-		id,
-		label: props.label,
-		color: props.color,
-		state: hasValidationError.value ? 'error' : props.state,
-		disabled: disabled.value,
-		clearable: props.clearable,
-		size: props.size,
-		focused: focused.value || open.value,
-		message: computedMessage.value,
-		prependIcon: props.prependIcon,
-		appendIcon: props.appendIcon,
-		hasValue: hasSelection.value,
-		multiline: false
-	}));
 
 	defineExpose({
 		$v

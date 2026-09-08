@@ -3,6 +3,9 @@ import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
 import type { ValidationRule } from 'gib-validate';
 import type { GColor } from '@/use/color';
+import type { GlassProps } from '@/use/glass';
+import type { GFieldVariant } from '@/use/form/props';
+import type { StringeredNumber } from '@/types/CommonTypes';
 import type { GGradienStates } from '../GGradient/types';
 import type {
 	InternalItem,
@@ -19,6 +22,9 @@ export type GSelectProps<
 > = SelectBaseProps<T, V, Multiple, ReturnObject> & {
 	label?: string;
 	color?: GColor;
+	variant?: GFieldVariant;
+	backdropBlur?: GlassProps['backdropBlur'];
+	borderWidth?: StringeredNumber;
 	placeholder?: string;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;

@@ -1,7 +1,8 @@
 <script setup lang="ts" generic="T extends GTabValue = GTabValue">
-	import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+	import { computed, ref } from 'vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import { useDisabled } from '@/use/disabled';
+	import { useNavigationItem } from '@/use/navigation';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { useTabsInject } from './context';
 	import {
@@ -19,10 +20,19 @@
 
 	const tabs = useTabsInject<T>();
 	const rootRef = ref<HTMLElement | null>(null);
-	const selected = computed(() =>
-		tabs ? tabs.isSelected(props.value as T | undefined) : false
-	);
-	const disabled = computed(() => props.disabled || tabs?.disabled.value);
+	const { value, selected, disabled, select, onClick, onKeydown } =
+		useNavigationItem<T>({
+			value: () => props.value as T | undefined,
+			rootRef,
+			disabled: () => props.disabled,
+			parentDisabled: () => tabs?.disabled.value,
+			isSelected: tabs?.isSelected,
+			select: tabs?.select,
+			registerItem: tabs?.registerTab,
+			unregisterItem: tabs?.unregisterTab,
+			onItemKeydown: tabs?.onTabKeydown,
+			onClick: (event) => emit('click', event)
+		});
 	const resolvedColor = computed(
 		() =>
 			(selected.value ? tabs?.activeColor.value : tabs?.color.value) ??
@@ -49,7 +59,7 @@
 	const slotProps = computed<GTabSlotProps<T>>(() => ({
 		selected: selected.value,
 		disabled: Boolean(disabled.value),
-		value: props.value as T | undefined,
+		value: value.value,
 		modelValue: tabs?.modelValue.value,
 		select
 	}));
@@ -59,50 +69,11 @@
 	const hasAppend = computed(
 		() => Boolean(slots.append) || Boolean(props.appendIcon)
 	);
-
-	function register() {
-		if (!tabs || !rootRef.value) return;
-
-		tabs.registerTab({
-			value: props.value as T | undefined,
-			el: rootRef.value,
-			disabled: Boolean(disabled.value)
-		});
-	}
-
-	function unregister() {
-		if (!tabs || !rootRef.value) return;
-
-		tabs.unregisterTab(rootRef.value);
-	}
-
-	function select(value: T | undefined, event?: Event) {
-		tabs?.select(value, event);
-	}
-
-	function onClick(event: MouseEvent) {
-		if (disabled.value) return;
-
-		select(props.value as T | undefined, event);
-		emit('click', event);
-	}
-
-	function onKeydown(event: KeyboardEvent) {
-		tabs?.onTabKeydown(event, props.value as T | undefined);
-	}
-
-	onMounted(register);
-	onBeforeUnmount(unregister);
-
-	watch(
-		() => [props.value, disabled.value],
-		() => register()
-	);
 </script>
 
 <template>
 	<button
-		:id="tabs?.getTabId(props.value as T | undefined)"
+		:id="tabs?.getTabId(value)"
 		ref="rootRef"
 		v-ripple
 		class="g-tab"
@@ -113,7 +84,7 @@
 		:disabled="disabled"
 		:tabindex="selected ? 0 : -1"
 		:aria-selected="selected"
-		:aria-controls="tabs?.getPanelId(props.value as T | undefined)"
+		:aria-controls="tabs?.getPanelId(value)"
 		@click="onClick"
 		@keydown="onKeydown">
 		<span

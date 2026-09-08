@@ -9,6 +9,9 @@
 
 	const slots = defineSlots<PLASlots>();
 	const props = defineProps(makeChipProps());
+	const emit = defineEmits<{
+		(e: 'remove'): void;
+	}>();
 	const computedBorderRadius = usePx(props.borderRadius);
 	const resolvedBorderWidth = computed(
 		() =>
@@ -36,6 +39,11 @@
 		morphEnabled,
 		getMorphBlobStyle
 	} = useActionSurface(props, 'g-chip');
+
+	function handleRemove() {
+		emit('remove');
+		props.onRemove?.();
+	}
 </script>
 
 <template>
@@ -101,7 +109,7 @@
 					v-if="removable"
 					type="button"
 					class="g-chip__remove"
-					@click.stop="onRemove?.()">
+					@click.stop="handleRemove">
 					<g-icon icon="close" />
 				</button>
 			</div>

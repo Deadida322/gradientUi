@@ -2,6 +2,8 @@ import Usage from './usage.vue';
 import usageCode from './usage.vue?raw';
 import Rows from './rows.vue';
 import rowsCode from './rows.vue?raw';
+import Variants from './variants.vue';
+import variantsCode from './variants.vue?raw';
 import Validation from './validation.vue';
 import validationCode from './validation.vue?raw';
 import type { DocsLiveExample } from '@docs/types';
@@ -15,6 +17,12 @@ export const textareaUsageExample: DocsLiveExample = {
 };
 
 export const textareaExamples: DocsLiveExample[] = [
+	{
+		id: 'variants',
+		label: 'Variants',
+		component: Variants,
+		code: toPublicExampleCode(variantsCode)
+	},
 	{
 		id: 'rows',
 		label: 'Rows',

@@ -1,9 +1,15 @@
 import type { DocsReleaseBadgeMeta } from '@docs/types';
 
 export const docsNextReleaseBadge: DocsReleaseBadgeMeta = {
-	label: '0.5.0',
+	label: '0.6.0',
 	tone: 'new',
-	title: 'Available in the stable 0.5.0 release.'
+	title: 'Available in the stable 0.6.0 release.'
+};
+
+export const docsUpcomingReleaseBadge: DocsReleaseBadgeMeta = {
+	label: '0.7.0',
+	tone: 'new',
+	title: 'Planned for the next 0.7.0 release.'
 };
 
 export const docsTestingBadge: DocsReleaseBadgeMeta = {

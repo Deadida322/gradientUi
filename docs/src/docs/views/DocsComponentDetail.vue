@@ -279,10 +279,44 @@
 			min-width: 0;
 		}
 
+		&__avatar-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-3);
+			align-items: center;
+		}
+
+		&__divider-demo {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--g-token-space-4);
+			align-items: stretch;
+
+			min-width: 0;
+		}
+
+		&__caption {
+			max-width: 100%;
+			margin: 0;
+
+			font-size: var(--g-token-font-size-sm);
+			line-height: var(--g-token-line-height-body);
+			color: rgba(var(--g-theme-on-surface), 0.68);
+
+			a {
+				color: inherit;
+				text-underline-offset: 0.18em;
+			}
+		}
+
 		&__card-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 			gap: var(--g-token-space-3);
+
+			&_wide {
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			}
 		}
 
 		&__surface-card {

@@ -1,6 +1,13 @@
 import { buttonExamples, buttonUsageExample } from '@docs/examples/button';
+import { cardExamples, cardUsageExample } from '@docs/examples/card';
 import { badgeExamples, badgeUsageExample } from '@docs/examples/badge';
 import { alertExamples, alertUsageExample } from '@docs/examples/alert';
+import {
+	avatarExamples,
+	avatarGroupExamples,
+	avatarGroupUsageExample,
+	avatarUsageExample
+} from '@docs/examples/avatar';
 import {
 	checkboxExamples,
 	checkboxUsageExample
@@ -20,6 +27,7 @@ import {
 } from '@docs/examples/expansion-group';
 import { fabExamples, fabUsageExample } from '@docs/examples/fab';
 import { drawerExamples, drawerUsageExample } from '@docs/examples/drawer';
+import { dividerExamples, dividerUsageExample } from '@docs/examples/divider';
 import { formExamples, formUsageExample } from '@docs/examples/form';
 import { inputExamples, inputUsageExample } from '@docs/examples/input';
 import { loadingExamples, loadingUsageExample } from '@docs/examples/loading';
@@ -35,12 +43,18 @@ import {
 } from '@docs/examples/quick-actions';
 import { radioExamples, radioUsageExample } from '@docs/examples/radio';
 import { selectExamples, selectUsageExample } from '@docs/examples/select';
+import { stepperExamples, stepperUsageExample } from '@docs/examples/stepper';
+import {
+	comboboxExamples,
+	comboboxUsageExample
+} from '@docs/examples/combobox';
 import {
 	snackbarExamples,
 	snackbarUsageExample
 } from '@docs/examples/snackbar';
 import { switchExamples, switchUsageExample } from '@docs/examples/switch';
 import { tableExamples, tableUsageExample } from '@docs/examples/table';
+import { tabsExamples, tabsUsageExample } from '@docs/examples/tabs';
 import {
 	textareaExamples,
 	textareaUsageExample
@@ -49,6 +63,36 @@ import { tooltipExamples, tooltipUsageExample } from '@docs/examples/tooltip';
 import type { DocsComponentPage } from '@docs/types';
 
 const componentPages: DocsComponentPage[] = [
+	{
+		id: 'avatar',
+		usage: {
+			title: 'Usage',
+			description:
+				'GAvatar is a compact identity surface for people, teams and objects. It supports text initials, icons, images, material variants and shape presets including squircle.',
+			example: avatarUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Avatar examples cover variants, circle and squircle shapes, size scale, badge and group composition, and gradient-engine effects.',
+			items: avatarExamples
+		}
+	},
+	{
+		id: 'avatar-group',
+		usage: {
+			title: 'Usage',
+			description:
+				'GAvatarGroup stacks avatars for teams, assignees and presence clusters. Use items for data-driven lists, slots for custom avatars, and max/total for overflow.',
+			example: avatarGroupUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Avatar group examples cover overlap, overflow count, squircle shape, glass surfaces and slot composition.',
+			items: avatarGroupExamples
+		}
+	},
 	{
 		id: 'button',
 		usage: {
@@ -77,6 +121,36 @@ const componentPages: DocsComponentPage[] = [
 			description:
 				'Badge examples cover gradient and tonal surfaces, colors, dots, locations, inline mode, sizes and custom content slots.',
 			items: badgeExamples
+		}
+	},
+	{
+		id: 'card',
+		usage: {
+			title: 'Usage',
+			description:
+				'GCard is a gradient-aware content surface for previews, dashboards and composed information blocks. It shares the same material props as other Gradient UI surfaces, then adds layout for common card anatomy.',
+			example: cardUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Card examples cover variants, layout presets, size and density, loading states, gradient-engine recipes, material effects and slot-based composition.',
+			items: cardExamples
+		}
+	},
+	{
+		id: 'divider',
+		usage: {
+			title: 'Usage',
+			description:
+				'GDivider separates sections with the same gradient-aware material language as cards, chips and buttons. Use it as a quiet separator, a labeled break or a vertical rule inside dense layouts.',
+			example: dividerUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Divider examples cover material variants, line effects, labels, custom slots, vertical orientation, inset rhythm and gradient-engine texture or morph effects.',
+			items: dividerExamples
 		}
 	},
 	{
@@ -225,7 +299,7 @@ const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Input examples cover validation states, field rules, masks and custom prepend, append and message slots.',
+				'Input examples cover visual variants, validation states, field rules, masks and custom prepend, append and message slots.',
 			items: inputExamples
 		}
 	},
@@ -240,7 +314,7 @@ const componentPages: DocsComponentPage[] = [
 		examples: {
 			title: 'Examples',
 			description:
-				'Textarea examples cover row density and validation behavior for longer text.',
+				'Textarea examples cover visual variants, row density and validation behavior for longer text.',
 			items: textareaExamples
 		}
 	},
@@ -257,6 +331,51 @@ const componentPages: DocsComponentPage[] = [
 			description:
 				'Select examples cover multiple values, return-object models, validation and item slots for richer option rows.',
 			items: selectExamples
+		}
+	},
+	{
+		id: 'combobox',
+		usage: {
+			title: 'Usage',
+			description:
+				'GCombobox extends the select foundation with editable search, local filtering and optional custom values. Use it when users can either choose an existing item or type a new one.',
+			example: comboboxUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Combobox examples cover single values, multiple chips, custom item creation and typed slots for richer option rows.',
+			items: comboboxExamples
+		}
+	},
+	{
+		id: 'stepper',
+		usage: {
+			title: 'Usage',
+			description:
+				'GStepper coordinates ordered flows with a declarative item model, keyboard navigation and optional panel/actions composition.',
+			example: stepperUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Stepper examples cover horizontal and vertical flows, glass and outlined treatments, item states, panels and action slots.',
+			items: stepperExamples
+		}
+	},
+	{
+		id: 'tabs',
+		usage: {
+			title: 'Usage',
+			description:
+				'GTabs coordinates a tablist, tabs and panels through a typed value model. Use it for sibling views where only one panel should be active at a time.',
+			example: tabsUsageExample
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Tabs examples cover line, pill and tonal variants, vertical orientation, manual activation, icon tabs, badges and typed slot composition.',
+			items: tabsExamples
 		}
 	},
 	{
