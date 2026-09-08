@@ -7,10 +7,9 @@
 		Multiple extends boolean = false,
 		ReturnObject extends boolean = false
 	">
-	import { ref, toRef } from 'vue';
+	import { ref, toRefs } from 'vue';
 	import GDropdown from '@/components/ui/GDropdown/GDropdown.vue';
 	import GMenu from '@/components/ui/GMenu/GMenu.vue';
-	import { useSelectMenuSlot } from '@/use/select/menuSlot';
 	import { useSelectController } from '@/use/select/controller';
 	import type { SelectionValue } from '@/use/select/types';
 	import type { DropdownSelectProps, DropdownSelectSlots } from './types';
@@ -19,31 +18,19 @@
 
 	const props =
 		defineProps<DropdownSelectProps<T, V, Multiple, ReturnObject>>();
+	const propsRefs = toRefs(props);
 	defineSlots<DropdownSelectSlots<T, V>>();
 	const emit = defineEmits<{
 		(e: 'update:modelValue', value: ModelValue): void;
 	}>();
 
 	const open = ref(false);
-	const { menuItems, resolveMenuItem, handleSelect } = useSelectController<
+	const { menuItems, getSlotItem, handleSelect } = useSelectController<
 		T,
 		V,
 		Multiple,
 		ReturnObject
-	>(
-		{
-			items: toRef(props, 'items'),
-			modelValue: toRef(props, 'modelValue'),
-			multiple: toRef(props, 'multiple'),
-			returnObject: toRef(props, 'returnObject'),
-			closeOnSelect: toRef(props, 'closeOnSelect'),
-			labelKey: toRef(props, 'labelKey'),
-			valueKey: toRef(props, 'valueKey'),
-			itemChildren: toRef(props, 'itemChildren')
-		},
-		emit
-	);
-	const { getSlotItem } = useSelectMenuSlot<T, V>(resolveMenuItem);
+	>(propsRefs, emit);
 
 	function onSelect(item: Parameters<typeof handleSelect>[0]) {
 		handleSelect(item, () => {

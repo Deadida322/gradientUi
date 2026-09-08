@@ -4,8 +4,10 @@
 	import GIcon from '../GIcon/GIcon.vue';
 	import { makeFieldShellProps } from './props';
 	import { useDisabled } from '@/use/disabled';
+	import { useGlass } from '@/use/glass';
 	import { useSize } from '@/use/size';
 	import { useSurfaceColor } from '@/use/surfaceColor';
+	import { useVariant } from '@/use/variant';
 
 	const props = defineProps(
 		makeFieldShellProps({
@@ -35,13 +37,44 @@
 	);
 	const sizeClass = useSize(props, 'g-field-base');
 	const disabledClass = useDisabled(props, 'g-field-base');
+	const variantClass = useVariant(props, 'g-field-base');
 	const { resolvedColor, resolvedState, colorStyles } =
 		useSurfaceColor(props);
+	const { glassStyles } = useGlass(props);
+	const hasGradientFrame = computed(
+		() =>
+			props.borderWidth !== undefined &&
+			Number.parseFloat(String(props.borderWidth)) > 0
+	);
+	const hasFocusGradient = computed(() =>
+		['default', 'tonal', 'glass', 'text'].includes(props.variant)
+	);
+	const showGradientFrame = computed(
+		() =>
+			hasGradientFrame.value || (props.focused && hasFocusGradient.value)
+	);
+	const borderPlacement = computed(() =>
+		hasGradientFrame.value ? 'center' : 'bottom'
+	);
+	const borderWidth = computed(() =>
+		hasGradientFrame.value || hasFocusGradient.value
+			? (props.borderWidth ?? 1)
+			: 0
+	);
+	const fieldStyles = computed(() => [
+		colorStyles.value,
+		props.variant === 'glass' ? glassStyles.value : undefined
+	]);
 
 	function onClear(event: MouseEvent) {
 		event.stopPropagation();
 		event.preventDefault();
 		emit('clear');
+	}
+
+	function onClearMousedown(event: MouseEvent) {
+		event.stopPropagation();
+		event.preventDefault();
 	}
 </script>
 
@@ -51,12 +84,13 @@
 		:class="{
 			[sizeClass]: true,
 			[disabledClass]: true,
+			[variantClass]: true,
 			'g-field-base_focused': focused,
 			'g-field-base_multiline': multiline,
 			[`g-field-base_state-${state}`]: state
 		}"
 		:data-g-validation-error="state === 'error' ? 'true' : undefined"
-		:style="colorStyles">
+		:style="fieldStyles">
 		<label
 			:for="id"
 			class="g-field-base__label">
@@ -66,11 +100,15 @@
 		</label>
 
 		<g-gradient
+			class="g-field-base__frame"
+			:class="{
+				'g-field-base__frame_visible': showGradientFrame
+			}"
 			:color="resolvedColor"
 			:state="resolvedState"
 			:disabled="disabled"
-			placement="bottom"
-			:border-width="focused ? 1 : 0"
+			:placement="borderPlacement"
+			:border-width="borderWidth"
 			inherit-width
 			border-radius="6">
 			<div
@@ -97,7 +135,8 @@
 
 				<div
 					v-if="clearable && hasValue && !disabled"
-					class="g-field-base__cross">
+					class="g-field-base__cross"
+					@mousedown="onClearMousedown">
 					<g-icon
 						icon="close"
 						size="18"
@@ -128,6 +167,8 @@
 </template>
 
 <style lang="scss" scoped>
+	@use '@/styles/mixins/glass' as glass;
+
 	.g-field-base {
 		--g-field-accent-color: var(--g-color);
 		--g-field-content-color: color-mix(
@@ -138,6 +179,11 @@
 		--g-field-label-color: var(--g-token-color-on-surface);
 		--g-field-helper-color: var(--g-token-color-on-surface);
 		--g-field-surface-color: var(--g-token-field-surface);
+		--g-field-background: var(--g-field-surface-color);
+		--g-field-ring-shadow: 0 0 0 0 transparent;
+		--g-field-elevation-shadow: 0 0 0 0 transparent;
+		--g-field-shadow:
+			var(--g-field-ring-shadow), var(--g-field-elevation-shadow);
 		--g-field-placeholder-opacity: 0.62;
 
 		position: relative;
@@ -189,42 +235,83 @@
 
 			color: var(--g-field-content-color);
 
-			background-color: var(--g-field-surface-color);
+			background: var(--g-field-background);
+			box-shadow: var(--g-field-shadow);
 
-			&_error {
-				--g-field-surface-color: color-mix(
-					in srgb,
-					var(--g-color) 14%,
-					var(--g-surface-color)
-				);
-				--g-field-content-color: var(--g-color);
-				--g-field-placeholder-opacity: var(
-					--g-token-field-state-placeholder-opacity
-				);
+			transition:
+				background var(--g-token-duration-base)
+					var(--g-token-easing-standard),
+				box-shadow var(--g-token-duration-base)
+					var(--g-token-easing-standard),
+				color var(--g-token-duration-fast)
+					var(--g-token-easing-standard);
+		}
+
+		&__frame {
+			:deep(.g-gradient__border) {
+				opacity: 0;
+				transition: opacity var(--g-token-duration-base)
+					var(--g-token-easing-standard);
 			}
 
-			&_warning {
-				--g-field-surface-color: color-mix(
-					in srgb,
-					var(--g-color) 14%,
-					var(--g-surface-color)
-				);
-				--g-field-content-color: var(--g-color);
-				--g-field-placeholder-opacity: var(
-					--g-token-field-state-placeholder-opacity
-				);
+			&_visible {
+				:deep(.g-gradient__border) {
+					opacity: 1;
+				}
 			}
+		}
 
-			&_success {
-				--g-field-surface-color: color-mix(
-					in srgb,
-					var(--g-color) 14%,
-					var(--g-surface-color)
-				);
-				--g-field-content-color: var(--g-color);
-				--g-field-placeholder-opacity: var(
-					--g-token-field-state-placeholder-opacity
-				);
+		&_default {
+			--g-field-background: var(--g-field-surface-color);
+		}
+
+		&_tonal {
+			--g-field-background: color-mix(
+				in srgb,
+				var(--g-color) 11%,
+				var(--g-token-color-surface)
+			);
+			--g-field-content-color: color-mix(
+				in srgb,
+				var(--g-color) 32%,
+				var(--g-token-color-on-surface)
+			);
+			--g-field-label-color: color-mix(
+				in srgb,
+				var(--g-color) 42%,
+				var(--g-token-color-on-surface)
+			);
+			--g-field-ring-shadow: inset 0 0 0 1px
+				color-mix(in srgb, var(--g-color) 7%, transparent);
+		}
+
+		&_outlined {
+			--g-field-background: color-mix(
+				in srgb,
+				var(--g-token-color-surface) 72%,
+				transparent
+			);
+			--g-field-content-color: var(--g-token-color-on-surface);
+			--g-field-ring-shadow: inset 0 0 0 1px
+				color-mix(in srgb, var(--g-color) 58%, transparent);
+		}
+
+		&_glass {
+			--g-glass-highlight-opacity: 20%;
+			--g-glass-surface-top-opacity: 17%;
+			--g-glass-surface-bottom-opacity: 7%;
+			--g-field-background: color-mix(
+				in srgb,
+				var(--g-token-color-surface) 42%,
+				transparent
+			);
+			--g-field-ring-shadow: inset 0 1px 0
+				color-mix(in srgb, white 24%, transparent);
+			--g-field-elevation-shadow: 0 10px 28px
+				color-mix(in srgb, var(--g-color) 12%, transparent);
+
+			.g-field-base__wrapper {
+				@include glass.glass-surface;
 			}
 		}
 
@@ -292,6 +379,10 @@
 			}
 		}
 
+		&_text {
+			--g-field-background: transparent;
+		}
+
 		&__control {
 			display: flex;
 			flex: 1;
@@ -318,9 +409,11 @@
 				calc(-100% - var(--g-token-field-helper-offset))
 			);
 
+			min-height: calc(var(--g-token-field-helper-font-size) * 1.2);
 			margin-left: var(--g-token-field-helper-margin-left);
 
 			font-size: var(--g-token-field-helper-font-size);
+			line-height: 1.2;
 			color: var(--g-field-helper-color);
 			text-align: left;
 
@@ -360,9 +453,14 @@
 			--g-field-label-color: var(--g-field-accent-color);
 			--g-field-helper-color: var(--g-field-accent-color);
 			--g-field-placeholder-opacity: 0.48;
+			--g-field-elevation-shadow: 0 8px 24px
+				color-mix(in srgb, var(--g-color) 12%, transparent);
+			--g-field-focused-label-margin: var(
+				--g-token-field-label-focus-margin-inline
+			);
 
 			.g-field-base__label {
-				margin-left: var(--g-token-field-label-focus-margin-inline);
+				margin-left: var(--g-field-focused-label-margin);
 			}
 
 			.g-field-base__helper {
@@ -372,14 +470,44 @@
 			}
 		}
 
+		&_text.g-field-base_focused {
+			--g-field-focused-label-margin: var(
+				--g-token-field-label-margin-inline
+			);
+			--g-field-elevation-shadow: 0 0 0 0 transparent;
+		}
+
+		&_outlined.g-field-base_focused {
+			--g-field-ring-shadow: inset 0 0 0 1px var(--g-color);
+		}
+
 		&_state-error,
 		&_state-warning,
 		&_state-success {
+			--g-field-surface-color: color-mix(
+				in srgb,
+				var(--g-color) 14%,
+				var(--g-surface-color)
+			);
+			--g-field-content-color: var(--g-color);
 			--g-field-label-color: var(--g-field-accent-color);
 			--g-field-helper-color: var(--g-field-accent-color);
+			--g-field-placeholder-opacity: var(
+				--g-token-field-state-placeholder-opacity
+			);
 		}
 
 		&_disabled {
+			--g-field-background: color-mix(
+				in srgb,
+				var(--g-token-color-on-surface) 6%,
+				var(--g-token-color-surface)
+			);
+			--g-field-content-color: var(--g-token-field-text-disabled);
+			--g-field-label-color: var(--g-token-field-text-disabled);
+			--g-field-helper-color: var(--g-token-field-text-disabled);
+			--g-field-placeholder-opacity: 0.46;
+
 			.g-field-base__label {
 				cursor: not-allowed;
 				opacity: var(--g-token-field-label-opacity-disabled);
@@ -387,8 +515,13 @@
 
 			.g-field-base__wrapper {
 				cursor: not-allowed;
-				opacity: 0.75;
-				background-color: var(--g-token-field-surface-disabled);
+				background: var(--g-field-background);
+				box-shadow: inset 0 0 0 1px
+					color-mix(
+						in srgb,
+						var(--g-token-color-on-surface) 8%,
+						transparent
+					);
 			}
 
 			:deep(.g-field-base__native) {
@@ -421,6 +554,20 @@
 
 			.g-field-base__cross {
 				padding-top: var(--g-token-field-clear-padding-top);
+			}
+		}
+
+		&:not(
+				.g-field-base_disabled,
+				.g-field-base_focused,
+				.g-field-base_text
+			):hover {
+			.g-field-base__wrapper {
+				--g-field-background: color-mix(
+					in srgb,
+					var(--g-color) 5%,
+					var(--g-field-surface-color)
+				);
 			}
 		}
 	}

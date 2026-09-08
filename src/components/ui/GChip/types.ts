@@ -23,6 +23,7 @@ export interface GChipProps extends GlassProps {
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
 	removable?: boolean;
+	/** @deprecated Use the remove event instead. */
 	onRemove?: () => void;
 	surfaceFill?: GGradientSurfaceFill;
 }

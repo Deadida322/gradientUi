@@ -5,10 +5,15 @@ import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { MdiIcon } from '@/types/CommonTypes';
 import type { Sizes } from '@/types/CommonTypes';
 import type { GColor } from '@/use/color';
+import type { GlassProps } from '@/use/glass';
+import type { GFieldVariant } from './props';
+import type { StringeredNumber } from '@/types/CommonTypes';
 
-export interface FieldVisualProps {
+export interface FieldVisualProps extends GlassProps {
 	label?: string;
 	color?: GColor;
+	variant?: GFieldVariant;
+	borderWidth?: StringeredNumber;
 	state?: GGradienStates;
 	disabled?: boolean;
 	clearable?: boolean;

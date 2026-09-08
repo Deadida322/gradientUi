@@ -2,6 +2,8 @@ import Usage from './usage.vue';
 import usageCode from './usage.vue?raw';
 import States from './states.vue';
 import statesCode from './states.vue?raw';
+import Variants from './variants.vue';
+import variantsCode from './variants.vue?raw';
 import Validation from './validation.vue';
 import validationCode from './validation.vue?raw';
 import Mask from './mask.vue';
@@ -19,6 +21,12 @@ export const inputUsageExample: DocsLiveExample = {
 };
 
 export const inputExamples: DocsLiveExample[] = [
+	{
+		id: 'variants',
+		label: 'Variants',
+		component: Variants,
+		code: toPublicExampleCode(variantsCode)
+	},
 	{
 		id: 'states',
 		label: 'States',

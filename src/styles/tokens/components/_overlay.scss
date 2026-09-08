@@ -18,8 +18,8 @@
 	--g-token-menu-item-selected-opacity: 0.06;
 	--g-token-menu-item-disabled-opacity: 0.5;
 	--g-token-menu-item-icon-size: var(--g-token-icon-size-m);
-	--g-token-tooltip-padding-y: 6px;
-	--g-token-tooltip-padding-x: 10px;
+	--g-token-tooltip-padding-y: var(--g-token-space-2);
+	--g-token-tooltip-padding-x: var(--g-token-space-3);
 	--g-token-tooltip-radius: var(--g-token-radius-xs);
 	--g-token-tooltip-font-size: var(--g-token-font-size-xs);
 	--g-token-tooltip-backdrop-blur: 4px;

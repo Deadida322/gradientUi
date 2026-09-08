@@ -7,14 +7,22 @@ export {
 	GTabPanel
 } from '@/components/ui/GTabs';
 export {
+	GStepper,
+	GStepPanel,
+	GStepperActions
+} from '@/components/ui/GStepper';
+export {
 	GTransition,
 	GTransitionGroup,
 	GExpandTransition
 } from '@/components/transitions';
 export { default as GGradient } from '@/components/ui/GGradient/GGradient.vue';
 export { GGradientMaterial } from '@/components/ui/GGradientMaterial';
+export { GAvatar, GAvatarGroup } from '@/components/ui/GAvatar';
 export { default as GButton } from '@/components/ui/GButton/GButton.vue';
+export { GCard } from '@/components/ui/GCard';
 export { default as GChip } from '@/components/ui/GChip/GChip.vue';
+export { GDivider } from '@/components/ui/GDivider';
 export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
 export { default as GCheckboxGroup } from '@/components/ui/GCheckboxGroup/GCheckboxGroup.vue';
 export { default as GSquircle } from '@/components/ui/GSquircle/GSquircle.vue';
@@ -57,6 +65,30 @@ export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';
 export { GTable } from '@/components/ui/GTable';
+export { GCombobox } from '@/components/ui/GCombobox';
+export type {
+	GAvatarGroupItem,
+	GAvatarGroupProps,
+	GAvatarEmits,
+	GAvatarProps,
+	GAvatarShape,
+	GAvatarVariant
+} from '@/components/ui/GAvatar';
+export type {
+	GCardDensity,
+	GCardEmits,
+	GCardLayout,
+	GCardProps,
+	GCardVariant
+} from '@/components/ui/GCard';
+export type {
+	GDividerAlign,
+	GDividerEffect,
+	GDividerOrientation,
+	GDividerProps,
+	GDividerResolvedProps,
+	GDividerVariant
+} from '@/components/ui/GDivider';
 export type {
 	GTableAlign,
 	GTableBodySlotClasses,
@@ -74,6 +106,37 @@ export type {
 	GTableRowContext,
 	GTableSlots
 } from '@/components/ui/GTable';
+export type {
+	GComboboxFilter,
+	GComboboxItemFromQuery,
+	GComboboxProps,
+	GComboboxSlots
+} from '@/components/ui/GCombobox';
+export type {
+	GStepPanelProps,
+	GStepPanelSurfaceProps,
+	GStepPanelSlotProps,
+	GStepPanelSlots,
+	GStepPanelVariant,
+	GStepperActionsProps,
+	GStepperActionsSlotProps,
+	GStepperActionsSlots,
+	GStepperDividerOptions,
+	GStepperEmits,
+	GStepperDividerVariant,
+	GStepperIconMap,
+	GStepperItem,
+	GStepperItemSlotProps,
+	GStepperOrientation,
+	GStepperProps,
+	GStepperResolvedItem,
+	GStepperSemanticState,
+	GStepperStepIconState,
+	GStepperSlots,
+	GStepperSlotProps,
+	GStepperStepState,
+	GStepperVariant
+} from '@/components/ui/GStepper';
 export {
 	applyMask,
 	defaultMaskTokens,

@@ -6,11 +6,15 @@ import {
 	GAside,
 	GAsideGroup,
 	GAsideItem,
+	GAvatar,
+	GAvatarGroup,
 	GBadge,
 	GButton,
+	GCard,
 	GCheckbox,
 	GCheckboxGroup,
 	GChip,
+	GDivider,
 	GDrawer,
 	GDropdownGroup,
 	GExpansion,
@@ -36,6 +40,9 @@ import {
 	GSelect,
 	GSnackbar,
 	GSquircle,
+	GStepPanel,
+	GStepper,
+	GStepperActions,
 	GSwitch,
 	GTab,
 	GTabList,
@@ -94,11 +101,15 @@ function registerComponents(app: App) {
 	registerComponent(app, 'GAside', GAside);
 	registerComponent(app, 'GAsideGroup', GAsideGroup);
 	registerComponent(app, 'GAsideItem', GAsideItem);
+	registerComponent(app, 'GAvatar', GAvatar);
+	registerComponent(app, 'GAvatarGroup', GAvatarGroup);
 	registerComponent(app, 'GBadge', GBadge);
 	registerComponent(app, 'GButton', GButton);
+	registerComponent(app, 'GCard', GCard);
 	registerComponent(app, 'GCheckbox', GCheckbox);
 	registerComponent(app, 'GCheckboxGroup', GCheckboxGroup);
 	registerComponent(app, 'GChip', GChip);
+	registerComponent(app, 'GDivider', GDivider);
 	registerComponent(app, 'GDrawer', GDrawer);
 	registerComponent(app, 'GDropdownGroup', GDropdownGroup);
 	registerComponent(app, 'GExpansion', GExpansion);
@@ -124,6 +135,9 @@ function registerComponents(app: App) {
 	registerComponent(app, 'GSelect', GSelect);
 	registerComponent(app, 'GSnackbar', GSnackbar);
 	registerComponent(app, 'GSquircle', GSquircle);
+	registerComponent(app, 'GStepPanel', GStepPanel);
+	registerComponent(app, 'GStepper', GStepper);
+	registerComponent(app, 'GStepperActions', GStepperActions);
 	registerComponent(app, 'GSwitch', GSwitch);
 	registerComponent(app, 'GTab', GTab);
 	registerComponent(app, 'GTabList', GTabList);

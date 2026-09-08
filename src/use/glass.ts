@@ -9,7 +9,7 @@ export interface GlassProps {
 export const makeGlassProps = propsFactory({
 	backdropBlur: {
 		type: [Number, String] as PropType<StringeredNumber>,
-		default: 6
+		default: 2
 	}
 });
 
