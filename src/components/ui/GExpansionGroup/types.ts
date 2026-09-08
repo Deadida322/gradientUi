@@ -24,7 +24,10 @@ export const makeExpansionGroupProps = propsFactory({
 	readonly: Boolean,
 	multiple: Boolean,
 	mandatory: Boolean,
-	gap: [Number, String] as PropType<PXtype>,
+	gap: {
+		type: [Number, String] as PropType<PXtype>,
+		default: 2
+	},
 	divided: {
 		type: Boolean,
 		default: true

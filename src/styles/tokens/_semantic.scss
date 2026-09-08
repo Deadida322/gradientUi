@@ -16,4 +16,11 @@
 	--g-token-focus-ring: rgba(var(--g-theme-primary), 0.18);
 	--g-token-text-muted: rgba(var(--g-theme-on-surface), 0.65);
 	--g-token-text-soft: rgba(var(--g-theme-on-surface), 0.75);
+	--g-token-surface-texture-noise-opacity: 0.48;
+	--g-token-surface-texture-noise-blend-mode: multiply;
+}
+
+@mixin register-dark-semantic-tokens() {
+	--g-token-surface-texture-noise-opacity: 0.34;
+	--g-token-surface-texture-noise-blend-mode: hard-light;
 }

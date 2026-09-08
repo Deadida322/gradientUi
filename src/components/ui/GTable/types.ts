@@ -1,4 +1,5 @@
 import type { GColor } from '@/use/color';
+import { makeDensityProps, type GDensity } from '@/use/density';
 import type { GGradienStates } from '@/components/ui/GGradient/types';
 import type { GVariant } from '@/use/variant';
 import { makeSurfaceTextureProps, type GSurfaceTexture } from '@/use/surface';
@@ -10,7 +11,7 @@ import {
 } from '@/use/materialSurface';
 
 export type GTableAlign = 'start' | 'center' | 'end';
-export type GTableDensity = 'compact' | 'comfortable' | 'spacious';
+export type GTableDensity = GDensity;
 export type GTableKey = string | number;
 export type GTableRowEvent = MouseEvent | KeyboardEvent;
 export type GTableItemKey<T> =
@@ -171,6 +172,7 @@ export type GTableEmits = {
 export const makeTableProps = propsFactory({
 	...makeMaterialSurfaceProps(),
 	...makeSurfaceTextureProps(),
+	...makeDensityProps(),
 	headers: {
 		type: Array as PropType<GTableHeader[]>,
 		default: () => []
@@ -194,10 +196,6 @@ export const makeTableProps = propsFactory({
 		default: 'primary'
 	},
 	rounded: Boolean,
-	density: {
-		type: String as PropType<GTableDensity>,
-		default: 'comfortable'
-	},
 	stickyHeader: Boolean,
 	fixedLayout: Boolean,
 	hover: Boolean,

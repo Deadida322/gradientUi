@@ -11,8 +11,16 @@ node_modules
 dist
 dist-docs
 dist-ssr
+tsbuild/
+.tsbuild/
 *.tsbuildinfo
+tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
 *.local
+
+# Graphify artifacts
+graphify-out/
+.graphify*
 
 # Editor directories and files
 .vscode/*

@@ -1,5 +1,6 @@
 <script setup generic="T extends Record<string, unknown>" lang="ts">
 	import { computed, useSlots } from 'vue';
+	import { useDensity } from '@/use/density';
 	import { useMaterialSurface } from '@/use/materialSurface';
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import {
@@ -20,6 +21,7 @@
 
 	const props = defineProps(makeTableProps());
 	const tableProps = props as unknown as GTableProps<T>;
+	const densityClass = useDensity(props, 'g-table');
 	const emit = defineEmits<{
 		'update:expanded': [value: GTableKey[]];
 		expand: [item: T, expanded: boolean];
@@ -165,7 +167,7 @@
 			class="g-table"
 			:class="[
 				`g-table_${props.variant}`,
-				`g-table_density-${props.density}`,
+				densityClass,
 				{
 					'g-table_rounded': props.rounded,
 					'g-table_sticky-header': props.stickyHeader,

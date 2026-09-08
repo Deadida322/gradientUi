@@ -28,3 +28,7 @@
 	--g-token-gradient-warning: var(--g-gradient-warning);
 	--g-token-gradient-success: var(--g-gradient-success);
 }
+
+.g-theme--dark {
+	@include semantic.register-dark-semantic-tokens();
+}

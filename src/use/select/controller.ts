@@ -1,6 +1,7 @@
 import { computed, type MaybeRef, unref } from 'vue';
 import { useBooleanProp } from '@/use/booleanProp';
 import { useSelectMenuItems } from './menuItems';
+import { useSelectMenuSlot } from './menuSlot';
 import { useSelectionController } from './selectionController';
 import { useSelectionSummary } from './selectionSummary';
 import type { GMenuItemBase } from '@/use/menu';
@@ -30,6 +31,7 @@ export function useSelectController<
 	) => void
 ) {
 	const isMultiple = useBooleanProp(props.multiple);
+	const isReturnObject = useBooleanProp(props.returnObject);
 	const shouldCloseOnSelect = computed(
 		() => unref(props.closeOnSelect) ?? !isMultiple.value
 	);
@@ -56,6 +58,7 @@ export function useSelectController<
 	);
 
 	const { menuItems, resolveMenuItem } = useSelectMenuItems(normalizedItems);
+	const { getSlotItem } = useSelectMenuSlot<T, V>(resolveMenuItem);
 
 	function isMenuItemSelected(item: GMenuItemBase): boolean {
 		const resolvedItem = resolveMenuItem(item);
@@ -75,11 +78,16 @@ export function useSelectController<
 
 	return {
 		isMultiple,
+		isReturnObject,
 		shouldCloseOnSelect,
+		normalizedItems,
 		menuItems,
 		resolveMenuItem,
+		getSlotItem,
+		isItemSelected,
 		isMenuItemSelected,
 		handleSelect,
+		selectItem,
 		selectedItems,
 		hasSelection,
 		selectionText

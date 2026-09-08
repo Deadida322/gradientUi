@@ -7,19 +7,18 @@
 	<div class="docs-page__preview">
 		<g-chip
 			label="Gradient"
+			gradient-recipe="mesh"
 			variant="gradient" />
-		<g-chip
-			label="Selected gradient"
-			variant="gradient"
-			active />
+
 		<g-chip
 			v-specular="{
 				color: 'primary',
 				strength: 0.5
 			}"
-			label="Selected gradient"
+			label="Gradient"
 			gradient-recipe="orbitalConic"
 			variant="glass"
+			color="blue-800"
 			border-width="1"
 			:morph-options="{
 				preset: 'ripple',
