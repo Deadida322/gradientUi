@@ -1,55 +1,33 @@
-# Gradient UI 0.5.0
 
-This stable release introduces the new color, material and gradient
-architecture.
 
-## Highlights
+# Gradient UI 0.7.0
 
-- `@gradient-ui/gradient-engine` is now a standalone package.
-- Gradient materials are generated through `createGradientMaterial`.
-- Components use `default` for the regular material fill and `gradient` for the
-  expressive gradient surface.
-- Gradient recipes, effects, animations and SVG/canvas/CSS formatters are now
-  centralized in the engine.
+### Added
 
-## Breaking Changes
+- Added `GAvatar` and `GAvatarGroup` with image, initials, icon, shape, size,
+  material variant and texture support.
+- Added `GCard` with composable anatomy, layout options, material variants,
+  media-friendly slots and texture support.
+- Added `GDivider` with horizontal and vertical orientation, labels, icon and
+  content slots, material variants, gradient-aware styling and textures.
+- Added `GCombobox` as an editable select built on shared select primitives,
+  with typed props and slots, filtering, multiple chips, custom add flow and
+  `add` event support.
+- Added `GStepper`, `GStepPanel` and `GStepperActions` for declarative ordered
+  flows with typed item, panel and actions slots.
+- Added shared navigation controller and keyboard handling for tab-like and
+  step-like components.
+- Added reusable state icon resolution for semantic indicators and per-item
+  stepper icon overrides.
 
-- Replace `variant="filled"` with `variant="gradient"` when you want a gradient
-  surface.
-- Use `variant="default"` or omit `variant` for the normal material fill.
+### Changed
 
-```vue
-<g-button label="Default" />
-<g-button label="Gradient" variant="gradient" />
-```
+- Refactored select-like field behavior so combobox reuses shared item
+  normalization, selection, keyboard and field-control composables.
+- Refactored `GTabs` onto the shared navigation controller used by `GStepper`.
+- Improved input surface variants with clearer `default`, `tonal`, `glass`,
+  `outlined` and `text` behavior.
 
-## Gradient Engine
+### Breaking Changes
 
-The engine is framework-free and can be used outside Vue:
-
-```ts
-import { createGradientMaterial } from '@gradient-ui/gradient-engine';
-
-const material = createGradientMaterial('#704aff', {
-	preset: 'materialAction',
-	recipe: 'glare',
-	animation: {
-		preset: 'shift',
-		duration: 6000
-	}
-});
-```
-
-The output is serializable and adapter-friendly: CSS variables, CSS text,
-keyframes, gradient model and effect descriptors.
-
-## Validation
-
-Recommended checks before publishing:
-
-```bash
-npm run type-check
-npm run eslint
-npm run lint:css
-npm run build
-```
+- `GChip` remove interactions now use the `remove` event as the preferred Vue
