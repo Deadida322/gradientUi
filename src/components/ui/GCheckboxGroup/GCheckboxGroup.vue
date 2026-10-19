@@ -42,6 +42,7 @@
 
 	const slots = defineSlots<CheckOptionGroupSlots<T>>();
 	const emit = defineEmits<CheckGroupEmits<ModelValue>>();
+	const itemIdPrefix = createComponentId('g-checkbox-group-item');
 	const {
 		groupName,
 		groupProps,
@@ -69,10 +70,7 @@
 	);
 
 	const itemIds = computed(() =>
-		items.value.map(
-			(_item, index) =>
-				`${groupName.value}-${index}-${createComponentId('checkbox')}`
-		)
+		items.value.map((_item, index) => `${itemIdPrefix}-${index}`)
 	);
 
 	function getItemProps(item: InternalItem<T, V>, index: number) {

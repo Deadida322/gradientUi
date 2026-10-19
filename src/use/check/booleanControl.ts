@@ -19,9 +19,8 @@ export function useCheckBooleanControl(
 		indicatorKind: 'checkbox' | 'switch';
 	}
 ) {
-	const inputId = computed(
-		() => props.id ?? createComponentId(options.idPrefix)
-	);
+	const generatedInputId = createComponentId(options.idPrefix);
+	const inputId = computed(() => props.id ?? generatedInputId);
 
 	const {
 		focused,

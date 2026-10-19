@@ -1,24 +1,31 @@
 // services/LoadingService.ts
 import {
-	createApp,
-	type App,
 	ref,
 	shallowRef,
 	onUnmounted,
+	getCurrentInstance,
+	inject,
 	type ComponentPublicInstance
 } from 'vue';
 import GLoading from '@/components/ui/GLoading/GLoading.vue';
 import type { GLoadingProps } from '@/components/ui/GLoading/types';
+import {
+	canUseDom,
+	getClientWindow,
+	mountClientComponent,
+	resolveClientTarget,
+	type ClientComponentMount
+} from '@/ssr/utils';
+import { GradientUIServicesSymbol } from './context';
 
 interface LoadingInstance {
-	app: App;
-	container: HTMLElement;
+	mount: ClientComponentMount;
 	target: HTMLElement;
 	originalPosition: string;
 	componentInstance: ComponentPublicInstance<typeof GLoading> | null;
 }
 
-export function useLoading() {
+export const createLoadingService = () => {
 	const currentInstance = shallowRef<LoadingInstance | null>(null);
 	const visible = ref(false);
 	const show = (
@@ -28,6 +35,8 @@ export function useLoading() {
 			}
 		>
 	) => {
+		if (!canUseDom()) return;
+
 		hide();
 		const target = resolveTarget(options.target);
 		const originalPosition = target.style.position;
@@ -35,28 +44,30 @@ export function useLoading() {
 		if (!hasValidPosition(target)) {
 			target.style.position = 'relative';
 		}
-		const container = document.createElement('div');
-		container.className = 'g-loading__container';
-		target.appendChild(container);
 		const instance = {} as LoadingInstance;
-
-		const app = createApp(GLoading, {
-			text: options.text,
-			noText: options.noText,
-			color: options.color,
-			dark: options.dark,
-			opacity: options.opacity,
-			blur: options.blur,
-			progressView: options.progressView,
-			onClose: () => {
-				unmountComponent(instance);
+		const mount = mountClientComponent(GLoading, {
+			containerClass: 'g-loading__container',
+			target,
+			props: {
+				text: options.text,
+				noText: options.noText,
+				color: options.color,
+				dark: options.dark,
+				opacity: options.opacity,
+				blur: options.blur,
+				progressView: options.progressView,
+				onClose: () => {
+					unmountComponent(instance);
+				}
 			}
 		});
-		const componentInstance: ComponentPublicInstance<typeof GLoading> =
-			app.mount(container);
+		if (!mount) return;
+
+		const componentInstance = mount.instance as ComponentPublicInstance<
+			typeof GLoading
+		>;
 		Object.assign(instance, {
-			app,
-			container,
+			mount,
 			target,
 			originalPosition,
 			componentInstance
@@ -67,13 +78,10 @@ export function useLoading() {
 		visible.value = true;
 	};
 	const resolveTarget = (target?: string | HTMLElement): HTMLElement => {
-		if (!target) return document.body;
-		if (typeof target === 'string') {
-			const element = document.querySelector(target);
-			if (!element) throw new Error(`Target element ${target} not found`);
-			return element as HTMLElement;
-		}
-		return target;
+		const element = resolveClientTarget(target);
+		if (!element)
+			throw new Error(`Target element ${String(target)} not found`);
+		return element;
 	};
 
 	const hide = async (): Promise<void> => {
@@ -84,7 +92,8 @@ export function useLoading() {
 	};
 
 	const hasValidPosition = (element: HTMLElement): boolean => {
-		const position = window.getComputedStyle(element).position;
+		const position = getClientWindow()?.getComputedStyle(element).position;
+		if (!position) return true;
 		return ['relative', 'absolute', 'fixed', 'sticky'].includes(position);
 	};
 
@@ -92,13 +101,9 @@ export function useLoading() {
 		if (!instance) return;
 
 		const isCurrentInstance = currentInstance.value === instance;
-		const { app, container, target, originalPosition } = instance;
+		const { mount, target, originalPosition } = instance;
 
-		app.unmount();
-
-		if (container.parentElement === target) {
-			target.removeChild(container);
-		}
+		mount.unmount();
 
 		if (!isCurrentInstance) return;
 
@@ -107,13 +112,25 @@ export function useLoading() {
 		visible.value = false;
 	};
 
-	onUnmounted(() => {
-		hide();
-	});
-
 	return {
 		show,
 		hide,
-		visible
+		visible,
+		dispose: () => unmountComponent()
 	};
-}
+};
+
+export type LoadingService = ReturnType<typeof createLoadingService>;
+
+export const useLoading = (): LoadingService => {
+	if (!getCurrentInstance())
+		throw new Error(
+			'useLoading() requires Vue setup context. Outside setup, use the installed Gradient UI service runtime.'
+		);
+	const service = inject(GradientUIServicesSymbol, null)?.loading;
+	if (service) return service;
+
+	const local = createLoadingService();
+	onUnmounted(local.dispose);
+	return local;
+};

@@ -217,12 +217,6 @@ generate the material/model on the server, serialize `cssVars`, `cssText` and
 `keyframes`, then let the client adapter mount optional runtime effects such as
 morph SVG filters.
 
-## Version
-
-`0.5.0` was the first standalone release line for the engine extracted from
-Gradient UI. `0.6.0` adds the public morph blend-mode API used by the
-`0.5.0` core release line.
-
 ## License
 
 MIT

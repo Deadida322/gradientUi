@@ -1,8 +1,14 @@
-import { computed } from 'vue';
+import { computed, toValue, type MaybeRefOrGetter } from 'vue';
+import { useSsrTeleport } from '@/ssr/use';
 
-export function useAppendTarget(appendTo?: string | null) {
-	const hasAppendTarget = computed(() => Boolean(appendTo));
-	const appendTarget = computed(() => appendTo || 'body');
+export function useAppendTarget(
+	appendTo?: MaybeRefOrGetter<string | null | undefined>
+) {
+	const teleport = useSsrTeleport(appendTo);
+	const hasAppendTarget = computed(
+		() => !teleport.disabled.value && Boolean(toValue(appendTo))
+	);
+	const appendTarget = teleport.target;
 
 	return {
 		hasAppendTarget,

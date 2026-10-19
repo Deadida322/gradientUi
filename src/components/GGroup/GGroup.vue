@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-	import { toRef, computed } from 'vue';
+	import { toRef, computed, type Ref } from 'vue';
 	import type { GroupMode, GroupModel } from '@/use/group/types';
 	import { useGroupController } from '@/use/group/groupController';
 	import { provideGroup } from '@/use/group/di';
@@ -15,7 +15,7 @@
 	}>();
 
 	const modeRef = computed<GroupMode>(() => props.mode ?? 'multiple');
-	const modelRef = toRef(props, 'modelValue');
+	const modelRef = toRef(props, 'modelValue') as Ref<GroupModel<T>>;
 
 	const controller = useGroupController<T>({
 		modelValue: modelRef,

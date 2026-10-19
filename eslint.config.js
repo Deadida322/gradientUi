@@ -15,6 +15,8 @@ export default tseslint.config(
 	{
 		ignores: [
 			'node_modules/**',
+			'**/.nuxt/**',
+			'**/.output/**',
 			'dist/**',
 			'packages/*/dist/**',
 			'dist-docs/**',
@@ -71,5 +73,29 @@ export default tseslint.config(
 			'vue/no-v-html': 'off'
 		}
 	},
-	eslintPluginPrettierRecommended
+	{
+		files: ['docs/src/**/*.{ts,vue}'],
+		languageOptions: {
+			globals: {
+				defineNuxtPlugin: 'readonly',
+				definePageMeta: 'readonly',
+				navigateTo: 'readonly',
+				setResponseStatus: 'readonly',
+				useHead: 'readonly'
+			}
+		}
+	},
+	{
+		files: ['docs/src/pages/**/*.vue', 'docs/src/layouts/**/*.vue'],
+		rules: {
+			'vue/multi-word-component-names': 'off'
+		}
+	},
+	eslintPluginPrettierRecommended,
+	{
+		files: ['**/*.{js,mjs,cjs,ts,tsx,vue}'],
+		rules: {
+			'prettier/prettier': ['error', { endOfLine: 'auto' }]
+		}
+	}
 );

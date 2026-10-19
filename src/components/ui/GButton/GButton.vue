@@ -81,7 +81,10 @@
 					'g-button_icon': iconButton || isIconButton
 				}
 			]"
-			:style="surfaceStyles"
+			:style="[
+				surfaceStyles,
+				{ '--g-button-radius': computedBorderRadius }
+			]"
 			v-bind="{ ...tagAttrs, ...attrs }">
 			<span
 				v-if="hasSurfaceUnderlay"
@@ -162,7 +165,7 @@
 		--g-size-line-height: var(--g-token-button-line-height);
 		--g-token-icon-size-m: var(--g-token-button-icon-size);
 
-		border-radius: v-bind('computedBorderRadius');
+		border-radius: var(--g-button-radius);
 		font: inherit;
 		text-decoration: none;
 

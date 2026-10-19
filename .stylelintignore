@@ -4,4 +4,6 @@
 *.js
 *.md
 *.svg
+*.json
 /node_modules
+**/graphify-out/**

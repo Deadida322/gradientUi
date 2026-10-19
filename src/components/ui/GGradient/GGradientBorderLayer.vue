@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { Placement, StringeredNumber } from '@/types/CommonTypes';
-	import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+	import { computed } from 'vue';
 
 	const props = defineProps<{
 		maskId: string;
@@ -11,23 +11,17 @@
 		glowBlur?: number;
 	}>();
 
-	const layerRef = ref<SVGSVGElement>();
-	const layerSize = ref({ width: 1, height: 1 });
-	let resizeObserver: ResizeObserver | undefined;
-
 	const maskReference = computed(() => `url(#${props.maskId})`);
 	const glowFilterId = computed(() => `${props.maskId}-blur`);
 	const glowFilterReference = computed(() =>
 		props.glowBlur ? `url(#${glowFilterId.value})` : undefined
 	);
 	const glowFilterBleed = computed(() => (props.glowBlur ?? 0) * 4);
-	const viewBox = computed(
-		() => `0 0 ${layerSize.value.width} ${layerSize.value.height}`
-	);
 	const toNumber = (value: StringeredNumber) =>
 		Number.parseFloat(String(value));
 	const geometry = computed(() => {
-		const { width, height } = layerSize.value;
+		const width = '100cqw';
+		const height = '100cqh';
 		const borderWidth = Math.max(0, toNumber(props.borderWidth));
 		const borderRadius = Math.max(0, toNumber(props.borderRadius));
 		const seamOverlap = Math.min(borderWidth, 0.5);
@@ -37,23 +31,21 @@
 		const bottom =
 			isCenter || props.placement === 'bottom' ? borderWidth : 0;
 		const left = isCenter || props.placement === 'left' ? borderWidth : 0;
-		const baseInnerWidth = Math.max(0, width - left - right);
-		const baseInnerHeight = Math.max(0, height - top - bottom);
+		// Match the surface inset exactly: overlap remains visible through glass.
+		const baseInnerWidth = `max(0px, calc(${width} - ${left + right}px))`;
+		const baseInnerHeight = `max(0px, calc(${height} - ${top + bottom}px))`;
 		const innerX = left + (left ? seamOverlap : 0);
 		const innerY = top + (top ? seamOverlap : 0);
 		const innerRight = right + (right ? seamOverlap : 0);
 		const innerBottom = bottom + (bottom ? seamOverlap : 0);
-		const innerWidth = Math.max(0, width - innerX - innerRight);
-		const innerHeight = Math.max(0, height - innerY - innerBottom);
+		const innerWidth = `max(0px, calc(${width} - ${innerX + innerRight}px))`;
+		const innerHeight = `max(0px, calc(${height} - ${innerY + innerBottom}px))`;
 		const outerRadius = props.rounded
-			? Math.min(width, height) / 2
-			: borderRadius + borderWidth;
+			? 'min(50cqw, 50cqh)'
+			: `${borderRadius + borderWidth}px`;
 		const innerRadius = props.rounded
-			? Math.min(
-					isCenter ? innerWidth : baseInnerWidth,
-					isCenter ? innerHeight : baseInnerHeight
-				) / 2
-			: Math.max(0, borderRadius - (isCenter ? seamOverlap : 0));
+			? `calc(min(${isCenter ? innerWidth : baseInnerWidth}, ${isCenter ? innerHeight : baseInnerHeight}) / 2)`
+			: `${Math.max(0, borderRadius - (isCenter ? seamOverlap : 0))}px`;
 
 		return {
 			width,
@@ -66,92 +58,74 @@
 			innerRadius
 		};
 	});
-
-	const updateSize = () => {
-		const layer = layerRef.value;
-
-		if (!layer) return;
-
-		const { width, height } = layer.getBoundingClientRect();
-
-		if (width > 0 && height > 0) {
-			layerSize.value = { width, height };
-		}
-	};
-
-	onMounted(() => {
-		const layer = layerRef.value;
-
-		if (!layer) return;
-
-		updateSize();
-		resizeObserver = new ResizeObserver(updateSize);
-		resizeObserver.observe(layer);
-	});
-
-	onBeforeUnmount(() => resizeObserver?.disconnect());
 </script>
 
 <template>
-	<svg
-		ref="layerRef"
+	<div
 		class="g-gradient-border-layer"
-		aria-hidden="true"
-		focusable="false"
-		:viewBox="viewBox"
-		preserveAspectRatio="none">
-		<defs>
-			<mask
-				:id="maskId"
-				mask-type="luminance"
-				maskUnits="userSpaceOnUse"
-				maskContentUnits="userSpaceOnUse"
-				x="0"
-				y="0"
-				:width="geometry.width"
-				:height="geometry.height">
-				<rect
-					class="g-gradient-border-layer__mask-outer"
+		aria-hidden="true">
+		<svg
+			class="g-gradient-border-layer__svg"
+			aria-hidden="true"
+			focusable="false"
+			preserveAspectRatio="none">
+			<defs>
+				<mask
+					:id="maskId"
+					mask-type="luminance"
+					maskUnits="userSpaceOnUse"
+					maskContentUnits="userSpaceOnUse"
 					x="0"
 					y="0"
-					:width="geometry.width"
-					:height="geometry.height"
-					:rx="geometry.outerRadius"
-					:ry="geometry.outerRadius"></rect>
-				<rect
-					class="g-gradient-border-layer__mask-inner"
-					:x="geometry.innerX"
-					:y="geometry.innerY"
-					:width="geometry.innerWidth"
-					:height="geometry.innerHeight"
-					:rx="geometry.innerRadius"
-					:ry="geometry.innerRadius"></rect>
-			</mask>
-			<filter
-				v-if="glowBlur"
-				:id="glowFilterId"
-				color-interpolation-filters="sRGB"
-				filterUnits="userSpaceOnUse"
-				:x="-glowFilterBleed"
-				:y="-glowFilterBleed"
-				:width="geometry.width + glowFilterBleed * 2"
-				:height="geometry.height + glowFilterBleed * 2">
-				<feGaussianBlur
-					in="SourceGraphic"
-					:stdDeviation="glowBlur"></feGaussianBlur>
-			</filter>
-		</defs>
-		<g :filter="glowFilterReference">
-			<foreignObject
-				x="0"
-				y="0"
-				:width="geometry.width"
-				:height="geometry.height"
-				:mask="maskReference">
-				<div class="g-gradient-border-layer__paint"></div>
-			</foreignObject>
-		</g>
-	</svg>
+					width="100%"
+					height="100%">
+					<rect
+						class="g-gradient-border-layer__mask-outer"
+						x="0"
+						y="0"
+						width="100%"
+						height="100%"
+						:style="{
+							rx: geometry.outerRadius,
+							ry: geometry.outerRadius
+						}"></rect>
+					<rect
+						class="g-gradient-border-layer__mask-inner"
+						:x="geometry.innerX"
+						:y="geometry.innerY"
+						:style="{
+							width: geometry.innerWidth,
+							height: geometry.innerHeight,
+							rx: geometry.innerRadius,
+							ry: geometry.innerRadius
+						}"></rect>
+				</mask>
+				<filter
+					v-if="glowBlur"
+					:id="glowFilterId"
+					color-interpolation-filters="sRGB"
+					filterUnits="userSpaceOnUse"
+					:x="-glowFilterBleed"
+					:y="-glowFilterBleed"
+					:width="`calc(100% + ${glowFilterBleed * 2}px)`"
+					:height="`calc(100% + ${glowFilterBleed * 2}px)`">
+					<feGaussianBlur
+						in="SourceGraphic"
+						:stdDeviation="glowBlur"></feGaussianBlur>
+				</filter>
+			</defs>
+			<g :filter="glowFilterReference">
+				<foreignObject
+					x="0"
+					y="0"
+					width="100%"
+					height="100%"
+					:mask="maskReference">
+					<div class="g-gradient-border-layer__paint"></div>
+				</foreignObject>
+			</g>
+		</svg>
+	</div>
 </template>
 
 <style scoped lang="scss">
@@ -161,11 +135,19 @@
 		position: absolute;
 		inset: 0;
 
+		container-type: size;
 		overflow: visible;
 		display: block;
 
 		width: 100%;
 		height: 100%;
+
+		&__svg {
+			overflow: visible;
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
 
 		&__mask-outer {
 			fill: rgb(255 255 255);

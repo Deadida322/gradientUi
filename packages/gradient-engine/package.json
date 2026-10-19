@@ -46,39 +46,74 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/types/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
+			"import": {
+				"types": "./dist/types/index.d.ts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		},
 		"./core": {
-			"types": "./dist/types/core.d.ts",
-			"import": "./dist/core.mjs",
-			"require": "./dist/core.cjs"
+			"import": {
+				"types": "./dist/types/core.d.ts",
+				"default": "./dist/core.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/core.d.cts",
+				"default": "./dist/core.cjs"
+			}
 		},
 		"./formatters": {
-			"types": "./dist/types/formatters/index.d.ts",
-			"import": "./dist/formatters.mjs",
-			"require": "./dist/formatters.cjs"
+			"import": {
+				"types": "./dist/types/formatters/index.d.ts",
+				"default": "./dist/formatters.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/formatters/index.d.cts",
+				"default": "./dist/formatters.cjs"
+			}
 		},
 		"./effects": {
-			"types": "./dist/types/effects/index.d.ts",
-			"import": "./dist/effects.mjs",
-			"require": "./dist/effects.cjs"
+			"import": {
+				"types": "./dist/types/effects/index.d.ts",
+				"default": "./dist/effects.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/effects/index.d.cts",
+				"default": "./dist/effects.cjs"
+			}
 		},
 		"./animation": {
-			"types": "./dist/types/animation/index.d.ts",
-			"import": "./dist/animation.mjs",
-			"require": "./dist/animation.cjs"
+			"import": {
+				"types": "./dist/types/animation/index.d.ts",
+				"default": "./dist/animation.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/animation/index.d.cts",
+				"default": "./dist/animation.cjs"
+			}
 		},
 		"./material": {
-			"types": "./dist/types/material.d.ts",
-			"import": "./dist/material.mjs",
-			"require": "./dist/material.cjs"
+			"import": {
+				"types": "./dist/types/material.d.ts",
+				"default": "./dist/material.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/material.d.cts",
+				"default": "./dist/material.cjs"
+			}
 		},
 		"./design-tokens": {
-			"types": "./dist/types/designTokens.d.ts",
-			"import": "./dist/design-tokens.mjs",
-			"require": "./dist/design-tokens.cjs"
+			"import": {
+				"types": "./dist/types/designTokens.d.ts",
+				"default": "./dist/design-tokens.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/designTokens.d.cts",
+				"default": "./dist/design-tokens.cjs"
+			}
 		},
 		"./package.json": "./package.json"
 	},
@@ -108,8 +143,9 @@
 		}
 	},
 	"scripts": {
-		"build": "vite build --config vite.config.ts && tsc -p tsconfig.json --emitDeclarationOnly",
+		"build": "node ../../scripts/clean-build-output.mjs dist && vite build --config vite.config.ts && tsc -p tsconfig.json --emitDeclarationOnly && node ../../scripts/prepare-dual-declarations.mjs dist --node-extensions",
 		"pack:dry": "npm pack --dry-run",
+		"prepack": "npm run build",
 		"type-check": "tsc -p tsconfig.json --noEmit"
 	},
 	"dependencies": {

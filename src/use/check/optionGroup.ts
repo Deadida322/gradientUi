@@ -3,6 +3,7 @@ import { useFormControl } from '@/use/form/control';
 import { useSelectionController } from '@/use/select/selectionController';
 import type { SelectionValue } from '@/use/select/types';
 import type { InternalItem } from '@/use/select/types';
+import { createComponentId } from '@/utils/createComponentId';
 import { useCheckGroupFocus } from './groupFocus';
 import type { CheckSelectionProps, CheckValueComparator } from './types';
 
@@ -26,12 +27,9 @@ export function useCheckOptionGroup<
 	}
 ) {
 	type ModelValue = SelectionValue<T, V, Multiple, ReturnObject>;
+	const generatedName = createComponentId(options.namePrefix);
 
-	const groupName = computed(
-		() =>
-			props.name ??
-			`${options.namePrefix}-${Math.random().toString(36).slice(2, 10)}`
-	);
+	const groupName = computed(() => props.name ?? generatedName);
 
 	const {
 		focused,

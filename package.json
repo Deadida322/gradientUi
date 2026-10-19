@@ -3,14 +3,16 @@
 	"version": "0.6.0",
 	"private": false,
 	"scripts": {
-		"dev": "vite --config docs/vite.config.ts",
-		"dev:docs": "vite --config docs/vite.config.ts",
-		"build:docs": "vite build --config docs/vite.config.ts",
+		"dev": "npm run dev -w @gradient-ui/docs",
+		"dev:docs": "npm run dev -w @gradient-ui/docs",
+		"build:docs": "npm run build -w @gradient-ui/docs",
+		"clean:lib": "node scripts/clean-build-output.mjs dist",
 		"build:gradient-engine": "npm run build -w @gradient-ui/gradient-engine",
+		"build:nuxt": "npm run build -w @gradient-ui/nuxt",
 		"build:figma-plugin": "npm run build:gradient-engine && npm run build -w @gradient-ui/figma-plugin",
-		"build:lib": "npm run build:gradient-engine && vite build --config vite.lib.config.ts && vue-tsc -p tsconfig.lib.json",
+		"build:lib": "npm run clean:lib && npm run build:gradient-engine && vite build --config vite.lib.config.ts && vue-tsc -p tsconfig.lib.json && tsc-alias -p tsconfig.lib.json && node scripts/prepare-dual-declarations.mjs dist --node-extensions",
 		"build": "npm run build:lib && npm run build:docs",
-		"preview:docs": "vite preview --config docs/vite.config.ts",
+		"preview:docs": "npm run preview -w @gradient-ui/docs",
 		"prettier": "prettier --check . --ignore-unknown",
 		"prettier:check": "prettier --check . --ignore-unknown",
 		"prettier:write": "prettier --write . --ignore-unknown",
@@ -21,8 +23,22 @@
 		"type-check": "npm run build:gradient-engine && vue-tsc -b && npm run type-check:docs",
 		"type-check:gradient-engine": "npm run type-check -w @gradient-ui/gradient-engine",
 		"type-check:figma-plugin": "npm run type-check -w @gradient-ui/figma-plugin",
+		"type-check:nuxt": "npm run type-check -w @gradient-ui/nuxt",
 		"type-check:lib": "vue-tsc -p tsconfig.lib.json",
 		"type-check:docs": "vue-tsc -p docs/tsconfig.json",
+		"test:ssr:core:run": "vitest run --config vitest.ssr.config.ts",
+		"test:ssr:nuxt:run": "vitest run --config vitest.nuxt.config.ts",
+		"test:ssr": "npm run build:lib && npm run test:ssr:core:run",
+		"test:ssr:compat": "npm run build:lib && npm run build:nuxt && npm run test:ssr:nuxt:run",
+		"test:ssg:run": "nuxt generate tests/fixtures/nuxt && nuxt generate tests/fixtures/nuxt-csp && vitest run --config vitest.ssg.config.ts",
+		"test:ssg": "npm run build:lib && npm run build:nuxt && npm run test:ssg:run",
+		"test:package:run": "publint packages/gradient-engine --pack npm && publint --pack npm && publint packages/nuxt --pack npm && attw --pack packages/gradient-engine && attw --pack . --exclude-entrypoints ./style.css ./styles && attw --pack packages/nuxt --profile esm-only",
+		"test:package": "npm run build:lib && npm run build:nuxt && npm run test:package:run",
+		"test:ssr:all": "npm run build:lib && npm run build:nuxt && npm run test:ssr:core:run && npm run test:ssr:nuxt:run && npm run test:ssg:run && npm run test:package:run",
+		"version:sync": "node scripts/workspace-versions.mjs sync",
+		"version:check": "node scripts/workspace-versions.mjs check",
+		"release:publish": "node scripts/publish-workspaces.mjs",
+		"release:ssr:check": "npm run eslint && npm run type-check && npm run lint:css && npm run test:ssr:all",
 		"release:gradient-engine:check": "npm run type-check:gradient-engine && npm run build:gradient-engine",
 		"release:gradient-engine:pack": "npm run release:gradient-engine:check && npm pack -w @gradient-ui/gradient-engine",
 		"release:gradient-engine:publish": "npm run release:gradient-engine:check && npm publish -w @gradient-ui/gradient-engine --access public",
@@ -35,8 +51,10 @@
 		"gib-validate": "^1.1.0"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.5",
 		"@eslint/js": "^9.10.0",
 		"@material/material-color-utilities": "^0.4.0",
+		"@nuxt/test-utils": "^3.21.0",
 		"@types/eslint__js": "^8.42.3",
 		"@types/node": "^22.7.7",
 		"@typescript-eslint/eslint-plugin": "^8.4.0",
@@ -48,10 +66,14 @@
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-prettier": "^5.2.3",
 		"eslint-plugin-vue": "^9.28.0",
+		"nuxt": "3.15.4",
+		"nuxt-security": "^2.4.0",
+		"playwright": "^1.63.0",
 		"postcss": "^8.5.1",
 		"postcss-html": "^1.8.1",
 		"postcss-preset-env": "^10.1.3",
 		"prettier": "^3.3.3",
+		"publint": "^0.3.24",
 		"sass-embedded": "^1.83.4",
 		"stylelint": "^16.14.0",
 		"stylelint-color-format": "^1.1.0",
@@ -62,12 +84,14 @@
 		"stylelint-order": "^8.1.1",
 		"stylelint-scss": "^6.10.1",
 		"stylelint-z-index-value-constraint": "^1.4.0",
+		"tsc-alias": "^1.9.5",
 		"typescript": "^5.5.4",
 		"typescript-eslint": "^8.4.0",
 		"vite": "^5.4.1",
-		"vue": "^3.5.20",
+		"vitest": "^3.2.4",
+		"vue": "3.5.42",
 		"vue-router": "^4.4.5",
-		"vue-tsc": "^2.0.29"
+		"vue-tsc": "2.0.29"
 	},
 	"overrides": {
 		"vue-demi": "0.14.10"
@@ -99,6 +123,9 @@
 	"publishConfig": {
 		"access": "public"
 	},
+	"engines": {
+		"node": ">=20.19.0"
+	},
 	"sideEffects": [
 		"*.css",
 		"**/*.css",
@@ -113,35 +140,275 @@
 		"README.md"
 	],
 	"exports": {
+		"./component-names": {
+			"import": {
+				"types": "./dist/types/componentNames.d.ts",
+				"default": "./dist/component-names.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/componentNames.d.cts",
+				"default": "./dist/component-names.cjs"
+			}
+		},
+		"./plugin": {
+			"import": {
+				"types": "./dist/types/plugin.d.ts",
+				"default": "./dist/plugin.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/plugin.d.cts",
+				"default": "./dist/plugin.cjs"
+			}
+		},
 		".": {
-			"types": "./dist/types/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
+			"import": {
+				"types": "./dist/types/index.d.ts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		},
 		"./components": {
-			"types": "./dist/types/components/index.d.ts",
-			"import": "./dist/components.mjs",
-			"require": "./dist/components.cjs"
+			"import": {
+				"types": "./dist/types/components/index.d.ts",
+				"default": "./dist/components.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/index.d.cts",
+				"default": "./dist/components.cjs"
+			}
+		},
+		"./components/GAsideGroup": {
+			"import": {
+				"types": "./dist/types/components/ui/GAside/GAsideGroup.vue.d.ts",
+				"default": "./dist/components/GAsideGroup.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GAside/GAsideGroup.vue.d.cts",
+				"default": "./dist/components/GAsideGroup.cjs"
+			}
+		},
+		"./components/GAsideItem": {
+			"import": {
+				"types": "./dist/types/components/ui/GAside/GAsideItem.vue.d.ts",
+				"default": "./dist/components/GAsideItem.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GAside/GAsideItem.vue.d.cts",
+				"default": "./dist/components/GAsideItem.cjs"
+			}
+		},
+		"./components/GAvatarGroup": {
+			"import": {
+				"types": "./dist/types/components/ui/GAvatar/GAvatarGroup.vue.d.ts",
+				"default": "./dist/components/GAvatarGroup.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GAvatar/GAvatarGroup.vue.d.cts",
+				"default": "./dist/components/GAvatarGroup.cjs"
+			}
+		},
+		"./components/GNavbarItem": {
+			"import": {
+				"types": "./dist/types/components/ui/GNavbar/GNavbarItem.vue.d.ts",
+				"default": "./dist/components/GNavbarItem.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GNavbar/GNavbarItem.vue.d.cts",
+				"default": "./dist/components/GNavbarItem.cjs"
+			}
+		},
+		"./components/GNavbarMenu": {
+			"import": {
+				"types": "./dist/types/components/ui/GNavbar/GNavbarMenu.vue.d.ts",
+				"default": "./dist/components/GNavbarMenu.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GNavbar/GNavbarMenu.vue.d.cts",
+				"default": "./dist/components/GNavbarMenu.cjs"
+			}
+		},
+		"./components/GNavbarSubItem": {
+			"import": {
+				"types": "./dist/types/components/ui/GNavbar/GNavbarSubItem.vue.d.ts",
+				"default": "./dist/components/GNavbarSubItem.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GNavbar/GNavbarSubItem.vue.d.cts",
+				"default": "./dist/components/GNavbarSubItem.cjs"
+			}
+		},
+		"./components/GNavGroup": {
+			"import": {
+				"types": "./dist/types/components/ui/GNavList/GNavGroup.vue.d.ts",
+				"default": "./dist/components/GNavGroup.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GNavList/GNavGroup.vue.d.cts",
+				"default": "./dist/components/GNavGroup.cjs"
+			}
+		},
+		"./components/GNavItem": {
+			"import": {
+				"types": "./dist/types/components/ui/GNavList/GNavItem.vue.d.ts",
+				"default": "./dist/components/GNavItem.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GNavList/GNavItem.vue.d.cts",
+				"default": "./dist/components/GNavItem.cjs"
+			}
+		},
+		"./components/GStepPanel": {
+			"import": {
+				"types": "./dist/types/components/ui/GStepper/GStepPanel.vue.d.ts",
+				"default": "./dist/components/GStepPanel.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GStepper/GStepPanel.vue.d.cts",
+				"default": "./dist/components/GStepPanel.cjs"
+			}
+		},
+		"./components/GStepperActions": {
+			"import": {
+				"types": "./dist/types/components/ui/GStepper/GStepperActions.vue.d.ts",
+				"default": "./dist/components/GStepperActions.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GStepper/GStepperActions.vue.d.cts",
+				"default": "./dist/components/GStepperActions.cjs"
+			}
+		},
+		"./components/GTab": {
+			"import": {
+				"types": "./dist/types/components/ui/GTabs/GTab.vue.d.ts",
+				"default": "./dist/components/GTab.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GTabs/GTab.vue.d.cts",
+				"default": "./dist/components/GTab.cjs"
+			}
+		},
+		"./components/GTabList": {
+			"import": {
+				"types": "./dist/types/components/ui/GTabs/GTabList.vue.d.ts",
+				"default": "./dist/components/GTabList.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GTabs/GTabList.vue.d.cts",
+				"default": "./dist/components/GTabList.cjs"
+			}
+		},
+		"./components/GTabPanel": {
+			"import": {
+				"types": "./dist/types/components/ui/GTabs/GTabPanel.vue.d.ts",
+				"default": "./dist/components/GTabPanel.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GTabs/GTabPanel.vue.d.cts",
+				"default": "./dist/components/GTabPanel.cjs"
+			}
+		},
+		"./components/GTabPanels": {
+			"import": {
+				"types": "./dist/types/components/ui/GTabs/GTabPanels.vue.d.ts",
+				"default": "./dist/components/GTabPanels.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GTabs/GTabPanels.vue.d.cts",
+				"default": "./dist/components/GTabPanels.cjs"
+			}
+		},
+		"./components/GTransition": {
+			"import": {
+				"types": "./dist/types/components/transitions/GTransition.vue.d.ts",
+				"default": "./dist/components/GTransition.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/transitions/GTransition.vue.d.cts",
+				"default": "./dist/components/GTransition.cjs"
+			}
+		},
+		"./components/GTransitionGroup": {
+			"import": {
+				"types": "./dist/types/components/transitions/GTransitionGroup.vue.d.ts",
+				"default": "./dist/components/GTransitionGroup.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/transitions/GTransitionGroup.vue.d.cts",
+				"default": "./dist/components/GTransitionGroup.cjs"
+			}
+		},
+		"./components/GExpandTransition": {
+			"import": {
+				"types": "./dist/types/components/transitions/GExpandTransition.vue.d.ts",
+				"default": "./dist/components/GExpandTransition.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/transitions/GExpandTransition.vue.d.cts",
+				"default": "./dist/components/GExpandTransition.cjs"
+			}
+		},
+		"./components/*": {
+			"import": {
+				"types": "./dist/types/components/ui/*/*.vue.d.ts",
+				"default": "./dist/components/*.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/*/*.vue.d.cts",
+				"default": "./dist/components/*.cjs"
+			}
 		},
 		"./directives": {
-			"types": "./dist/types/directives/index.d.ts",
-			"import": "./dist/directives.mjs",
-			"require": "./dist/directives.cjs"
+			"import": {
+				"types": "./dist/types/directives/index.d.ts",
+				"default": "./dist/directives.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/directives/index.d.cts",
+				"default": "./dist/directives.cjs"
+			}
 		},
 		"./services": {
-			"types": "./dist/types/services/index.d.ts",
-			"import": "./dist/services.mjs",
-			"require": "./dist/services.cjs"
+			"import": {
+				"types": "./dist/types/services/index.d.ts",
+				"default": "./dist/services.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/services/index.d.cts",
+				"default": "./dist/services.cjs"
+			}
+		},
+		"./ssr": {
+			"import": {
+				"types": "./dist/types/ssr/index.d.ts",
+				"default": "./dist/ssr.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/ssr/index.d.cts",
+				"default": "./dist/ssr.cjs"
+			}
 		},
 		"./theme": {
-			"types": "./dist/types/theme/index.d.ts",
-			"import": "./dist/theme.mjs",
-			"require": "./dist/theme.cjs"
+			"import": {
+				"types": "./dist/types/theme/index.d.ts",
+				"default": "./dist/theme.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/theme/index.d.cts",
+				"default": "./dist/theme.cjs"
+			}
 		},
 		"./use": {
-			"types": "./dist/types/use/index.d.ts",
-			"import": "./dist/use.mjs",
-			"require": "./dist/use.cjs"
+			"import": {
+				"types": "./dist/types/use/index.d.ts",
+				"default": "./dist/use.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/use/index.d.cts",
+				"default": "./dist/use.cjs"
+			}
 		},
 		"./style.css": "./dist/style.css",
 		"./styles": "./dist/style.css",
@@ -149,14 +416,77 @@
 	},
 	"typesVersions": {
 		"*": {
+			"component-names": [
+				"dist/types/componentNames.d.ts"
+			],
+			"plugin": [
+				"dist/types/plugin.d.ts"
+			],
 			"components": [
 				"dist/types/components/index.d.ts"
+			],
+			"components/GAsideGroup": [
+				"dist/types/components/ui/GAside/GAsideGroup.vue.d.ts"
+			],
+			"components/GAsideItem": [
+				"dist/types/components/ui/GAside/GAsideItem.vue.d.ts"
+			],
+			"components/GAvatarGroup": [
+				"dist/types/components/ui/GAvatar/GAvatarGroup.vue.d.ts"
+			],
+			"components/GNavbarItem": [
+				"dist/types/components/ui/GNavbar/GNavbarItem.vue.d.ts"
+			],
+			"components/GNavbarMenu": [
+				"dist/types/components/ui/GNavbar/GNavbarMenu.vue.d.ts"
+			],
+			"components/GNavbarSubItem": [
+				"dist/types/components/ui/GNavbar/GNavbarSubItem.vue.d.ts"
+			],
+			"components/GNavGroup": [
+				"dist/types/components/ui/GNavList/GNavGroup.vue.d.ts"
+			],
+			"components/GNavItem": [
+				"dist/types/components/ui/GNavList/GNavItem.vue.d.ts"
+			],
+			"components/GStepPanel": [
+				"dist/types/components/ui/GStepper/GStepPanel.vue.d.ts"
+			],
+			"components/GStepperActions": [
+				"dist/types/components/ui/GStepper/GStepperActions.vue.d.ts"
+			],
+			"components/GTab": [
+				"dist/types/components/ui/GTabs/GTab.vue.d.ts"
+			],
+			"components/GTabList": [
+				"dist/types/components/ui/GTabs/GTabList.vue.d.ts"
+			],
+			"components/GTabPanel": [
+				"dist/types/components/ui/GTabs/GTabPanel.vue.d.ts"
+			],
+			"components/GTabPanels": [
+				"dist/types/components/ui/GTabs/GTabPanels.vue.d.ts"
+			],
+			"components/GTransition": [
+				"dist/types/components/transitions/GTransition.vue.d.ts"
+			],
+			"components/GTransitionGroup": [
+				"dist/types/components/transitions/GTransitionGroup.vue.d.ts"
+			],
+			"components/GExpandTransition": [
+				"dist/types/components/transitions/GExpandTransition.vue.d.ts"
+			],
+			"components/*": [
+				"dist/types/components/ui/*/*.vue.d.ts"
 			],
 			"directives": [
 				"dist/types/directives/index.d.ts"
 			],
 			"services": [
 				"dist/types/services/index.d.ts"
+			],
+			"ssr": [
+				"dist/types/ssr/index.d.ts"
 			],
 			"theme": [
 				"dist/types/theme/index.d.ts"

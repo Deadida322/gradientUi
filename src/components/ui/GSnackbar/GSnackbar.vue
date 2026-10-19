@@ -1,8 +1,9 @@
 <script setup lang="ts">
-	import { computed, onBeforeUnmount, ref, watch } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import { GTransition } from '@/components/transitions';
 	import GButton from '@/components/ui/GButton/GButton.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
+	import { onClientMounted } from '@/ssr/use';
 	import { useMaterialSurface } from '@/use/materialSurface';
 	import GGradient from '@/components/ui/GGradient/GGradient.vue';
 	import usePx from '@/use/px';
@@ -134,10 +135,9 @@
 		startTimer();
 	});
 
-	startTimer();
-
-	onBeforeUnmount(() => {
-		clearTimer();
+	onClientMounted(() => {
+		startTimer();
+		return clearTimer;
 	});
 
 	function onAfterClose() {

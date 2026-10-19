@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
+	import { useSsrTeleport } from '@/ssr/use';
 	import GFAB from '../GFAB/GFAB.vue';
 	import GIcon from '../GIcon/GIcon.vue';
 	import type { IconValue } from '../GIcon/types';
@@ -30,6 +31,10 @@
 		}) => unknown;
 	}>();
 	const isOpened = ref(false);
+	const { disabled: teleportDisabled } = useSsrTeleport(
+		'body',
+		() => props.contained
+	);
 
 	const iconValue = computed(() => props.icon as IconValue);
 	const activeIconValue = computed(() => props.activeIcon as IconValue);
@@ -74,7 +79,7 @@
 <template>
 	<teleport
 		to="body"
-		:disabled="props.contained">
+		:disabled="teleportDisabled">
 		<div
 			class="g-quick-actions__container"
 			:class="{

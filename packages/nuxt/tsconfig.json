@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.node.json",
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"composite": false,
+		"emitDeclarationOnly": false,
+		"incremental": false,
+		"lib": ["ESNext", "DOM"],
+		"noEmit": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ES2020"
+	}
+}

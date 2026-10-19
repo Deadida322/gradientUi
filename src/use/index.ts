@@ -17,6 +17,7 @@ export * from './select/commit';
 export * from './select/listboxKeyboard';
 export * from './select/searchFieldControl';
 export * from './select/tokenInputKeyboard';
+export * from '../ssr/use';
 export * from './stateIcon';
 export * from './stepper';
 export * from './tagName';

@@ -2,7 +2,7 @@
 
 Gradient UI has two publish targets:
 
-- documentation site: static Vite build from `docs`
+- documentation site: statically generated Nuxt application from `docs`
 - npm package: library build from `src`
 
 ## Documentation
@@ -16,7 +16,7 @@ npm run build:docs
 The static output directory is:
 
 ```text
-dist-docs
+docs/.output/public
 ```
 
 ## Netlify
@@ -26,7 +26,7 @@ The repository includes `netlify.toml`.
 Netlify settings:
 
 - build command: `npm run build:docs`
-- publish directory: `dist-docs`
+- publish directory: `docs/.output/public`
 - Node version: `22`
 
 Netlify can deploy automatically from the selected Git branch after connecting
@@ -40,7 +40,7 @@ Vercel settings:
 
 - install command: `npm ci`
 - build command: `npm run build:docs`
-- output directory: `dist-docs`
+- output directory: `docs/.output/public`
 
 Vercel can deploy automatically from the selected Git branch after importing
 the repository in the Vercel dashboard.
@@ -66,23 +66,22 @@ The package is published as:
 @gradient-ui/core
 ```
 
-`.github/workflows/release-package.yml` creates version commits, tags, GitHub
-releases and publishes the package from a manual workflow run.
+`.github/workflows/release-package.yml` is the single release workflow. It
+creates version commits, tags, GitHub releases and publishes the packages from
+a manual workflow run.
 
-`.github/workflows/publish-package.yml` publishes the package to npm when a
-GitHub release is published.
-
-Required GitHub secret:
-
-```text
-NPM_TOKEN
-```
-
-Create the token in npm, then add it in GitHub:
+The publish job uses npm Trusted Publishing with GitHub OIDC. No `NPM_TOKEN`
+secret is required. Configure each public package in npmjs.com with this trusted
+publisher:
 
 ```text
-Repository settings -> Secrets and variables -> Actions -> New repository secret
+Repository: Deadida322/gradientUi
+Workflow: release-package.yml
+Environment: npm-publish
 ```
+
+Create the `npm-publish` GitHub Environment and configure its deployment
+protection rules before the first release.
 
 Recommended release flow:
 
@@ -94,24 +93,20 @@ Recommended release flow:
 The release workflow will:
 
 - validate package metadata
-- validate npm auth
 - run `npm version`
-- run checks
-- build the project
-- push the version commit
+- synchronize all publishable workspace versions
+- run the complete SSR release gate
+- push the synchronized version commit
 - push the matching `vX.Y.Z` tag
-- publish the package to npm
-- create a GitHub Release
+- publish gradient-engine, core and the Nuxt module in dependency order
+- create a GitHub Release after all npm publishes succeed
 
-Publishing runs in the release workflow:
+Publishing is idempotent and runs in a separate release job, so a failed publish
+job can be retried without creating another version commit or tag:
 
 ```bash
-npm publish --access public
+npm run release:publish -- latest
 ```
-
-The additional publish workflow validates that the release tag matches the
-package version and that the package name is `@gradient-ui/core` before
-publishing when a release is created outside the release workflow.
 
 Manual releases should be started from `Release Package`; it creates the
 matching version tag, release and npm publish.

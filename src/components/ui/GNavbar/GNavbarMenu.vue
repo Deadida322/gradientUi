@@ -8,6 +8,7 @@
 		watch,
 		type ComponentPublicInstance
 	} from 'vue';
+	import { isClientHTMLElement } from '@/ssr/utils';
 	import GDropdown from '@/components/ui/GDropdown/GDropdown.vue';
 	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import { useSurfaceColor } from '@/use/surfaceColor';
@@ -122,7 +123,7 @@
 		setActivatorRef: (el: Element | ComponentPublicInstance | null) => void
 	) {
 		setActivatorRef(el);
-		actionRef.value = el instanceof HTMLElement ? el : null;
+		actionRef.value = isClientHTMLElement(el) ? el : null;
 	}
 
 	provideNavbarMenu({
