@@ -16,7 +16,7 @@ npm run build:docs
 The static output directory is:
 
 ```text
-docs/.output/public
+docs/dist
 ```
 
 ## Netlify
@@ -26,7 +26,7 @@ The repository includes `netlify.toml`.
 Netlify settings:
 
 - build command: `npm run build:docs`
-- publish directory: `docs/.output/public`
+- publish directory: `docs/dist`
 - Node version: `22`
 
 Netlify can deploy automatically from the selected Git branch after connecting
@@ -40,7 +40,7 @@ Vercel settings:
 
 - install command: `npm ci`
 - build command: `npm run build:docs`
-- output directory: `docs/.output/public`
+- output directory: `docs/dist`
 
 Vercel can deploy automatically from the selected Git branch after importing
 the repository in the Vercel dashboard.
