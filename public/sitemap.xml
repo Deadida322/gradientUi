@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/get-started</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/core-conceptions</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/design-tokens</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/gradient-engine</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/ssr-nuxt</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/figma-plugin</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/components</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/forms</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/directives</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/docs/css-helpers</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/playground</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/about</loc></url>
+	<url><loc>https://gradient-ui-docs.netlify.app/validation</loc></url>
+</urlset>

@@ -1,4 +1,4 @@
-import { applyTokensToCSS } from './cssTokens';
+import { applyTokensToCSS, createTokensCSS } from './cssTokens';
 import type { ThemeColorExtensions, ThemeMode, ThemeTokens } from './types';
 import type { ColorInput } from '@/types/Colors';
 import {
@@ -16,6 +16,7 @@ import {
 	type Ref,
 	type ShallowRef
 } from 'vue';
+import { canUseDom, getClientDocument } from '@/ssr/utils';
 
 export { DEFAULT_SEED };
 
@@ -26,6 +27,7 @@ export interface SeedTheme {
 export type { ThemeMode } from './types';
 
 export interface GradientUIThemeOptions {
+	applyToDom?: boolean;
 	seed?: ColorInput;
 	mode?: ThemeMode;
 	autoApply?: boolean;
@@ -34,6 +36,7 @@ export interface GradientUIThemeOptions {
 
 export interface CreateDefaultThemeOptions {
 	colors?: ThemeColorExtensions;
+	applyToDom?: boolean;
 }
 
 export interface GeneratedTheme {
@@ -42,9 +45,14 @@ export interface GeneratedTheme {
 		colors: ThemeTokens;
 		gradients: ThemeTokens;
 	};
-	themeCSS: HTMLStyleElement;
-	colorsCSS: HTMLStyleElement;
-	gradientCSS: HTMLStyleElement;
+	classes: string[];
+	cssText: string;
+	themeCSSText: string;
+	colorsCSSText: string;
+	gradientCSSText: string;
+	themeCSS: HTMLStyleElement | null;
+	colorsCSS: HTMLStyleElement | null;
+	gradientCSS: HTMLStyleElement | null;
 }
 
 export interface GradientUITheme {
@@ -61,7 +69,13 @@ const THEME_CLASS = 'g-theme--material';
 const MODE_CLASS_PREFIX = 'g-theme--';
 const ThemeSymbol: InjectionKey<GradientUITheme> = Symbol('gradient-theme');
 
-const createTokenStyle = (tokens: ThemeTokens, prefix: string) =>
+const createTokenCSS = (tokens: ThemeTokens, prefix: string) =>
+	createTokensCSS(tokens, {
+		className: THEME_CLASS,
+		prefix
+	});
+
+const applyTokenStyle = (tokens: ThemeTokens, prefix: string) =>
 	applyTokensToCSS(tokens, {
 		className: THEME_CLASS,
 		id: `g-${prefix}-style`,
@@ -83,26 +97,42 @@ export const createDefaultTheme = (
 	mode: ThemeMode = 'light',
 	options: CreateDefaultThemeOptions = {}
 ): GeneratedTheme => {
-	const root = document.documentElement;
-	root.classList.add(THEME_CLASS);
-	root.classList.remove(
-		`${MODE_CLASS_PREFIX}light`,
-		`${MODE_CLASS_PREFIX}dark`
-	);
-	root.classList.add(`${MODE_CLASS_PREFIX}${mode}`);
-
 	const generated = createDesignTokens({
 		colors: options.colors,
 		mode,
 		seed: normalizeDesignTokenSeed(seed)
 	});
 	const { tokens } = generated;
+	const classes = [THEME_CLASS, `${MODE_CLASS_PREFIX}${mode}`];
+	const themeCSSText = createTokenCSS(tokens.theme, 'theme');
+	const colorsCSSText = createTokenCSS(tokens.colors, 'color');
+	const gradientCSSText = createTokenCSS(tokens.gradients, 'gradient');
+	const canApplyToDom = options.applyToDom !== false && canUseDom();
+
+	if (canApplyToDom) {
+		const root = getClientDocument()!.documentElement;
+		root.classList.add(THEME_CLASS);
+		root.classList.remove(
+			`${MODE_CLASS_PREFIX}light`,
+			`${MODE_CLASS_PREFIX}dark`
+		);
+		root.classList.add(`${MODE_CLASS_PREFIX}${mode}`);
+	}
 
 	return {
 		tokens,
-		themeCSS: createTokenStyle(tokens.theme, 'theme'),
-		colorsCSS: createTokenStyle(tokens.colors, 'color'),
-		gradientCSS: createTokenStyle(tokens.gradients, 'gradient')
+		classes,
+		cssText: [themeCSSText, colorsCSSText, gradientCSSText].join('\n'),
+		themeCSSText,
+		colorsCSSText,
+		gradientCSSText,
+		themeCSS: canApplyToDom ? applyTokenStyle(tokens.theme, 'theme') : null,
+		colorsCSS: canApplyToDom
+			? applyTokenStyle(tokens.colors, 'color')
+			: null,
+		gradientCSS: canApplyToDom
+			? applyTokenStyle(tokens.gradients, 'gradient')
+			: null
 	};
 };
 
@@ -114,8 +144,8 @@ export const createTheme = (
 	const result = shallowRef<GeneratedTheme | null>(null);
 
 	const apply = () => {
-		if (typeof window === 'undefined') return null;
 		result.value = createDefaultTheme(seed.value, mode.value, {
+			applyToDom: options.applyToDom,
 			colors: options.colors
 		});
 		return result.value;

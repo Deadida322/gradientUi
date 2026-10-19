@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gradient-ui-docs.netlify.app/sitemap.xml

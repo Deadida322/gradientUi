@@ -1,22 +1,7 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"include": [
-		"src/**/*.ts",
-		"src/**/*.js",
-		"src/**/*.vue",
-		"../src/**/*.ts",
-		"../src/**/*.vue"
-	],
+	"extends": "./.nuxt/tsconfig.json",
 	"compilerOptions": {
-		"composite": true,
 		"noImplicitAny": false,
-		"lib": ["ESNext", "DOM"],
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["../src/*"],
-			"@docs/*": ["src/docs/*"],
-			"@playground/*": ["src/playground/*"],
-			"@gradient-ui/core": ["../src/index.ts"]
-		}
+		"lib": ["ESNext", "DOM"]
 	}
 }

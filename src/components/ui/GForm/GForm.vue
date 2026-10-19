@@ -93,22 +93,24 @@
 		return validation.value.$validate();
 	}
 
-	async function onSubmit(event: SubmitEvent) {
+	async function onSubmit(event: Event) {
+		const submitEvent = event as SubmitEvent;
+
 		if (props.preventDefault) {
-			event.preventDefault();
+			submitEvent.preventDefault();
 		}
 
-		emit('submit', event, validation.value);
+		emit('submit', submitEvent, validation.value);
 
 		if (!props.validateOnSubmit) return;
 
 		const valid = await validate();
 		if (valid) {
-			emit('submit-valid', event, validation.value);
+			emit('submit-valid', submitEvent, validation.value);
 			return;
 		}
 
-		emit('submit-invalid', event, validation.value);
+		emit('submit-invalid', submitEvent, validation.value);
 		await revealFirstError();
 	}
 

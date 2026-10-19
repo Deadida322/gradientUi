@@ -32,7 +32,13 @@
 			interactionClass,
 			surfaceFillClass
 		]"
-		:style="gradientStyles">
+		:style="[
+			gradientStyles,
+			{
+				'--g-gradient-container-radius': containerBorderRadius,
+				'--g-gradient-surface-radius': surfaceBorderRadius
+			}
+		]">
 		<g-gradient-border-layer
 			v-if="hasBorder"
 			class="g-gradient__border"
@@ -76,7 +82,7 @@
 		height: fit-content;
 		padding: var(--g-gradient-border-top) var(--g-gradient-border-right)
 			var(--g-gradient-border-bottom) var(--g-gradient-border-left);
-		border-radius: v-bind('containerBorderRadius');
+		border-radius: var(--g-gradient-container-radius);
 
 		background: transparent;
 		box-shadow: none;
@@ -109,7 +115,7 @@
 
 			overflow: hidden;
 
-			border-radius: v-bind('surfaceBorderRadius');
+			border-radius: var(--g-gradient-surface-radius);
 
 			transition: transform var(--g-token-duration-slow)
 				var(--g-token-easing-emphasized);

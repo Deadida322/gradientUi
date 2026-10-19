@@ -1,14 +1,23 @@
+<script setup lang="ts">
+	import { useDocsSeo } from '@docs/use/docsSeo';
+
+	useDocsSeo();
+</script>
+
 <template>
-	<router-view />
+	<nuxt-layout>
+		<nuxt-page />
+	</nuxt-layout>
 </template>
 
 <style>
-	:root {
+	html:root {
 		--g-token-font-family-base: 'Manrope', sans-serif;
 	}
 
 	body,
-	#app {
+	/* stylelint-disable-next-line selector-id-pattern -- Nuxt owns this root id. */
+	#__nuxt {
 		min-height: 100vh;
 
 		font-family: var(--g-token-font-family-base);

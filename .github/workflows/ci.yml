@@ -15,10 +15,14 @@ concurrency:
     group: ci-${{ github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 jobs:
     verify:
         name: Verify
         runs-on: ubuntu-latest
+        timeout-minutes: 20
 
         steps:
             - name: Checkout
@@ -47,3 +51,118 @@ jobs:
 
             - name: Validate package contents
               run: npm pack --dry-run
+
+    ssr:
+        name: SSR (${{ matrix.name }})
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: Node 20 / Nuxt 3 baseline
+                      node-version: 20.19.0
+                      nuxt-version: ''
+                    - name: Node 22 / latest Nuxt 3
+                      node-version: 22
+                      nuxt-version: 3.21.11
+                    - name: Node 22 / Nuxt 4
+                      node-version: 22
+                      nuxt-version: 4.5.2
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: npm
+
+            - name: Install
+              run: npm ci
+
+            - name: Install Nuxt compatibility version
+              if: matrix.nuxt-version != ''
+              run: npm install --no-save "nuxt@${{ matrix.nuxt-version }}" "@nuxt/kit@${{ matrix.nuxt-version }}"
+
+            - name: Install hydration browser
+              run: npx playwright install --with-deps chromium
+
+            - name: Test SSR and hydration
+              run: npm run test:ssr:compat
+
+    vue-compat:
+        name: Core SSR (${{ matrix.name }})
+        runs-on: ubuntu-latest
+        timeout-minutes: 25
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: Vue 3.5 minimum
+                      vue-version: 3.5.0
+                    - name: latest Vue 3
+                      vue-version: '3'
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Install
+              run: npm ci
+
+            - name: Install Vue compatibility version
+              run: npm install --no-save --package-lock=false "vue@${{ matrix.vue-version }}" "@vue/server-renderer@${{ matrix.vue-version }}"
+
+            - name: Test core SSR
+              run: npm run test:ssr
+
+    nuxt-package:
+        name: Nuxt package, fixtures and SSG
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Install
+              run: npm ci
+
+            - name: Install hydration browser
+              run: npx playwright install --with-deps chromium
+
+            - name: Test published package shape, fixtures and SSG
+              run: npm run test:ssr:all
+
+    actionlint:
+        name: Lint GitHub Actions workflows
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Download actionlint
+              shell: bash
+              run: |
+                  bash <(curl --fail --location --silent --show-error https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
+
+            - name: Lint workflows
+              shell: bash
+              run: ./actionlint -color

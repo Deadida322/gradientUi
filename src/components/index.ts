@@ -62,10 +62,21 @@ export {
 export { GNavGroup, GNavItem, GNavList } from '@/components/ui/GNavList';
 export { GAside, GAsideGroup, GAsideItem } from '@/components/ui/GAside';
 export { default as GIcon } from '@/components/ui/GIcon/GIcon.vue';
+export { GImg } from '@/components/ui/GImg';
 export { default as GBadge } from '@/components/ui/GBadge/GBadge.vue';
 export { default as GInput } from '@/components/ui/GInput/GInput.vue';
 export { GTable } from '@/components/ui/GTable';
 export { GCombobox } from '@/components/ui/GCombobox';
+export type {
+	GImgEmits,
+	GImgFit,
+	GImgLoading,
+	GImgProps,
+	GImgResolvedProps,
+	GImgSlotProps,
+	GImgSource,
+	GImgState
+} from '@/components/ui/GImg';
 export type {
 	GAvatarGroupItem,
 	GAvatarGroupProps,

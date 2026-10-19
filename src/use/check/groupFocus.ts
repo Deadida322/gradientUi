@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { isClientHTMLElement } from '@/ssr/utils';
 
 export interface CheckGroupFocusEmitters {
 	focus?: (event: FocusEvent) => void;
@@ -35,7 +36,7 @@ export function useCheckGroupFocus(options: UseCheckGroupFocusOptions) {
 		}
 
 		if (
-			currentTarget instanceof HTMLElement &&
+			isClientHTMLElement(currentTarget) &&
 			relatedTarget instanceof Node &&
 			currentTarget.contains(relatedTarget)
 		) {

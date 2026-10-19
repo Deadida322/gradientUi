@@ -1,4 +1,5 @@
-import { onBeforeUnmount, onMounted, ref, type PropType } from 'vue';
+import { ref, type PropType } from 'vue';
+import { onClientMounted } from '@/ssr/use';
 import { propsFactory } from '@/utils/propsFactory';
 
 export type GTransitionPreset =
@@ -171,16 +172,14 @@ export function useReducedMotion() {
 		reducedMotion.value = query?.matches ?? false;
 	};
 
-	onMounted(() => {
-		if (typeof window === 'undefined' || !window.matchMedia) return;
+	onClientMounted(({ window }) => {
+		if (!window.matchMedia) return;
 
 		query = window.matchMedia('(prefers-reduced-motion: reduce)');
 		updateReducedMotion();
 		query.addEventListener('change', updateReducedMotion);
-	});
 
-	onBeforeUnmount(() => {
-		query?.removeEventListener('change', updateReducedMotion);
+		return () => query?.removeEventListener('change', updateReducedMotion);
 	});
 
 	return reducedMotion;

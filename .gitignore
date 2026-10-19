@@ -11,6 +11,8 @@ node_modules
 dist
 dist-docs
 dist-ssr
+.nuxt/
+.output/
 tsbuild/
 .tsbuild/
 *.tsbuildinfo

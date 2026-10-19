@@ -1,6 +1,3 @@
-let componentIdCounter = 0;
+import { useSsrId } from '@/ssr/use';
 
-export function createComponentId(prefix: string) {
-	componentIdCounter += 1;
-	return `${prefix}-${componentIdCounter}`;
-}
+export const createComponentId = (prefix: string) => useSsrId(prefix);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { useAttrs } from 'vue';
+	import { isClientHTMLElement } from '@/ssr/utils';
 
 	defineOptions({ inheritAttrs: false });
 
@@ -9,7 +10,7 @@
 		Number((el as HTMLElement).dataset.index ?? 0);
 
 	const onBeforeEnter = (el: Element) => {
-		if (!(el instanceof HTMLElement)) return;
+		if (!isClientHTMLElement(el)) return;
 
 		el.style.setProperty(
 			'--g-stagger-transition-delay',
@@ -18,7 +19,7 @@
 	};
 
 	const onAfterEnter = (el: Element) => {
-		if (!(el instanceof HTMLElement)) return;
+		if (!isClientHTMLElement(el)) return;
 
 		el.style.removeProperty('--g-stagger-transition-delay');
 	};

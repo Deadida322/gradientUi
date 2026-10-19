@@ -6,6 +6,7 @@
 		useAttrs,
 		type Component
 	} from 'vue';
+	import { isClientHTMLElement } from '@/ssr/utils';
 	import {
 		makeGTransitionProps,
 		resolveTransitionName,
@@ -139,7 +140,7 @@
 	}
 
 	function applyRuntimeStyles(el: Element) {
-		if (!(el instanceof HTMLElement)) return;
+		if (!isClientHTMLElement(el)) return;
 
 		for (const [property, value] of Object.entries(runtimeStyles.value)) {
 			if (value !== undefined) {
@@ -194,7 +195,7 @@
 	}
 
 	function onLeave(el: Element) {
-		if (!(el instanceof HTMLElement)) {
+		if (!isClientHTMLElement(el)) {
 			emit('leave', el);
 			return;
 		}
@@ -211,7 +212,7 @@
 	}
 
 	function onAfterLeave(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			restoreLeavingLayout(el);
 		}
 
@@ -223,7 +224,7 @@
 	}
 
 	function onLeaveCancelled(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			restoreLeavingLayout(el);
 		}
 

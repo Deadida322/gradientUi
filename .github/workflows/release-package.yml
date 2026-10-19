@@ -40,12 +40,21 @@ concurrency:
     cancel-in-progress: false
 
 permissions:
-    contents: write
+    contents: read
 
 jobs:
     release:
         name: Create release
         runs-on: ubuntu-latest
+        outputs:
+            tag: ${{ steps.bump.outputs.tag }}
+            version: ${{ steps.bump.outputs.version }}
+            is_prerelease: ${{ steps.bump.outputs.is_prerelease }}
+        permissions:
+            contents: write
+        timeout-minutes: 45
+        env:
+            DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
         steps:
             - name: Checkout
@@ -66,6 +75,14 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+            - name: Validate release branch
+              shell: bash
+              run: |
+                  if [ "$GITHUB_REF_NAME" != "$DEFAULT_BRANCH" ]; then
+                    echo "Releases must run from $DEFAULT_BRANCH, not $GITHUB_REF_NAME"
+                    exit 1
+                  fi
+
             - name: Install
               run: npm ci
 
@@ -79,21 +96,16 @@ jobs:
                     exit 1
                   fi
 
-            - name: Validate npm auth
-              run: npm whoami
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
             - name: Bump version
               id: bump
               shell: bash
               run: |
                   if [[ "${{ inputs.version }}" == pre* ]]; then
-                    npm version "${{ inputs.version }}" --preid "${{ inputs.prerelease-id }}"
+                    npm version "${{ inputs.version }}" --preid "${{ inputs.prerelease-id }}" --no-git-tag-version
                   elif [ "${{ inputs.version }}" = "prerelease" ]; then
-                    npm version prerelease --preid "${{ inputs.prerelease-id }}"
+                    npm version prerelease --preid "${{ inputs.prerelease-id }}" --no-git-tag-version
                   else
-                    npm version "${{ inputs.version }}"
+                    npm version "${{ inputs.version }}" --no-git-tag-version
                   fi
 
                   VERSION="$(node -p "require('./package.json').version")"
@@ -106,56 +118,94 @@ jobs:
 
                   echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
                   echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
-                  echo "is-prerelease=${IS_PRERELEASE}" >> "$GITHUB_OUTPUT"
+                  echo "is_prerelease=${IS_PRERELEASE}" >> "$GITHUB_OUTPUT"
 
-            - name: Resolve upgrade notes
-              id: notes
-              shell: bash
-              run: |
-                  NOTES_PATH="${{ inputs.upgrade-notes-path }}"
+            - name: Sync workspace package versions
+              run: npm run version:sync && npm run version:check
 
-                  if [ -n "$NOTES_PATH" ] && [ -f "$NOTES_PATH" ]; then
-                    echo "path=${NOTES_PATH}" >> "$GITHUB_OUTPUT"
-                    exit 0
-                  fi
+            - name: Release SSR gate
+              run: npm run release:ssr:check
 
-                  echo "Upgrade notes file was not found: ${NOTES_PATH}"
-                  echo "path=" >> "$GITHUB_OUTPUT"
-
-            - name: Type check
-              run: npm run type-check
-
-            - name: Lint TypeScript and Vue
-              run: npm run eslint
-
-            - name: Lint styles
-              run: npm run lint:css
-
-            - name: Build
-              run: npm run build
-
-            - name: Push version commit and tag
-              run: git push --follow-tags
-
-            - name: Publish to npm
-              run: npm publish --access public --tag "${{ inputs.npm-tag }}"
+            - name: Commit and tag synchronized versions
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-            - name: Create GitHub Release
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   TAG: ${{ steps.bump.outputs.tag }}
                   VERSION: ${{ steps.bump.outputs.version }}
               run: |
+                  git add package.json package-lock.json packages/gradient-engine/package.json packages/nuxt/package.json packages/figma-plugin/package.json
+                  git commit -m "release: ${VERSION}"
+                  git tag "$TAG"
+                  git push --atomic origin "HEAD:refs/heads/${DEFAULT_BRANCH}" "refs/tags/${TAG}"
+
+    publish:
+        name: Publish packages
+        needs: release
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        environment:
+            name: npm-publish
+        permissions:
+            contents: read
+            id-token: write
+
+        steps:
+            - name: Checkout release tag
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ needs.release.outputs.tag }}
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.14.0
+                  cache: npm
+                  registry-url: https://registry.npmjs.org
+
+            - name: Install npm for trusted publishing
+              run: npm install --global npm@11.5.1
+
+            - name: Install
+              run: npm ci
+
+            - name: Verify synchronized package versions
+              run: npm run version:check
+
+            - name: Publish gradient engine, core and Nuxt module
+              run: npm run release:publish -- "${{ inputs.npm-tag }}"
+
+    announce:
+        name: Create GitHub Release
+        needs:
+            - release
+            - publish
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        permissions:
+            contents: write
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            TAG: ${{ needs.release.outputs.tag }}
+            VERSION: ${{ needs.release.outputs.version }}
+            IS_PRERELEASE: ${{ needs.release.outputs.is_prerelease }}
+            NOTES_PATH: ${{ inputs.upgrade-notes-path }}
+
+        steps:
+            - name: Checkout release tag
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ needs.release.outputs.tag }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create GitHub Release
+              shell: bash
+              run: |
                   RELEASE_FLAGS=()
-                  if [ "${{ steps.bump.outputs.is-prerelease }}" = "true" ]; then
+                  if [ "$IS_PRERELEASE" = "true" ]; then
                     RELEASE_FLAGS+=(--prerelease)
                   fi
 
                   NOTES_FLAGS=(--notes "Release @gradient-ui/core ${VERSION}")
-                  if [ -n "${{ steps.notes.outputs.path }}" ]; then
-                    NOTES_FLAGS=(--notes-file "${{ steps.notes.outputs.path }}")
+                  if [ -n "$NOTES_PATH" ] && [ -f "$NOTES_PATH" ]; then
+                    NOTES_FLAGS=(--notes-file "$NOTES_PATH")
                   fi
 
                   gh release create "$TAG" \

@@ -12,7 +12,7 @@ body {
 	font-weight: var(--g-token-font-weight-regular);
 }
 
-:root {
+:where(:root) {
 	@include tokens.register-design-tokens();
 }
 

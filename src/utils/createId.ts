@@ -1,11 +1,3 @@
-let idCounter = 0;
+import { useSsrId } from '@/ssr/use';
 
-export function createId(prefix = 'g') {
-	idCounter += 1;
-
-	if (globalThis.crypto?.randomUUID) {
-		return `${prefix}-${globalThis.crypto.randomUUID()}`;
-	}
-
-	return `${prefix}-${idCounter.toString(36)}`;
-}
+export const createId = (prefix = 'g') => useSsrId(prefix);

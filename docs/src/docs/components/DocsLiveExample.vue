@@ -24,8 +24,7 @@
 			variant="text"
 			size="l"
 			color="primary"
-			:border-width="0.5"
-			:eager="true">
+			:border-width="0.5">
 			<docs-code :code="example.code" />
 		</g-expansion>
 	</div>

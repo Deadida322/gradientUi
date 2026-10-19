@@ -1,69 +1,22 @@
 import type { CreatedGradientMaterial } from '@/theme';
+import { canUseDom, createClientElementRegistry } from '@/ssr/utils';
 
 export interface GradientRuntimeHandle {
 	id: string;
 	dispose: () => void;
 }
 
-interface RegistryEntry {
-	count: number;
-	element: Element;
-}
-
 const STYLE_ATTR = 'data-gradient-engine-style';
 const SVG_ATTR = 'data-gradient-engine-svg';
 
-const styleRegistry = new Map<string, RegistryEntry>();
-const svgRegistry = new Map<string, RegistryEntry>();
-
-const canUseDom = () => typeof document !== 'undefined';
-
-const mountElement = (
-	registry: Map<string, RegistryEntry>,
-	id: string,
-	createElement: () => Element
-) => {
-	const entry = registry.get(id);
-
-	if (entry) {
-		entry.count += 1;
-
-		return () => {
-			entry.count -= 1;
-
-			if (entry.count <= 0) {
-				entry.element.remove();
-				registry.delete(id);
-			}
-		};
-	}
-
-	const element = createElement();
-	document.head.append(element);
-	registry.set(id, {
-		count: 1,
-		element
-	});
-
-	return () => {
-		const currentEntry = registry.get(id);
-
-		if (!currentEntry) return;
-
-		currentEntry.count -= 1;
-
-		if (currentEntry.count <= 0) {
-			currentEntry.element.remove();
-			registry.delete(id);
-		}
-	};
-};
+const styleRegistry = createClientElementRegistry();
+const svgRegistry = createClientElementRegistry();
 
 export const mountGradientCss = (id: string, cssText: string) => {
 	if (!canUseDom() || !cssText.trim()) return () => undefined;
 
-	return mountElement(styleRegistry, id, () => {
-		const style = document.createElement('style');
+	return styleRegistry.mount(id, (clientDocument) => {
+		const style = clientDocument.createElement('style');
 		style.setAttribute(STYLE_ATTR, id);
 		style.textContent = cssText;
 
@@ -74,8 +27,8 @@ export const mountGradientCss = (id: string, cssText: string) => {
 export const mountGradientSvg = (id: string, svgText: string) => {
 	if (!canUseDom() || !svgText.trim()) return () => undefined;
 
-	return mountElement(svgRegistry, id, () => {
-		const wrapper = document.createElement('div');
+	return svgRegistry.mount(id, (clientDocument) => {
+		const wrapper = clientDocument.createElement('div');
 		wrapper.setAttribute(SVG_ATTR, id);
 		wrapper.style.position = 'absolute';
 		wrapper.style.width = '0';

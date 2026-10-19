@@ -1,15 +1,8 @@
-import {
-	createApp,
-	h,
-	ref,
-	type Directive,
-	type App,
-	type Ref,
-	type VNode
-} from 'vue';
+import { h, ref, type Directive, type VNode } from 'vue';
 
 import GTooltip from '@/components/ui/GTooltip/GTooltip.vue';
 import type { Placement } from '@floating-ui/dom';
+import { mountClientComponent, type ClientComponentMount } from '@/ssr/utils';
 
 type TooltipInstance = typeof GTooltip;
 
@@ -22,9 +15,7 @@ type TooltipOptions = {
 type TooltipBinding = string | TooltipOptions;
 
 type TooltipDirectiveInstance = {
-	app: App;
-	container: HTMLElement;
-	open: Ref<boolean>;
+	mount: ClientComponentMount;
 	cleanup: () => void;
 };
 
@@ -41,14 +32,8 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
 				? { content: binding.value }
 				: binding.value;
 
-		const open = ref(false);
-
-		const container = document.createElement('div');
-		document.body.appendChild(container);
-
 		const tooltipRef = ref<TooltipInstance | null>(null);
-
-		const app = createApp({
+		const mount = mountClientComponent({
 			setup() {
 				return (): VNode =>
 					h(
@@ -75,8 +60,7 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
 					);
 			}
 		});
-
-		app.mount(container);
+		if (!mount) return;
 
 		const show = () => {
 			if (tooltipRef.value) {
@@ -96,17 +80,14 @@ export const vTooltip: Directive<HTMLElement, TooltipBinding> = {
 		el.addEventListener('blur', hide);
 
 		el.__tooltip__ = {
-			app,
-			container,
-			open,
+			mount,
 			cleanup() {
 				el.removeEventListener('mouseenter', show);
 				el.removeEventListener('mouseleave', hide);
 				el.removeEventListener('focus', show);
 				el.removeEventListener('blur', hide);
 
-				app.unmount();
-				container.remove();
+				mount.unmount();
 			}
 		};
 	},
