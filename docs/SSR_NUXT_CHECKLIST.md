@@ -52,7 +52,7 @@ an optional later step.
 - [x] Documentation runs as a Nuxt SSR application and consumes the local module.
 - [x] Documentation uses file-based pages and a shared Nuxt layout.
 - [x] `nuxt generate` prerenders guide, playground and component API routes.
-- [x] Static hosting publishes `docs/.output/public` with generated 404 fallback.
+- [x] Static hosting publishes `docs/dist` with generated 404 fallback.
 - [x] Vue server-render smoke coverage for representative components and services.
 - [x] Concurrent deterministic renders cover request-state isolation.
 - [x] Server no-op coverage for checks, mounts and DOM registries.
