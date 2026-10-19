@@ -1,33 +1,62 @@
+# Gradient UI 1.0.0
 
+## Highlights
 
-# Gradient UI 0.8.0
+- Added `@gradient-ui/nuxt` for Nuxt 3/4 applications. It installs SSR-aware
+  theme styles, request-scoped runtime state, Teleport support, optional
+  component auto-imports and Color Mode integration.
+- Added an SSR foundation to `@gradient-ui/core`: deterministic head styles,
+  CSP nonce support, request-local viewport values and SSR-safe IDs.
+- Added `GImg`, an SSR-friendly image component with aspect ratio, responsive
+  source attributes, lazy placeholder, gradient overlay, object fit and content
+  slots.
+- Added `useGradientUI()` for Nuxt middleware and other code outside component
+  setup, without introducing process-global service state.
+- Added user documentation for SSR, Nuxt, CSP, the Figma plugin, static SEO and
+  package installation.
 
-### Added
+## Upgrade notes
 
-- Added `GAvatar` and `GAvatarGroup` with image, initials, icon, shape, size,
-  material variant and texture support.
-- Added `GCard` with composable anatomy, layout options, material variants,
-  media-friendly slots and texture support.
-- Added `GDivider` with horizontal and vertical orientation, labels, icon and
-  content slots, material variants, gradient-aware styling and textures.
-- Added `GCombobox` as an editable select built on shared select primitives,
-  with typed props and slots, filtering, multiple chips, custom add flow and
-  `add` event support.
-- Added `GStepper`, `GStepPanel` and `GStepperActions` for declarative ordered
-  flows with typed item, panel and actions slots.
-- Added shared navigation controller and keyboard handling for tab-like and
-  step-like components.
-- Added reusable state icon resolution for semantic indicators and per-item
-  stepper icon overrides.
+### Nuxt applications
 
-### Changed
+Install the module alongside core and add it to `nuxt.config.ts`:
 
-- Refactored select-like field behavior so combobox reuses shared item
-  normalization, selection, keyboard and field-control composables.
-- Refactored `GTabs` onto the shared navigation controller used by `GStepper`.
-- Improved input surface variants with clearer `default`, `tonal`, `glass`,
-  `outlined` and `text` behavior.
+```bash
+npm install @gradient-ui/core @gradient-ui/nuxt
+```
 
-### Breaking Changes
+```ts
+export default defineNuxtConfig({
+	modules: ['@gradient-ui/nuxt']
+});
+```
 
-- `GChip` remove interactions now use the `remove` event as the preferred Vue
+Use `useGradientUI()` in Nuxt middleware, plugins and ordinary functions that
+run outside Vue component setup. `useSnackbar()` and `useLoading()` remain the
+preferred APIs inside setup.
+
+### SSR and CSP
+
+Use the Nuxt module for Nuxt SSR. It emits theme styles before hydration and
+keeps theme, services and viewport state isolated per request. Projects with a
+strict Content Security Policy should configure a per-request nonce through
+their Nuxt CSP solution; never add a fixed nonce to `nuxt.config.ts`.
+
+For plain Vue SSR, use the public `@gradient-ui/core/ssr` helpers to render
+Gradient UI head descriptors and install a request-local viewport when a
+responsive composable needs one.
+
+### Breaking changes
+
+- `createAppScopedState` was removed. Rename imports to
+  `defineAppScopedState`.
+- Calling `useSnackbar()` or `useLoading()` without an active Vue setup context
+  now throws instead of falling back to shared process state. In a Nuxt runtime,
+  resolve services with `useGradientUI()`; in a plain Vue host, use
+  `getGradientUIServices(app)`.
+
+## Compatibility
+
+- `@gradient-ui/core` and `@gradient-ui/nuxt` require Node.js 20.19+.
+- `@gradient-ui/core` requires Vue 3.5+.
+- `@gradient-ui/nuxt` supports Nuxt 3.15+ and Nuxt 4.

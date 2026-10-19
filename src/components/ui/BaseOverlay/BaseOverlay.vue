@@ -1,11 +1,12 @@
 <script setup lang="ts">
-	import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+	import { computed, ref } from 'vue';
 	import { GTransition } from '@/components/transitions';
 	import { useAppendTarget } from '@/use/appendTarget';
 	import { useBodyScrollLock } from '@/use/bodyScrollLock';
 	import { useControllableOpen } from '@/use/controllableOpen';
 	import { useLayerStack } from '@/use/layerStack';
 	import { makeBaseOverlayProps } from './types';
+	import { onClientMounted } from '@/ssr/use';
 
 	const props = defineProps(makeBaseOverlayProps());
 	const emit = defineEmits<{
@@ -15,7 +16,9 @@
 	const rootRef = ref<HTMLElement | null>(null);
 	const contentRef = ref<HTMLElement | null>(null);
 	const { open } = useControllableOpen(props, emit);
-	const { hasAppendTarget, appendTarget } = useAppendTarget(props.appendTo);
+	const { hasAppendTarget, appendTarget } = useAppendTarget(
+		() => props.appendTo
+	);
 	const { zIndex, isTopOverlay, bringToFront } = useLayerStack({
 		open,
 		base: props.zIndexBase,
@@ -60,12 +63,9 @@
 		dismiss();
 	}
 
-	onMounted(() => {
-		window.addEventListener('keydown', onKeydown);
-	});
-
-	onBeforeUnmount(() => {
-		window.removeEventListener('keydown', onKeydown);
+	onClientMounted(({ window: clientWindow }) => {
+		clientWindow.addEventListener('keydown', onKeydown);
+		return () => clientWindow.removeEventListener('keydown', onKeydown);
 	});
 
 	defineExpose({

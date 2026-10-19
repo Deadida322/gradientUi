@@ -43,6 +43,14 @@ export interface DocsComponentPage {
 	};
 }
 
+export type DocsComponentPageMeta = Omit<
+	DocsComponentPage,
+	'usage' | 'examples'
+> & {
+	usage: Omit<DocsComponentPage['usage'], 'example'>;
+	examples: Omit<DocsComponentPage['examples'], 'items'>;
+};
+
 export type DocsReleaseBadgeTone = 'rc' | 'testing' | 'new';
 
 export interface DocsReleaseBadgeMeta {

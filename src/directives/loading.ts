@@ -1,11 +1,11 @@
-import {
-	createApp,
-	type App,
-	type ComponentPublicInstance,
-	type Directive
-} from 'vue';
+import { type ComponentPublicInstance, type Directive } from 'vue';
 import GLoading from '@/components/ui/GLoading/GLoading.vue';
 import type { GLoadingProps } from '@/components/ui/GLoading/types';
+import {
+	getClientWindow,
+	mountClientComponent,
+	type ClientComponentMount
+} from '@/ssr/utils';
 
 export type LoadingBindingValue =
 	| boolean
@@ -20,8 +20,7 @@ type LoadingOptions = Partial<GLoadingProps> & {
 
 type LoadingState = {
 	originalPosition: string;
-	app?: App<Element>;
-	container?: HTMLDivElement;
+	mount?: ClientComponentMount;
 	component?: ComponentPublicInstance<typeof GLoading>;
 	optionsKey?: string;
 };
@@ -89,8 +88,11 @@ function getOptionsKey(options: LoadingOptions) {
 }
 
 function hasValidPosition(el: HTMLElement) {
+	const clientWindow = getClientWindow();
+	if (!clientWindow) return true;
+
 	return ['relative', 'absolute', 'fixed', 'sticky'].includes(
-		getComputedStyle(el).position
+		clientWindow.getComputedStyle(el).position
 	);
 }
 
@@ -105,10 +107,8 @@ function destroy(el: LoadingElement) {
 
 	if (!state) return;
 
-	state.app?.unmount();
-	state.container?.remove();
-	state.app = undefined;
-	state.container = undefined;
+	state.mount?.unmount();
+	state.mount = undefined;
 	state.component = undefined;
 	state.optionsKey = undefined;
 	el.style.position = state.originalPosition;
@@ -134,29 +134,30 @@ function show(el: LoadingElement, options: LoadingOptions) {
 
 	ensureHostStyles(el);
 
-	const container = document.createElement('div');
-	container.className = 'g-loading__container';
-
-	const app = createApp(GLoading, {
-		text: options.text,
-		noText: options.noText,
-		color: options.color,
-		dark: options.dark,
-		opacity: options.opacity,
-		blur: options.blur,
-		progressView: options.progressView,
-		onClose: () => {
-			if (getExposedVisibility(state.component)) return;
-			destroy(el);
+	const mount = mountClientComponent(GLoading, {
+		containerClass: 'g-loading__container',
+		target: el,
+		props: {
+			text: options.text,
+			noText: options.noText,
+			color: options.color,
+			dark: options.dark,
+			opacity: options.opacity,
+			blur: options.blur,
+			progressView: options.progressView,
+			onClose: () => {
+				if (getExposedVisibility(state.component)) return;
+				destroy(el);
+			}
 		}
 	});
+	if (!mount) return;
 
-	state.app = app;
-	state.container = container;
+	state.mount = mount;
 	state.optionsKey = getOptionsKey(options);
-
-	el.appendChild(container);
-	state.component = app.mount(container);
+	state.component = mount.instance as ComponentPublicInstance<
+		typeof GLoading
+	>;
 	state.component.show();
 }
 
@@ -177,7 +178,7 @@ function sync(
 		return;
 	}
 
-	if (state.app && state.optionsKey === optionsKey) {
+	if (state.mount && state.optionsKey === optionsKey) {
 		state.component?.show();
 		return;
 	}

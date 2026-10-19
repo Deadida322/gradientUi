@@ -19,8 +19,7 @@
 		GNavGroup,
 		GNavItem,
 		GNavList,
-		GSwitch,
-		useBreakpoints
+		GSwitch
 	} from '@/components';
 	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
 	import { componentCatalog, componentGroups } from '@docs/data/componentApi';
@@ -33,8 +32,6 @@
 	const router = useRouter();
 	const drawerOpen = ref(false);
 	const activePageAsideHref = ref('');
-	const display = useBreakpoints();
-	const drawerAvailable = display.down(1024);
 	const { isDark } = useDocsTheme();
 	let pageAsideScrollRaf = 0;
 	const sourceLinks: {
@@ -53,10 +50,20 @@
 			icon: 'npm'
 		}
 	];
-	const navbarItems = computed(() =>
+	const navbarItems = computed(
+		() =>
+			docsNavigation.find((group) => group.title === 'Guide')?.items ?? []
+	);
+	const resourceNavbarItems = computed(() =>
 		docsNavigation
+			.filter((group) => group.title !== 'Guide')
 			.flatMap((group) => group.items)
 			.filter((item) => item.to !== '/docs/components')
+	);
+	const resourcesGroupValue = computed(() =>
+		resourceNavbarItems.value.some((item) => item.to === route.path)
+			? route.path
+			: 'docs-resources'
 	);
 	const componentsGroupValue = computed(() =>
 		route.path.startsWith('/docs/components')
@@ -111,8 +118,6 @@
 	);
 
 	const openDrawer = () => {
-		if (!drawerAvailable.value) return;
-
 		drawerOpen.value = true;
 	};
 
@@ -179,7 +184,7 @@
 	};
 
 	const queuePageAsideScrollSpy = () => {
-		if (pageAsideScrollRaf) return;
+		if (typeof window === 'undefined' || pageAsideScrollRaf) return;
 
 		pageAsideScrollRaf = window.requestAnimationFrame(
 			updateActivePageAsideHref
@@ -200,12 +205,6 @@
 			});
 		}
 	);
-
-	watch(drawerAvailable, (available) => {
-		if (!available) {
-			drawerOpen.value = false;
-		}
-	});
 
 	watch(
 		resolvedPageAsideItems,
@@ -274,6 +273,24 @@
 			</g-navbar-item>
 
 			<g-navbar-menu
+				label="Resources"
+				:value="resourcesGroupValue">
+				<template #dropdown>
+					<nav
+						class="docs-layout__resources-menu"
+						aria-label="Documentation resources">
+						<router-link
+							v-for="item in resourceNavbarItems"
+							:key="item.to"
+							class="docs-layout__resource-link"
+							:to="item.to">
+							{{ item.label }}
+						</router-link>
+					</nav>
+				</template>
+			</g-navbar-menu>
+
+			<g-navbar-menu
 				label="Components"
 				:value="componentsGroupValue"
 				@click="navigate('/docs/components')">
@@ -324,16 +341,31 @@
 						:aria-label="link.label" />
 				</div>
 
-				<g-switch
-					v-model="isDark"
-					class="docs-layout__theme-switch"
-					inline
-					size="s"
-					color="primary"
-					:label="isDark ? 'Dark' : 'Light'" />
+				<span class="docs-layout__theme-switch">
+					<color-scheme tag="span">
+						<g-switch
+							v-model="isDark"
+							inline
+							size="s"
+							color="primary"
+							label="Theme" />
+						<template #placeholder>
+							<span
+								class="docs-theme-placeholder"
+								aria-hidden="true">
+								<span class="docs-theme-placeholder__track">
+									<span
+										class="docs-theme-placeholder__thumb" />
+								</span>
+								<span class="docs-theme-placeholder__label"
+									>Theme</span
+								>
+							</span>
+						</template>
+					</color-scheme>
+				</span>
 
 				<g-button
-					v-if="drawerAvailable"
 					class="docs-layout__menu-button"
 					size="s"
 					variant="text"
@@ -344,7 +376,6 @@
 		</g-navbar>
 
 		<g-drawer
-			v-if="drawerAvailable"
 			v-model="drawerOpen"
 			class="docs-layout__drawer"
 			placement="left"
@@ -403,18 +434,20 @@
 			<template #footer>
 				<div class="docs-layout__drawer-theme">
 					<span>Theme</span>
-					<g-switch
-						v-model="isDark"
-						inline
-						size="s"
-						color="primary"
-						:label="isDark ? 'Dark' : 'Light'" />
+					<color-scheme tag="span">
+						<g-switch
+							v-model="isDark"
+							inline
+							size="s"
+							color="primary"
+							label="Theme" />
+					</color-scheme>
 				</div>
 			</template>
 		</g-drawer>
 
 		<main class="docs-layout__main">
-			<router-view />
+			<slot />
 		</main>
 
 		<aside
@@ -568,7 +601,9 @@
 		}
 
 		&__theme-switch {
-			width: auto;
+			display: inline-flex;
+			flex-shrink: 0;
+			width: calc(var(--g-token-space-4) * 6);
 			white-space: nowrap;
 		}
 
@@ -592,6 +627,29 @@
 			width: min(320px, calc(100vw - var(--g-token-space-6)));
 			max-width: 100%;
 			padding: var(--g-token-space-2);
+		}
+
+		&__resources-menu {
+			display: grid;
+			gap: var(--g-token-space-1);
+			width: 240px;
+			padding: var(--g-token-space-2);
+		}
+
+		&__resource-link {
+			padding: var(--g-token-space-2) var(--g-token-space-3);
+			border-radius: var(--g-token-radius-sm);
+
+			font-size: var(--g-token-font-size-sm);
+			font-weight: var(--g-token-font-weight-medium);
+			color: var(--g-token-color-on-surface);
+			text-decoration: none;
+
+			&:hover,
+			&.router-link-active {
+				color: var(--g-token-color-primary);
+				background: rgba(var(--g-theme-primary), 0.08);
+			}
 		}
 
 		&__components-group {
@@ -798,7 +856,24 @@
 		}
 	}
 
-	@media (width <= 1024px) {
+	@media (width <= 1360px) {
+		.docs-layout {
+			&__brand_navbar > span {
+				display: none;
+			}
+
+			&__theme-switch {
+				width: 44px;
+
+				.g-check-control__content,
+				.docs-theme-placeholder__label {
+					display: none;
+				}
+			}
+		}
+	}
+
+	@media (width <= 1120px) {
 		.docs-layout {
 			grid-template:
 				'navbar' auto
@@ -817,12 +892,6 @@
 
 			&__menu-button {
 				display: inline-flex;
-			}
-
-			&__theme-switch {
-				.g-check-control__content {
-					display: none;
-				}
 			}
 
 			&__page-aside {

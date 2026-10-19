@@ -74,5 +74,23 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Responsive', href: '#responsive' },
 		{ label: 'Breakpoints', href: '#breakpoints' },
 		{ label: 'API', href: '#api' }
+	],
+	'/docs/ssr-nuxt': [
+		{ label: 'SSR guarantees', href: '#guarantees' },
+		{ label: 'Install', href: '#install' },
+		{ label: 'Nuxt module', href: '#module' },
+		{ label: 'Responsive SSR', href: '#viewport' },
+		{ label: 'Color mode', href: '#color-mode' },
+		{ label: 'Services', href: '#services' },
+		{ label: 'CSP', href: '#csp' }
+	],
+	'/docs/figma-plugin': [
+		{ label: 'Overview', href: '#overview' },
+		{ label: 'Quick start', href: '#quick-start' },
+		{ label: 'Generator', href: '#generator' },
+		{ label: 'Tokens', href: '#tokens' },
+		{ label: 'Morph', href: '#morph' },
+		{ label: 'Edit and reopen', href: '#editing' },
+		{ label: 'Limitations', href: '#limitations' }
 	]
 };

@@ -1,5 +1,6 @@
 import type { ThemeTokens } from './types';
 import { camelToKebabCase } from '@/utils/camelToKebabCase';
+import { mountClientStyle } from '@/ssr/utils';
 
 export interface TokenStyleOptions {
 	className: string;
@@ -7,22 +8,21 @@ export interface TokenStyleOptions {
 	prefix: string;
 }
 
-export const applyTokensToCSS = (
+export const createTokensCSS = (
 	tokens: ThemeTokens,
-	{ className, id, prefix }: TokenStyleOptions
+	{ className, prefix }: Pick<TokenStyleOptions, 'className' | 'prefix'>
 ) => {
 	const declarations = Object.entries(tokens).map(
 		([key, value]) => `  --g-${prefix}-${camelToKebabCase(key)}: ${value};`
 	);
-	const css = `.${className} {\n${declarations.join('\n')}\n}`;
-	let style = document.getElementById(id) as HTMLStyleElement | null;
 
-	if (!style) {
-		style = document.createElement('style');
-		style.id = id;
-		document.head.appendChild(style);
-	}
+	return `.${className} {\n${declarations.join('\n')}\n}`;
+};
 
-	style.textContent = css;
-	return style;
+export const applyTokensToCSS = (
+	tokens: ThemeTokens,
+	{ className, id, prefix }: TokenStyleOptions
+) => {
+	const css = createTokensCSS(tokens, { className, prefix });
+	return mountClientStyle(id, css);
 };

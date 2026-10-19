@@ -1,55 +1,35 @@
 # Gradient UI
 
-Gradient UI is a Vue 3 component library built around Material You inspired
-tokens, expressive gradients, compact form controls, floating layers,
-directives and service helpers.
+[![CI](https://github.com/Deadida322/gradientUi/actions/workflows/ci.yml/badge.svg)](https://github.com/Deadida322/gradientUi/actions/workflows/ci.yml)
+[![core](https://img.shields.io/npm/v/%40gradient-ui%2Fcore?label=core)](https://www.npmjs.com/package/@gradient-ui/core)
+[![gradient-engine](https://img.shields.io/npm/v/%40gradient-ui%2Fgradient-engine?label=gradient%20engine)](https://www.npmjs.com/package/@gradient-ui/gradient-engine)
+[![nuxt](https://img.shields.io/npm/v/%40gradient-ui%2Fnuxt?label=Nuxt)](https://www.npmjs.com/package/@gradient-ui/nuxt)
+[![license](https://img.shields.io/npm/l/%40gradient-ui%2Fcore)](LICENSE)
 
-It is designed for product interfaces that need a polished default look without
-giving up explicit TypeScript APIs.
+Gradient UI is a Vue 3 component library for expressive product interfaces. It
+combines accessible components, Material You-inspired design tokens and a
+deterministic gradient engine. It supports client rendering, SSR and SSG.
 
-The npm package is published as `@gradient-ui/core`.
+[Documentation](https://gradient-ui-docs.netlify.app/docs/get-started) · [Nuxt and SSR](https://gradient-ui-docs.netlify.app/docs/ssr-nuxt) · [Figma plugin](https://gradient-ui-docs.netlify.app/docs/figma-plugin) · [Playground](https://gradient-ui-docs.netlify.app/playground)
 
-Documentation: https://gradient-ui-docs.netlify.app/docs/get-started
+## Packages
 
-## 0.5.0
-
-Gradient UI `0.5.0` is the stable release for the new color and gradient
-architecture.
-
-- The standalone `@gradient-ui/gradient-engine` package powers gradient
-  materials, recipes, effects and animation output.
-- Component variants now treat `default` as the regular material fill and
-  `gradient` as the explicit gradient surface.
-- `filled` has been replaced by `gradient` for gradient-backed controls.
-- Color tokens are generated through the new palette layer, while components can
-  still resolve semantic colors such as `primary`, `error`, `warning` and
-  `success`.
-
-Install the stable package:
-
-```bash
-npm install @gradient-ui/core
-```
-
-The gradient engine can also be installed independently:
-
-```bash
-npm install @gradient-ui/gradient-engine
-```
+| Package                                                                                      | Purpose                                                             |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`@gradient-ui/core`](https://www.npmjs.com/package/@gradient-ui/core)                       | Vue components, directives, theme system and SSR utilities.         |
+| [`@gradient-ui/gradient-engine`](https://www.npmjs.com/package/@gradient-ui/gradient-engine) | Framework-free gradient, material, effect and animation generation. |
+| [`@gradient-ui/nuxt`](https://www.npmjs.com/package/@gradient-ui/nuxt)                       | Nuxt 3/4 module with SSR-aware theme and runtime integration.       |
 
 ## Install
 
+Gradient UI requires Vue 3.5+ and Node.js 20.19+.
+
 ```bash
 npm install @gradient-ui/core
 ```
 
-Gradient UI expects Vue 3. `vue-router` is optional: navigation components use
-the globally registered `RouterLink` when your app installs a router, and fall
-back to regular anchors for string `to` values when it does not.
-
-## Full Registration
-
-Import the stylesheet once near your app entry and install the plugin.
+Import the stylesheet once, then install the plugin when the whole component
+catalogue and default directives are needed:
 
 ```ts
 import { createApp } from 'vue';
@@ -57,249 +37,68 @@ import { createGradientUI } from '@gradient-ui/core';
 import '@gradient-ui/core/style.css';
 import App from './App.vue';
 
-const gradientUI = createGradientUI({
-	theme: {
-		seed: '#704aff',
-		mode: 'light'
-	},
-	icons: true,
-	defaults: {
-		global: {
-			color: 'primary'
-		},
-		GButton: {
-			rounded: true,
-			variant: 'default'
-		},
-		GInput: {
-			variant: 'outlined'
-		}
-	}
-});
-
-createApp(App).use(gradientUI).mount('#app');
+createApp(App)
+	.use(
+		createGradientUI({
+			theme: { seed: '#704aff', mode: 'light' }
+		})
+	)
+	.mount('#app');
 ```
 
-The default export is also available for simple installs:
+Use explicit imports if only selected components are needed:
 
 ```ts
-import GradientUI from '@gradient-ui/core';
-
-app.use(GradientUI);
-```
-
-## Manual Imports
-
-Components, directives, services, theme helpers and composables are exposed as
-subpath exports.
-
-```ts
-import { GButton, GInput, GModal } from '@gradient-ui/core/components';
-import { vRipple, vMask, vTooltip } from '@gradient-ui/core/directives';
-import { useSnackbar, useLoading } from '@gradient-ui/core/services';
-import { createTheme, useTheme } from '@gradient-ui/core/theme';
-import { useBreakpoints, useMask } from '@gradient-ui/core/use';
+import { GButton, GInput } from '@gradient-ui/core/components';
 import '@gradient-ui/core/style.css';
 ```
 
-You can also import public APIs from the root package:
+## Nuxt 3 and 4
 
-```ts
-import { GButton, createGradientUI, useSnackbar } from '@gradient-ui/core';
+Install the core package and Nuxt module:
+
+```bash
+npm install @gradient-ui/core @gradient-ui/nuxt
 ```
 
-## Optional Router
-
-Navigation components such as `GNavItem` and `GAsideItem` support both `href`
-and `to`.
-
-With Vue Router installed in the host app, `to` renders through `RouterLink`:
-
 ```ts
-import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
-import GradientUI from '@gradient-ui/core';
-import App from './App.vue';
-
-const router = createRouter({
-	history: createWebHistory(),
-	routes: []
+export default defineNuxtConfig({
+	modules: ['@gradient-ui/nuxt'],
+	gradientUI: {
+		theme: { seed: '#704aff', mode: 'light' }
+	}
 });
-
-createApp(App).use(router).use(GradientUI).mount('#app');
 ```
 
-```vue
-<g-nav-item label="Docs" to="/docs" />
+The module emits initial theme styles during SSR, creates isolated state per
+Nuxt application/request and offers component auto-imports. For request-aware
+responsive rendering, color mode, CSP and services outside component setup, see
+the [Nuxt and SSR guide](https://gradient-ui-docs.netlify.app/docs/ssr-nuxt).
+
+## Gradient engine
+
+The engine is independent from Vue and can power other renderers or design
+tools:
+
+```bash
+npm install @gradient-ui/gradient-engine
 ```
-
-Without Vue Router, string `to` values become regular links. Object `to` values
-need Vue Router and otherwise render as non-navigation actions.
-
-## Theme
-
-Gradient UI can generate Material You style CSS tokens from a seed color.
-
-```ts
-app.use(
-	createGradientUI({
-		theme: '#704aff'
-	})
-);
-```
-
-Use object syntax when you need more control:
-
-```ts
-app.use(
-	createGradientUI({
-		theme: {
-			seed: '#704aff',
-			mode: 'dark',
-			autoApply: true
-		}
-	})
-);
-```
-
-Pass `theme: false` when your host application owns the CSS variables.
-
-## Defaults
-
-Component defaults let an application define shared prop values once.
-
-```ts
-app.use(
-	createGradientUI({
-		defaults: {
-			global: {
-				color: 'primary'
-			},
-			GButton: {
-				variant: 'default',
-				size: 'm'
-			},
-			GInput: {
-				variant: 'outlined'
-			}
-		}
-	})
-);
-```
-
-Local props always win over configured defaults.
-
-Use `variant: 'gradient'` when a component should render an expressive gradient
-surface:
-
-```vue
-<g-button label="Save" />
-<g-button label="Launch" variant="gradient" gradient-recipe="glare" />
-```
-
-## Gradient Engine
-
-Gradient UI uses `@gradient-ui/gradient-engine` as its material generation
-layer. The engine is framework-free and can be used outside Vue:
 
 ```ts
 import { createGradientMaterial } from '@gradient-ui/gradient-engine';
 
 const material = createGradientMaterial('#704aff', {
 	preset: 'materialAction',
-	recipe: 'glare',
-	animation: {
-		preset: 'shift',
-		duration: 6000
-	}
+	recipe: 'glare'
 });
 ```
 
-The returned material contains CSS variables, CSS text, keyframes and effect
-descriptors that can be applied by Vue, React, vanilla JavaScript or SSR
-adapters.
+## Figma plugin
 
-## Directives
-
-The full plugin registers all public directives:
-
-- `v-gradient-icon`
-- `v-gradient-text`
-- `v-loading`
-- `v-mask`
-- `v-ripple`
-- `v-tooltip`
-
-Manual registration is available too:
-
-```ts
-import { vRipple } from '@gradient-ui/core/directives';
-
-app.directive('ripple', vRipple);
-```
-
-## Services
-
-Service helpers are regular named exports.
-
-```ts
-import { useLoading, useSnackbar } from '@gradient-ui/core/services';
-
-const snackbar = useSnackbar();
-const loading = useLoading();
-
-snackbar.success('Saved');
-loading.show({ text: 'Syncing' });
-```
-
-## Forms And Validation
-
-Form components accept validation rules compatible with `gib-validate`.
-
-```ts
-import { required, isEmail } from 'gib-validate';
-```
-
-Gradient UI includes the runtime integration used by form components. Install
-`gib-validate` directly when your application wants to author rules or use its
-validation composables.
-
-## Fonts
-
-Gradient UI does not bundle webfont CSS. The default font token uses a system
-font stack.
-
-Import your own font, or opt into Manrope and MDI font glyphs when you need
-them:
-
-```bash
-npm install @fontsource/manrope @mdi/font
-```
-
-```ts
-import '@fontsource/manrope/400.css';
-import '@fontsource/manrope/500.css';
-import '@fontsource/manrope/700.css';
-import '@mdi/font/css/materialdesignicons.css';
-```
-
-```css
-:root {
-	--g-token-font-family-base: manrope, sans-serif;
-}
-```
-
-## Package Exports
-
-```ts
-import '@gradient-ui/core/style.css';
-import { createGradientUI } from '@gradient-ui/core';
-import { GButton } from '@gradient-ui/core/components';
-import { vRipple } from '@gradient-ui/core/directives';
-import { useSnackbar } from '@gradient-ui/core/services';
-import { createTheme } from '@gradient-ui/core/theme';
-import { useBreakpoints } from '@gradient-ui/core/use';
-```
+Gradient UI Builder turns a seed color into editable Figma gradients, design
+tokens, glow layers and morph backgrounds. The plugin creates native Figma
+objects so a design can be refined after generation. Read the
+[Figma plugin guide](https://gradient-ui-docs.netlify.app/docs/figma-plugin).
 
 ## Development
 
@@ -317,14 +116,14 @@ npm run lint:css
 npm run build
 ```
 
-## Publish Checklist
+## Releases
 
-```bash
-npm run build
-npm pack --dry-run
-npm publish --access public
-```
+Releases are created through the `Release Package` GitHub Actions workflow. It
+synchronizes the publishable workspace versions, runs the SSR release gate,
+publishes `gradient-engine`, `core` and `nuxt` in dependency order, then creates
+the GitHub release. See [DEPLOYMENT.md](DEPLOYMENT.md) for the release and
+trusted-publishing setup.
 
 ## License
 
-MIT
+[MIT](LICENSE)

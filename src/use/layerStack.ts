@@ -1,6 +1,6 @@
-import { computed, onBeforeUnmount, watch } from 'vue';
-import { ref } from 'vue';
-import type { ComputedRef, Ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import { defineAppScopedState } from '@/ssr/use';
 
 export type LayerKind = 'floating' | 'overlay';
 
@@ -17,78 +17,88 @@ interface UseLayerStackOptions {
 	kind?: LayerKind;
 }
 
-let uid = 0;
-const stack: LayerEntry[] = [];
-const activeOverlayId = ref<number | null>(null);
+interface LayerStackState {
+	uid: number;
+	stack: LayerEntry[];
+	activeOverlayId: Ref<number | null>;
+}
 
-function resolveZIndex(id: number) {
-	const entry = stack.find((item) => item.id === id);
+const createLayerStackState = (): LayerStackState => ({
+	uid: 0,
+	stack: [],
+	activeOverlayId: ref(null)
+});
+const useLayerStackState = defineAppScopedState(createLayerStackState);
+
+function resolveZIndex(state: LayerStackState, id: number) {
+	const entry = state.stack.find((item) => item.id === id);
 	if (!entry) return undefined;
 
-	const kindEntries = stack.filter((item) => item.kind === entry.kind);
+	const kindEntries = state.stack.filter((item) => item.kind === entry.kind);
 	const index = kindEntries.findIndex((item) => item.id === id);
 
 	return entry.base + index + 1;
 }
 
-function syncActiveOverlay() {
-	const openOverlay = [...stack]
+function syncActiveOverlay(state: LayerStackState) {
+	const openOverlay = [...state.stack]
 		.reverse()
 		.find((item) => item.kind === 'overlay' && item.open.value);
 
-	activeOverlayId.value = openOverlay?.id ?? null;
+	state.activeOverlayId.value = openOverlay?.id ?? null;
 }
 
-function moveToFront(id: number) {
-	const index = stack.findIndex((item) => item.id === id);
+function moveToFront(state: LayerStackState, id: number) {
+	const index = state.stack.findIndex((item) => item.id === id);
 	if (index === -1) return;
 
-	const [entry] = stack.splice(index, 1);
-	stack.push(entry);
-	syncActiveOverlay();
+	const [entry] = state.stack.splice(index, 1);
+	state.stack.push(entry);
+	syncActiveOverlay(state);
 }
 
 export function useLayerStack(options: UseLayerStackOptions) {
 	const { open, base = 1000, kind = 'floating' } = options;
-	const id = ++uid;
+	const state = useLayerStackState();
+	const id = ++state.uid;
 	const zIndex = ref<number | undefined>();
 
 	function activate() {
-		const existing = stack.findIndex((item) => item.id === id);
+		const existing = state.stack.findIndex((item) => item.id === id);
 
 		if (existing === -1) {
-			stack.push({ id, kind, base, open });
+			state.stack.push({ id, kind, base, open });
 		} else {
-			moveToFront(id);
+			moveToFront(state, id);
 		}
 
-		zIndex.value = resolveZIndex(id);
-		syncActiveOverlay();
+		zIndex.value = resolveZIndex(state, id);
+		syncActiveOverlay(state);
 	}
 
 	function deactivate() {
-		const index = stack.findIndex((item) => item.id === id);
+		const index = state.stack.findIndex((item) => item.id === id);
 
 		if (index !== -1) {
-			stack.splice(index, 1);
+			state.stack.splice(index, 1);
 		}
 
 		zIndex.value = undefined;
-		syncActiveOverlay();
+		syncActiveOverlay(state);
 	}
 
 	function bringToFront() {
 		if (!open.value) return;
-		moveToFront(id);
-		zIndex.value = resolveZIndex(id);
+		moveToFront(state, id);
+		zIndex.value = resolveZIndex(state, id);
 	}
 
 	const isTop = computed(() => {
-		const sameKind = stack.filter((item) => item.kind === kind);
+		const sameKind = state.stack.filter((item) => item.kind === kind);
 		return sameKind.at(-1)?.id === id;
 	});
 	const isTopOverlay = computed(
-		() => kind === 'overlay' && activeOverlayId.value === id
+		() => kind === 'overlay' && state.activeOverlayId.value === id
 	);
 
 	watch(
@@ -108,7 +118,7 @@ export function useLayerStack(options: UseLayerStackOptions) {
 		id,
 		zIndex,
 		isTop,
-		isTopOverlay: isTopOverlay as ComputedRef<boolean>,
+		isTopOverlay,
 		bringToFront
 	};
 }

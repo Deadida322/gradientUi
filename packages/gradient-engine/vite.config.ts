@@ -2,8 +2,12 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+	esbuild: {
+		minifyIdentifiers: false
+	},
 	build: {
 		emptyOutDir: true,
+		minify: 'esbuild',
 		lib: {
 			entry: {
 				index: resolve(__dirname, 'src/index.ts'),

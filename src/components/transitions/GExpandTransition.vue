@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, useAttrs } from 'vue';
+	import { isClientHTMLElement } from '@/ssr/utils';
 	import {
 		makeGTransitionProps,
 		resolveTransitionOptions,
@@ -202,7 +203,7 @@
 	}
 
 	function onEnter(el: Element, done: () => void) {
-		if (!(el instanceof HTMLElement)) {
+		if (!isClientHTMLElement(el)) {
 			done();
 			return;
 		}
@@ -227,7 +228,7 @@
 	}
 
 	function onAfterEnter(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			resetStyles(el);
 		}
 
@@ -239,7 +240,7 @@
 	}
 
 	function onLeave(el: Element, done: () => void) {
-		if (!(el instanceof HTMLElement)) {
+		if (!isClientHTMLElement(el)) {
 			done();
 			return;
 		}
@@ -265,7 +266,7 @@
 	}
 
 	function onAfterLeave(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			resetStyles(el);
 		}
 
@@ -273,7 +274,7 @@
 	}
 
 	function onEnterCancelled(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			cancelRunningTransition(el);
 			resetStyles(el);
 		}
@@ -282,7 +283,7 @@
 	}
 
 	function onLeaveCancelled(el: Element) {
-		if (el instanceof HTMLElement) {
+		if (isClientHTMLElement(el)) {
 			cancelRunningTransition(el);
 			resetStyles(el);
 		}

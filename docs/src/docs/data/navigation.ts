@@ -15,7 +15,7 @@ export const docsNavigation: DocsNavigationGroup[] = [
 		title: 'Guide',
 		items: [
 			{ label: 'Get started', to: '/docs/get-started' },
-			{ label: 'Core conceptions', to: '/docs/core-conceptions' },
+			{ label: 'Core concepts', to: '/docs/core-conceptions' },
 			{ label: 'Design tokens', to: '/docs/design-tokens' },
 			{
 				label: 'Gradient engine',
@@ -25,7 +25,14 @@ export const docsNavigation: DocsNavigationGroup[] = [
 		]
 	},
 	{
-		title: 'Components',
+		title: 'Integrations',
+		items: [
+			{ label: 'SSR and Nuxt', to: '/docs/ssr-nuxt' },
+			{ label: 'Figma plugin', to: '/docs/figma-plugin' }
+		]
+	},
+	{
+		title: 'Reference',
 		items: [
 			{ label: 'API', to: '/docs/components' },
 			{ label: 'Forms', to: '/docs/forms' },

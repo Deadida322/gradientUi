@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ref, watch } from 'vue';
+	import { computed, ref, shallowRef, watch } from 'vue';
 	import { useRoute } from 'vue-router';
 	import { GTab, GTabList, GTabs } from '@/components';
 	import DocsComponentExamples from '@docs/components/DocsComponentExamples.vue';
@@ -14,15 +14,16 @@
 		componentCatalog,
 		componentGroups
 	} from '@docs/data/componentApi';
-	import { componentPages } from '@docs/data/componentPages';
+	import { loadComponentPage } from '@docs/data/componentPages';
 
 	const route = useRoute();
 	const apiTab = ref('props');
 	const component = computed(() =>
 		componentApi.find((item) => item.id === route.params.componentId)
 	);
-	const componentPage = computed(() =>
-		componentPages.find((page) => page.id === component.value?.id)
+	const componentId = computed(() => String(route.params.componentId ?? ''));
+	const componentPage = shallowRef(
+		await loadComponentPage(componentId.value)
 	);
 	const catalogItem = computed(() =>
 		componentCatalog.find((item) => item.id === component.value?.id)
@@ -99,8 +100,9 @@
 
 	watch(
 		() => route.params.componentId,
-		() => {
+		async () => {
 			apiTab.value = 'props';
+			componentPage.value = await loadComponentPage(componentId.value);
 		}
 	);
 </script>

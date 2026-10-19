@@ -8,6 +8,7 @@
 		"src/components/transitions/**/*.vue",
 		"src/directives/**/*.ts",
 		"src/services/**/*.ts",
+		"src/ssr/**/*.ts",
 		"src/theme/**/*.ts",
 		"src/types/**/*.ts",
 		"src/use/**/*.ts",
@@ -23,13 +24,13 @@
 	],
 	"compilerOptions": {
 		"composite": false,
+		"incremental": false,
 		"declaration": true,
 		"declarationDir": "dist/types",
 		"emitDeclarationOnly": true,
 		"noEmit": false,
 		"outDir": "dist/types",
-		"rootDir": "src",
-		"tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo"
+		"rootDir": "src"
 	},
 	"references": []
 }

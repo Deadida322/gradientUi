@@ -1,10 +1,7 @@
-import {
-	onMounted,
-	onBeforeUnmount,
-	type Ref,
-	type ComponentPublicInstance
-} from 'vue';
+import { type Ref, type ComponentPublicInstance } from 'vue';
 import type { MaybeElement, ReferenceElement } from '@floating-ui/vue';
+import { onClientMounted } from '@/ssr/use';
+import { isClientHTMLElement } from '@/ssr/utils';
 
 export interface UseDismissOptions {
 	open: Ref<boolean>;
@@ -15,7 +12,7 @@ export interface UseDismissOptions {
 }
 
 function isDOMElement(el: unknown): el is HTMLElement {
-	return el instanceof HTMLElement;
+	return isClientHTMLElement(el);
 }
 
 function isVueComponent(
@@ -69,13 +66,13 @@ export function useDismiss({
 		}
 	};
 
-	onMounted(() => {
-		document.addEventListener('click', onClickOutside);
-		document.addEventListener('keydown', onEscape);
-	});
+	onClientMounted(({ document: clientDocument }) => {
+		clientDocument.addEventListener('click', onClickOutside);
+		clientDocument.addEventListener('keydown', onEscape);
 
-	onBeforeUnmount(() => {
-		document.removeEventListener('click', onClickOutside);
-		document.removeEventListener('keydown', onEscape);
+		return () => {
+			clientDocument.removeEventListener('click', onClickOutside);
+			clientDocument.removeEventListener('keydown', onEscape);
+		};
 	});
 }

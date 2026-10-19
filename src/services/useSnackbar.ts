@@ -1,12 +1,11 @@
-/* eslint-disable vue/one-component-per-file */
 import {
-	createApp,
 	defineComponent,
 	h,
 	onUnmounted,
+	getCurrentInstance,
+	inject,
 	reactive,
 	shallowRef,
-	type App,
 	type PropType
 } from 'vue';
 import GSnackbar from '@/components/ui/GSnackbar/GSnackbar.vue';
@@ -16,6 +15,12 @@ import type {
 	GSnackbarLocation,
 	GSnackbarProps
 } from '@/components/ui/GSnackbar/types';
+import {
+	canUseDom,
+	mountClientComponent,
+	type ClientComponentMount
+} from '@/ssr/utils';
+import { GradientUIServicesSymbol } from './context';
 
 export type GSnackbarTransition = 'fade' | 'scale' | 'slide-x' | 'slide-y';
 
@@ -35,16 +40,12 @@ interface SnackbarItem extends SnackbarOptions {
 }
 
 interface SnackbarHostInstance {
-	app: App;
-	container: HTMLElement;
+	mount: ClientComponentMount;
 	items: SnackbarItem[];
 }
 
 const DEFAULT_LOCATION: GSnackbarLocation = 'bottom-center';
 const DEFAULT_TRANSITION: GSnackbarTransition = 'slide-y';
-const hosts = new Map<GSnackbarLocation, SnackbarHostInstance>();
-let snackbarId = 0;
-
 function normalizeAction(action: SnackbarOptions['action']) {
 	if (typeof action === 'string') {
 		return {
@@ -143,40 +144,43 @@ function createSnackbarHost() {
 	});
 }
 
-function ensureHost(
+const ensureHost = (
+	hosts: Map<GSnackbarLocation, SnackbarHostInstance>,
 	location: GSnackbarLocation,
 	transition: GSnackbarTransition,
 	close: (id: number, reason: GSnackbarCloseReason) => void,
 	remove: (id: number) => void
-) {
+) => {
 	const existingHost = hosts.get(location);
 	if (existingHost) return existingHost;
 
-	const container = document.createElement('div');
-	container.className = 'g-snackbar-stack__container';
-	document.body.appendChild(container);
-
 	const items = reactive<SnackbarItem[]>([]);
-	const app = createApp(createSnackbarHost(), {
-		items,
-		location,
-		transition,
-		close,
-		remove
+	const mount = mountClientComponent(createSnackbarHost(), {
+		containerClass: 'g-snackbar-stack__container',
+		props: {
+			items,
+			location,
+			transition,
+			close,
+			remove
+		}
 	});
-	app.mount(container);
+	if (!mount) {
+		throw new Error('Unable to mount snackbar host without a DOM target');
+	}
 
 	const host = {
-		app,
-		container,
+		mount,
 		items
 	};
 	hosts.set(location, host);
 
 	return host;
-}
+};
 
-export function useSnackbar() {
+export const createSnackbarService = () => {
+	const hosts = new Map<GSnackbarLocation, SnackbarHostInstance>();
+	let snackbarId = 0;
 	const activeItems = shallowRef<SnackbarItem[]>([]);
 
 	function remove(id: number) {
@@ -193,8 +197,7 @@ export function useSnackbar() {
 				window.setTimeout(() => {
 					if (host.items.length) return;
 
-					host.app.unmount();
-					host.container.remove();
+					host.mount.unmount();
 					hosts.delete(location);
 				}, 220);
 			}
@@ -214,6 +217,13 @@ export function useSnackbar() {
 	}
 
 	function show(options: SnackbarOptions | string) {
+		if (!canUseDom()) {
+			return {
+				id: -1,
+				close: () => undefined
+			};
+		}
+
 		const normalizedOptions =
 			typeof options === 'string' ? { text: options } : options;
 		const location = normalizedOptions.location ?? DEFAULT_LOCATION;
@@ -227,7 +237,7 @@ export function useSnackbar() {
 			transition,
 			action: normalizeAction(normalizedOptions.action)
 		};
-		const host = ensureHost(location, transition, close, remove);
+		const host = ensureHost(hosts, location, transition, close, remove);
 
 		host.items.push(item);
 		activeItems.value = [...activeItems.value, item];
@@ -242,21 +252,32 @@ export function useSnackbar() {
 
 	function closeAll() {
 		for (const [location, host] of hosts.entries()) {
-			host.app.unmount();
-			host.container.remove();
+			host.mount.unmount();
 			hosts.delete(location);
 		}
 
 		activeItems.value = [];
 	}
 
-	onUnmounted(() => {
-		closeAll();
-	});
-
 	return {
 		show,
 		closeAll,
-		items: activeItems
+		items: activeItems,
+		dispose: closeAll
 	};
-}
+};
+
+export type SnackbarService = ReturnType<typeof createSnackbarService>;
+
+export const useSnackbar = (): SnackbarService => {
+	if (!getCurrentInstance())
+		throw new Error(
+			'useSnackbar() requires Vue setup context. Outside setup, use the installed Gradient UI service runtime.'
+		);
+	const service = inject(GradientUIServicesSymbol, null)?.snackbar;
+	if (service) return service;
+
+	const local = createSnackbarService();
+	onUnmounted(local.dispose);
+	return local;
+};

@@ -1,7 +1,6 @@
 # Changelog
 
-## 0.8.0 - Unreleased
-
+## 1.0.0 - Unreleased
 
 ### Added
 
@@ -20,6 +19,17 @@
   step-like components.
 - Added reusable state icon resolution for semantic indicators and per-item
   stepper icon overrides.
+- Added `@gradient-ui/nuxt` for Nuxt 3/4 SSR, theme head styles, request-local
+  runtime state, Teleports, component auto-imports and optional Color Mode
+  integration.
+- Added public SSR utilities for deterministic theme head output, CSP nonces,
+  request-local viewport values and stable IDs.
+- Added `GImg` with aspect ratio, responsive image attributes, lazy placeholder,
+  gradient overlay, object fit and content slots.
+- Added `useGradientUI()` for access to the Nuxt service runtime outside Vue
+  component setup.
+- Added Nuxt SSG documentation, SSR/CSP guidance, Figma plugin documentation,
+  SEO metadata, sitemap and favicon support.
 
 ### Changed
 
@@ -28,9 +38,18 @@
 - Refactored `GTabs` onto the shared navigation controller used by `GStepper`.
 - Improved input surface variants with clearer `default`, `tonal`, `glass`,
   `outlined` and `text` behavior.
+- Moved the documentation application from Vite to Nuxt SSG.
+- Consolidated publishing into one release workflow with workspace-version
+  synchronization and npm Trusted Publishing through GitHub OIDC.
 
 ### Breaking Changes
+
 - `GChip` remove interactions now use the `remove` event as the preferred Vue
+  API.
+- Removed `createAppScopedState`; use `defineAppScopedState`.
+- `useSnackbar()` and `useLoading()` now require an active Vue setup context.
+  Use `useGradientUI()` in Nuxt code outside setup or
+  `getGradientUIServices(app)` in a plain Vue host.
 
 ## 0.5.0
 

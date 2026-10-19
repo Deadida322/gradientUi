@@ -50,25 +50,25 @@
 			'g-text_truncate': truncate
 		}"
 		class="g-text g-title">
-		<div
+		<span
 			v-if="hasPrepend"
 			class="g-text__prepend g-title__prepend">
 			<slot name="prepend">
 				<g-icon :icon="prependIcon"></g-icon>
 			</slot>
-		</div>
-		<div class="g-text__label g-title__label">
+		</span>
+		<span class="g-text__label g-title__label">
 			<slot name="default">
 				{{ label }}
 			</slot>
-		</div>
-		<div
+		</span>
+		<span
 			v-if="hasAppend"
 			class="g-text__append g-title__append">
 			<slot name="append">
 				<g-icon :icon="appendIcon"></g-icon>
 			</slot>
-		</div>
+		</span>
 	</component>
 </template>
 

@@ -16,9 +16,8 @@
 	}>();
 
 	const modelValue = defineModel<boolean>({ default: false });
-	const inputId = computed(
-		() => props.id ?? createComponentId('g-toggle-button')
-	);
+	const generatedInputId = createComponentId('g-toggle-button');
+	const inputId = computed(() => props.id ?? generatedInputId);
 
 	const { focused, $v, computedMessage, onFocus, onBlur } =
 		useFormControl<boolean>({

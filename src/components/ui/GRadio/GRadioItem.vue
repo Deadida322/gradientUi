@@ -38,9 +38,9 @@
 
 	const emit = defineEmits<CheckControlEmits<T>>();
 
-	const inputId = computed(() => createComponentId('g-radio-item'));
+	const inputId = createComponentId('g-radio-item');
 	const controlProps = computed(() => ({
-		id: inputId.value,
+		id: inputId,
 		inputType: 'radio' as const,
 		name: props.name,
 		label: props.label,

@@ -10,6 +10,7 @@
 	import { useLayerStack } from '@/use/layerStack';
 	import { GTransition } from '@/components/transitions';
 	import type { MaybeElement, ReferenceElement } from '@floating-ui/vue';
+	import { isClientHTMLElement } from '@/ssr/utils';
 
 	const props = defineProps(makeFloatingProps());
 	const referenceProp = toRef(props, 'reference');
@@ -17,7 +18,9 @@
 		'update:modelValue': [value: boolean];
 	}>();
 	const { open } = useControllableOpen(props, emit);
-	const { hasAppendTarget, appendTarget } = useAppendTarget(props.appendTo);
+	const { hasAppendTarget, appendTarget } = useAppendTarget(
+		() => props.appendTo
+	);
 	const leaving = ref(false);
 	const layerOpen = computed(() => open.value || leaving.value);
 
@@ -37,14 +40,14 @@
 		top: y.value != null ? `${y.value}px` : '',
 		left: x.value != null ? `${x.value}px` : '',
 		minWidth:
-			props.sameWidth && reference.value instanceof HTMLElement
+			props.sameWidth && isClientHTMLElement(reference.value)
 				? `${reference.value.offsetWidth}px`
 				: undefined,
 		zIndex: zIndex.value
 	}));
 
 	function assignReference(el: MaybeElement<ReferenceElement> | null) {
-		if (el && ('$el' in el || el instanceof HTMLElement)) {
+		if (el && ('$el' in el || isClientHTMLElement(el))) {
 			reference.value = el;
 		} else {
 			reference.value = props.reference;

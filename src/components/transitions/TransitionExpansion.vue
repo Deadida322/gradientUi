@@ -8,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+	import { isClientHTMLElement } from '@/ssr/utils';
+
 	interface Props {
 		duration?: number;
 		easing?: string;
@@ -76,7 +78,7 @@
 	};
 
 	const enter = (el: Element, done: () => void) => {
-		if (!(el instanceof HTMLElement)) {
+		if (!isClientHTMLElement(el)) {
 			done();
 			return;
 		}
@@ -94,7 +96,7 @@
 	};
 
 	const leave = (el: Element, done: () => void) => {
-		if (!(el instanceof HTMLElement)) {
+		if (!isClientHTMLElement(el)) {
 			done();
 			return;
 		}
