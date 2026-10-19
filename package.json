@@ -46,7 +46,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/vue": "^1.1.10",
-		"@gradient-ui/gradient-engine": "^0.6.0",
+		"@gradient-ui/gradient-engine": "^0.8.0",
 		"@mdi/js": "^7.4.47",
 		"gib-validate": "^1.1.0"
 	},
