@@ -55,6 +55,7 @@ jobs:
         timeout-minutes: 45
         env:
             DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+            PLAYWRIGHT_BROWSERS_PATH: 0
 
         steps:
             - name: Checkout
@@ -128,6 +129,9 @@ jobs:
 
             - name: Sync workspace package versions
               run: npm run version:sync && npm run version:check
+
+            - name: Install hydration browser
+              run: npm exec -- playwright install --with-deps chromium
 
             - name: Release SSR gate
               run: npm run release:ssr:check
