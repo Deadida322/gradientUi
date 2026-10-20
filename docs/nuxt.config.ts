@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
+import nuxtFonts from '@nuxt/fonts';
 import { defineNuxtConfig } from 'nuxt/config';
 
 const root = resolve(import.meta.dirname, '..');
@@ -40,7 +41,7 @@ export default defineNuxtConfig({
 
 	modules: [
 		'@nuxtjs/color-mode',
-		'@nuxt/fonts',
+		nuxtFonts,
 		resolve(root, 'packages/nuxt/src/module.ts')
 	],
 
