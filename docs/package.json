@@ -17,5 +17,8 @@
 		"@nuxt/fonts": "^0.13.0",
 		"@nuxtjs/color-mode": "^4.0.1",
 		"nuxt": "3.15.4"
+	},
+	"optionalDependencies": {
+		"lightningcss-linux-x64-gnu": "1.33.0"
 	}
 }
