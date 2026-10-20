@@ -1,6 +1,6 @@
 {
 	"name": "@gradient-ui/nuxt",
-	"version": "0.8.0",
+	"version": "1.0.0",
 	"type": "module",
 	"description": "Nuxt integration for Gradient UI.",
 	"license": "MIT",
@@ -36,7 +36,7 @@
 		"@nuxt/kit": "^3.21.1 || ^4.0.0"
 	},
 	"peerDependencies": {
-		"@gradient-ui/core": "^0.8.0"
+		"@gradient-ui/core": "^1.0.0"
 	},
 	"devDependencies": {
 		"@nuxt/module-builder": "^1.0.3",
