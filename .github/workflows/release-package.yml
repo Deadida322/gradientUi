@@ -76,6 +76,9 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+            - name: Install npm version used for publishing
+              run: npm install --global npm@11.5.1
+
             - name: Validate release branch
               shell: bash
               run: |
@@ -135,6 +138,9 @@ jobs:
 
             - name: Release SSR gate
               run: npm run release:ssr:check
+
+            - name: Validate npm publish lifecycles
+              run: npm run release:publish -- "${{ inputs.npm-tag }}" --dry-run
 
             - name: Commit and tag synchronized versions
               env:

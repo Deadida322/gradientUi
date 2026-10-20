@@ -7,10 +7,13 @@ import {
 	hasNuxtModule,
 	defineNuxtModule
 } from '@nuxt/kit';
+import type { Nuxt } from '@nuxt/schema';
 import type { GradientUIOptions } from '@gradient-ui/core/plugin';
 import { componentNames } from '@gradient-ui/core/component-names';
 
 export interface ModuleOptions extends GradientUIOptions {
+	/** Auto-register all Gradient UI components in Nuxt. */
+	components?: boolean;
 	/** SSR viewport values used by responsive Gradient UI components. */
 	ssr?: {
 		/** Width to use when the request does not send a viewport-width header. */
@@ -39,7 +42,7 @@ export default defineNuxtModule<ModuleOptions>({
 	defaults: {
 		css: true
 	},
-	setup(options, nuxt) {
+	setup(options: ModuleOptions, nuxt: Nuxt) {
 		const resolver = createResolver(import.meta.url);
 		if (options.colorMode && !hasNuxtModule('@nuxtjs/color-mode', nuxt))
 			throw new Error(
