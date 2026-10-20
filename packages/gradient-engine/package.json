@@ -1,6 +1,6 @@
 {
 	"name": "@gradient-ui/gradient-engine",
-	"version": "0.8.0",
+	"version": "1.0.0",
 	"private": false,
 	"type": "module",
 	"description": "Framework-free gradient generation engine for CSS, SVG, canvas, effects and material tokens.",
