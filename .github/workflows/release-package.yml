@@ -139,6 +139,9 @@ jobs:
             - name: Release SSR gate
               run: npm run release:ssr:check
 
+            - name: Validate npm publish lifecycles
+              run: npm run release:publish -- "${{ inputs.npm-tag }}" --dry-run
+
             - name: Commit and tag synchronized versions
               env:
                   TAG: ${{ steps.bump.outputs.tag }}

@@ -12,6 +12,8 @@ import type { GradientUIOptions } from '@gradient-ui/core/plugin';
 import { componentNames } from '@gradient-ui/core/component-names';
 
 export interface ModuleOptions extends GradientUIOptions {
+	/** Auto-register all Gradient UI components in Nuxt. */
+	components?: boolean;
 	/** SSR viewport values used by responsive Gradient UI components. */
 	ssr?: {
 		/** Width to use when the request does not send a viewport-width header. */
