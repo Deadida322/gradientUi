@@ -45,7 +45,22 @@ const publishArgs = (packageToPublish, dryRun = false) => [
 	...(dryRun ? ['--dry-run'] : [])
 ];
 
-for (const packageToPublish of packages) {
+const unpublished = packages.filter((packageToPublish) => {
+	const specifier = `${packageToPublish.name}@${version}`;
+	const result = run(['view', specifier, 'version', '--json'], 'pipe');
+	if (result.error) throw result.error;
+	if (result.status === 0) {
+		console.log(`${specifier} is already published; skipping.`);
+		return false;
+	}
+	if (!result.stderr?.toString().includes('E404')) {
+		process.stderr.write(result.stderr ?? 'npm view failed.');
+		process.exit(result.status ?? 1);
+	}
+	return true;
+});
+
+for (const packageToPublish of unpublished) {
 	console.log(`Preflighting ${packageToPublish.name}@${version}...`);
 	const result = run(publishArgs(packageToPublish, true));
 	if (result.error) throw result.error;
@@ -54,18 +69,12 @@ for (const packageToPublish of packages) {
 
 if (preflightOnly) {
 	console.log(
-		`All ${packages.length} packages passed npm publish --dry-run.`
+		`All ${unpublished.length} unpublished packages passed npm publish --dry-run.`
 	);
 	process.exit(0);
 }
 
-for (const packageToPublish of packages) {
-	const specifier = `${packageToPublish.name}@${version}`;
-	if (run(['view', specifier, 'version'], 'ignore').status === 0) {
-		console.log(`${specifier} is already published.`);
-		continue;
-	}
-
+for (const packageToPublish of unpublished) {
 	const result = run(publishArgs(packageToPublish));
 	if (result.error) throw result.error;
 	if (result.status !== 0) process.exit(result.status ?? 1);

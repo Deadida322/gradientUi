@@ -3,6 +3,10 @@ name: Release Package
 on:
     workflow_dispatch:
         inputs:
+            resume-version:
+                description: Existing release version to resume without bumping (leave empty for a new release)
+                required: false
+                default: ''
             version:
                 description: Version bump type
                 required: true
@@ -104,11 +108,20 @@ jobs:
               id: bump
               shell: bash
               env:
-                RELEASE_BUMP: ${{ inputs.version }}
-                PRE_RELEASE_ID: ${{ inputs.prerelease-id }}
-                NPM_TAG: ${{ inputs.npm-tag }}
+                  RELEASE_BUMP: ${{ inputs.version }}
+                  PRE_RELEASE_ID: ${{ inputs.prerelease-id }}
+                  NPM_TAG: ${{ inputs.npm-tag }}
+                  RESUME_VERSION: ${{ inputs.resume-version }}
               run: |
-                  if [[ "$RELEASE_BUMP" == pre* ]]; then
+                  if [ -n "$RESUME_VERSION" ]; then
+                    CURRENT_VERSION="$(node -p "require('./package.json').version")"
+                    if [ "$RESUME_VERSION" != "$CURRENT_VERSION" ]; then
+                      echo "Resume version must match the checked-out package version: $CURRENT_VERSION"
+                      exit 1
+                    fi
+                    git rev-parse --verify "refs/tags/v${RESUME_VERSION}"
+                    git diff --exit-code "v${RESUME_VERSION}" HEAD -- package.json package-lock.json packages/gradient-engine/package.json packages/nuxt/package.json
+                  elif [[ "$RELEASE_BUMP" == pre* ]]; then
                     npm version "$RELEASE_BUMP" --preid "$PRE_RELEASE_ID" --no-git-tag-version
                   elif [ "$RELEASE_BUMP" = "prerelease" ]; then
                     npm version prerelease --preid "$PRE_RELEASE_ID" --no-git-tag-version
@@ -143,6 +156,7 @@ jobs:
               run: npm run release:publish -- "${{ inputs.npm-tag }}" --dry-run
 
             - name: Commit and tag synchronized versions
+              if: inputs.resume-version == ''
               env:
                   TAG: ${{ steps.bump.outputs.tag }}
                   VERSION: ${{ steps.bump.outputs.version }}
@@ -185,8 +199,18 @@ jobs:
             - name: Verify synchronized package versions
               run: npm run version:check
 
+            - name: Checkout current publishing script
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.sha }}
+                  path: .release-publisher
+                  sparse-checkout: scripts/publish-workspaces.mjs
+                  sparse-checkout-cone-mode: false
+
             - name: Publish gradient engine, core and Nuxt module
-              run: npm run release:publish -- "${{ inputs.npm-tag }}"
+              env:
+                  NPM_TAG: ${{ inputs.npm-tag }}
+              run: node .release-publisher/scripts/publish-workspaces.mjs "$NPM_TAG"
 
     announce:
         name: Create GitHub Release
