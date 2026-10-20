@@ -199,6 +199,9 @@ jobs:
             - name: Verify synchronized package versions
               run: npm run version:check
 
+            - name: Build local workspace dependencies
+              run: npm run build:lib
+
             - name: Checkout current publishing script
               uses: actions/checkout@v4
               with:
