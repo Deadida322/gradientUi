@@ -43,7 +43,7 @@ const rewriteRelativeSpecifiers = async (directory, extension) => {
 			''
 		);
 		const matches = content.matchAll(
-			/(\bfrom\s*|\bimport\()(['"])(\.\.?\/[^'"]+)(\2)/g
+			/(\bfrom\s*|\bimport\()(['"])(\.{1,2}(?:\/[^'"]*)?)(\2)/g
 		);
 		let lastIndex = 0;
 		let rewritten = '';

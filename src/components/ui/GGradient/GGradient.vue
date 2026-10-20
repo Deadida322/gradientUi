@@ -5,7 +5,7 @@
 	import { useGradientSurface } from '@/use/gradientSurface';
 	import GGradientBorderLayer from './GGradientBorderLayer.vue';
 	const props = defineProps(makeGradientProps());
-	const instanceId = useId().replaceAll(':', '');
+	const instanceId = (useId() ?? '').replaceAll(':', '');
 	const borderMaskId = `g-gradient-border-${instanceId}`;
 	const glowMaskId = `g-gradient-glow-${instanceId}`;
 	const hasBorder = computed(

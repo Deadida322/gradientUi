@@ -42,12 +42,12 @@ export type GFormResetEventPayload = [
 	validation: GFormValidationState
 ];
 
-export interface GFormEmits {
+export type GFormEmits = {
 	submit: GFormSubmitEventPayload;
 	'submit-valid': GFormSubmitEventPayload;
 	'submit-invalid': GFormSubmitEventPayload;
 	reset: GFormResetEventPayload;
-}
+};
 
 export const makeFormProps = propsFactory({
 	name: String,

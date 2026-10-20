@@ -99,26 +99,32 @@ jobs:
             - name: Bump version
               id: bump
               shell: bash
+              env:
+                RELEASE_BUMP: ${{ inputs.version }}
+                PRE_RELEASE_ID: ${{ inputs.prerelease-id }}
+                NPM_TAG: ${{ inputs.npm-tag }}
               run: |
-                  if [[ "${{ inputs.version }}" == pre* ]]; then
-                    npm version "${{ inputs.version }}" --preid "${{ inputs.prerelease-id }}" --no-git-tag-version
-                  elif [ "${{ inputs.version }}" = "prerelease" ]; then
-                    npm version prerelease --preid "${{ inputs.prerelease-id }}" --no-git-tag-version
+                  if [[ "$RELEASE_BUMP" == pre* ]]; then
+                    npm version "$RELEASE_BUMP" --preid "$PRE_RELEASE_ID" --no-git-tag-version
+                  elif [ "$RELEASE_BUMP" = "prerelease" ]; then
+                    npm version prerelease --preid "$PRE_RELEASE_ID" --no-git-tag-version
                   else
-                    npm version "${{ inputs.version }}" --no-git-tag-version
+                    npm version "$RELEASE_BUMP" --no-git-tag-version
                   fi
 
                   VERSION="$(node -p "require('./package.json').version")"
                   IS_PRERELEASE="$(node -p "require('./package.json').version.includes('-') ? 'true' : 'false'")"
 
-                  if [ "$IS_PRERELEASE" = "true" ] && [ "${{ inputs.npm-tag }}" = "latest" ]; then
+                  if [ "$IS_PRERELEASE" = "true" ] && [ "$NPM_TAG" = "latest" ]; then
                     echo "Prerelease versions must be published with a non-latest npm tag."
                     exit 1
                   fi
 
-                  echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-                  echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
-                  echo "is_prerelease=${IS_PRERELEASE}" >> "$GITHUB_OUTPUT"
+                  {
+                    echo "version=${VERSION}"
+                    echo "tag=v${VERSION}"
+                    echo "is_prerelease=${IS_PRERELEASE}"
+                  } >> "$GITHUB_OUTPUT"
 
             - name: Sync workspace package versions
               run: npm run version:sync && npm run version:check
