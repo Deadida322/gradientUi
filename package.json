@@ -25,7 +25,7 @@
 		"type-check:figma-plugin": "npm run type-check -w @gradient-ui/figma-plugin",
 		"type-check:nuxt": "npm run type-check -w @gradient-ui/nuxt",
 		"type-check:lib": "vue-tsc -p tsconfig.lib.json",
-		"type-check:docs": "vue-tsc -p docs/tsconfig.json",
+		"type-check:docs": "npm run type-check -w @gradient-ui/docs",
 		"test:ssr:core:run": "vitest run --config vitest.ssr.config.ts",
 		"test:ssr:nuxt:run": "vitest run --config vitest.nuxt.config.ts",
 		"test:ssr": "npm run build:lib && npm run test:ssr:core:run",
