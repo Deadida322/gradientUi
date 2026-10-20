@@ -10,7 +10,8 @@ const npm = npmCli
 			prefix: []
 		};
 const arguments_ = process.argv.slice(2);
-const tag = arguments_.find((argument) => !argument.startsWith('--')) ?? 'latest';
+const tag =
+	arguments_.find((argument) => !argument.startsWith('--')) ?? 'latest';
 const preflightOnly = arguments_.includes('--dry-run');
 const rootPackage = JSON.parse(await readFile('package.json', 'utf8'));
 const version = rootPackage.version;
@@ -52,7 +53,9 @@ for (const packageToPublish of packages) {
 }
 
 if (preflightOnly) {
-	console.log(`All ${packages.length} packages passed npm publish --dry-run.`);
+	console.log(
+		`All ${packages.length} packages passed npm publish --dry-run.`
+	);
 	process.exit(0);
 }
 
