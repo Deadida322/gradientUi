@@ -85,7 +85,7 @@ jobs:
 
             - name: Install Nuxt compatibility version
               if: matrix.nuxt-version != ''
-              run: npm install --no-save --package-lock=false --legacy-peer-deps "nuxt@${{ matrix.nuxt-version }}" "@nuxt/kit@${{ matrix.nuxt-version }}"
+              run: npm install --no-save --package-lock=false --legacy-peer-deps "nuxt@${{ matrix.nuxt-version }}" "@nuxt/kit@${{ matrix.nuxt-version }}" "@nuxt/schema@${{ matrix.nuxt-version }}"
 
             - name: Install hydration browser
               run: npx playwright install --with-deps chromium

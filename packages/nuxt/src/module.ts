@@ -7,7 +7,6 @@ import {
 	hasNuxtModule,
 	defineNuxtModule
 } from '@nuxt/kit';
-import type { Nuxt } from '@nuxt/schema';
 import type { GradientUIOptions } from '@gradient-ui/core/plugin';
 import { componentNames } from '@gradient-ui/core/component-names';
 
@@ -42,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
 	defaults: {
 		css: true
 	},
-	setup(options: ModuleOptions, nuxt: Nuxt) {
+	setup(options, nuxt) {
 		const resolver = createResolver(import.meta.url);
 		if (options.colorMode && !hasNuxtModule('@nuxtjs/color-mode', nuxt))
 			throw new Error(
