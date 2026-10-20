@@ -129,6 +129,8 @@ jobs:
         name: Nuxt package, fixtures and SSG
         runs-on: ubuntu-latest
         timeout-minutes: 45
+        env:
+            PLAYWRIGHT_BROWSERS_PATH: 0
 
         steps:
             - name: Checkout
@@ -144,7 +146,7 @@ jobs:
               run: npm ci
 
             - name: Install hydration browser
-              run: npx playwright install --with-deps chromium
+              run: npm exec -- playwright install --with-deps chromium
 
             - name: Test published package shape, fixtures and SSG
               run: npm run test:ssr:all
