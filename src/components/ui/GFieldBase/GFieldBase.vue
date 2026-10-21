@@ -62,6 +62,11 @@
 			: 0
 	);
 	const fieldStyles = computed(() => [
+		{
+			'--g-field-radius': props.rounded
+				? 'var(--g-token-radius-pill)'
+				: 'var(--g-token-field-radius)'
+		},
 		colorStyles.value,
 		props.variant === 'glass' ? glassStyles.value : undefined
 	]);
@@ -92,6 +97,7 @@
 		:data-g-validation-error="state === 'error' ? 'true' : undefined"
 		:style="fieldStyles">
 		<label
+			v-if="label || slots.default"
 			:for="id"
 			class="g-field-base__label">
 			<slot>
@@ -110,6 +116,7 @@
 			:placement="borderPlacement"
 			:border-width="borderWidth"
 			inherit-width
+			:rounded="rounded"
 			border-radius="6">
 			<div
 				class="g-field-base__wrapper"
@@ -155,6 +162,7 @@
 		</g-gradient>
 
 		<div
+			v-if="!hideMessage"
 			class="g-field-base__helper"
 			:class="{
 				'g-field-base__helper_visible': message || slots.message
@@ -231,7 +239,7 @@
 			min-height: var(--g-token-field-height-m);
 			padding: var(--g-token-field-padding-y-m)
 				var(--g-token-field-padding-x-m);
-			border-radius: var(--g-token-field-radius);
+			border-radius: var(--g-field-radius);
 
 			color: var(--g-field-content-color);
 

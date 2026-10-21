@@ -1,6 +1,62 @@
 # Changelog
 
-## 1.0.0 - Unreleased
+## 1.1.0 - Unreleased
+
+### Added
+
+- Added `GDropdown` to the public component exports and Nuxt auto-import list.
+- Added `rounded` and `hide-message` props to `GInput`, `GTextarea`, `GSelect`
+  and `GCombobox`.
+- Added component documentation and examples for `GDropdown` and `GNavbar`,
+  including controlled dropdown state, varied activators and large-logo navbar
+  layouts.
+
+### Changed
+
+- Decoupled `GNavbarItem` and `GNavbarMenu` height from the navbar shell. Use
+  `--g-navbar-height` for the shell and `--g-navbar-item-height` for navigation
+  items.
+- Consolidated `GIcon` onto one implementation with a predictable square
+  `inline-flex` layout and centered glyphs.
+- Improved prepend and append alignment in button content.
+- Improved the release workflow so interrupted multi-package releases can be
+  resumed safely and local workspace dependencies are built before publishing.
+
+### Fixed
+
+- Fixed controlled `GDropdown` state synchronization.
+- Fixed dropdown activators opening and immediately closing on their first
+  pointer click when both click and focus activation are enabled.
+- Fixed navbar menus stretching to match oversized logos or other tall header
+  content.
+- Fixed `GIcon` alignment in standalone usage and composed controls.
+- Fixed compact fields reserving helper-message space when messages are hidden.
+
+### Breaking Changes
+
+- No required API migrations. Custom styles that depended on `GIcon` being a
+  block-level flex container may need to move layout rules to a wrapper.
+
+### Package Notes
+
+- `@gradient-ui/core`, `@gradient-ui/gradient-engine` and `@gradient-ui/nuxt`
+  are released as a synchronized `1.1.0` version set.
+- `@gradient-ui/gradient-engine` and `@gradient-ui/nuxt` have no direct
+  implementation changes in this release.
+
+## 1.0.1 - 2026-10-20
+
+### Fixed
+
+- Fixed Nuxt module type preparation by using the official module builder and
+  resolving setup types from the installed Nuxt kit.
+- Declared the Nuxt schema dependency required by generated module types.
+- Fixed documentation builds resolving Nuxt Fonts and the Linux Lightning CSS
+  binary in CI.
+- Hardened the release workflow and restored a consistent `1.0.1` package
+  baseline after a partial publish.
+
+## 1.0.0 - 2026-10-20
 
 ### Added
 

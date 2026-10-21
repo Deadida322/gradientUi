@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed, useAttrs } from 'vue';
 	import GGradient from '../GGradient/GGradient.vue';
-	import GIcon from '@/components/ui/GIcon.vue';
+	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
 	import { makeButtonProps } from './types';
 	import { useActionSurface } from '@/use/actionSurface';
@@ -176,6 +176,14 @@
 			justify-content: center;
 
 			min-width: 0;
+		}
+
+		&__prepend,
+		&__append {
+			display: inline-flex;
+			flex: 0 0 auto;
+			align-items: center;
+			justify-content: center;
 		}
 
 		&_disabled {

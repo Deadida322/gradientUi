@@ -32,6 +32,7 @@ export type GComboboxProps<
 	variant?: GFieldVariant;
 	backdropBlur?: GlassProps['backdropBlur'];
 	borderWidth?: StringeredNumber;
+	rounded?: boolean;
 	placeholder?: string;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
@@ -40,6 +41,7 @@ export type GComboboxProps<
 	size?: Sizes;
 	state?: GGradienStates;
 	message?: string;
+	hideMessage?: boolean;
 	rules?: ValidationRule<SelectionValue<T, V, Multiple, ReturnObject>>[];
 	search?: string;
 	allowCustom?: boolean;

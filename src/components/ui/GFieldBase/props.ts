@@ -26,6 +26,7 @@ export const makeFieldBaseProps = propsFactory({
 		default: 'm'
 	},
 	message: String,
+	hideMessage: Boolean,
 	prependIcon: String as PropType<MdiIcon>,
 	appendIcon: String as PropType<MdiIcon>
 });

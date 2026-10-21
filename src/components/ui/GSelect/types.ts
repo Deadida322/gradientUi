@@ -25,6 +25,7 @@ export type GSelectProps<
 	variant?: GFieldVariant;
 	backdropBlur?: GlassProps['backdropBlur'];
 	borderWidth?: StringeredNumber;
+	rounded?: boolean;
 	placeholder?: string;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
@@ -33,6 +34,7 @@ export type GSelectProps<
 	size?: Sizes;
 	state?: GGradienStates;
 	message?: string;
+	hideMessage?: boolean;
 	rules?: ValidationRule<SelectionValue<T, V, Multiple, ReturnObject>>[];
 };
 

@@ -10,6 +10,10 @@ import Mask from './mask.vue';
 import maskCode from './mask.vue?raw';
 import Slots from './slots.vue';
 import slotsCode from './slots.vue?raw';
+import Rounded from './rounded.vue';
+import roundedCode from './rounded.vue?raw';
+import Compact from './compact.vue';
+import compactCode from './compact.vue?raw';
 import type { DocsLiveExample } from '@docs/types';
 import { toPublicExampleCode } from '@docs/utils/code';
 
@@ -21,6 +25,18 @@ export const inputUsageExample: DocsLiveExample = {
 };
 
 export const inputExamples: DocsLiveExample[] = [
+	{
+		id: 'compact',
+		label: 'Hide message',
+		component: Compact,
+		code: toPublicExampleCode(compactCode)
+	},
+	{
+		id: 'rounded',
+		label: 'Rounded',
+		component: Rounded,
+		code: toPublicExampleCode(roundedCode)
+	},
 	{
 		id: 'variants',
 		label: 'Variants',

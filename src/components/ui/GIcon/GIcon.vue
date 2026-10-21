@@ -27,7 +27,15 @@
 
 <style scoped lang="scss">
 	.g-icon {
-		display: flex;
+		display: inline-flex;
+		flex: 0 0 auto;
 		align-items: center;
+		justify-content: center;
+
+		width: 1em;
+		height: 1em;
+
+		line-height: 1;
+		vertical-align: middle;
 	}
 </style>
