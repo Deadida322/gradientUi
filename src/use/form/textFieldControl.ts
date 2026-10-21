@@ -14,11 +14,13 @@ export interface FieldVisualProps extends GlassProps {
 	color?: GColor;
 	variant?: GFieldVariant;
 	borderWidth?: StringeredNumber;
+	rounded?: boolean;
 	state?: GGradienStates;
 	disabled?: boolean;
 	clearable?: boolean;
 	size?: Sizes;
 	message?: string;
+	hideMessage?: boolean;
 	prependIcon?: MdiIcon;
 	appendIcon?: MdiIcon;
 }

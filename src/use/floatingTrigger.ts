@@ -21,6 +21,14 @@ export function useTriggerFactory(
 
 	let openTimeout: number | null = null;
 	let closeTimeout: number | null = null;
+	let pointerActivation = false;
+
+	const onPointerdown = () => {
+		pointerActivation = true;
+	};
+	const onPointerup = () => {
+		pointerActivation = false;
+	};
 
 	function clearTimers() {
 		if (openTimeout) clearTimeout(openTimeout);
@@ -72,6 +80,7 @@ export function useTriggerFactory(
 
 	function onFocus() {
 		if (disabled || !focus) return;
+		if (click && pointerActivation) return;
 		open.value = true;
 	}
 
@@ -83,6 +92,9 @@ export function useTriggerFactory(
 	onBeforeUnmount(clearTimers);
 
 	const triggerAttrs = computed(() => ({
+		...(click && focus
+			? { onPointerdown, onPointerup, onPointercancel: onPointerup }
+			: {}),
 		...(click ? { onClick } : {}),
 		...(contextmenu ? { onContextmenu } : {}),
 		...(hover ? { onMouseenter, onMouseleave } : {}),

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-	import { computed, ref, watch } from 'vue';
+	import { computed } from 'vue';
 	import type { MaybeElement, ReferenceElement } from '@floating-ui/vue';
 	import { BaseFloating } from '../BaseFloating';
 	import { useTriggerFactory } from '@/use/floatingTrigger';
 	import { useDropdownContext } from '@/use/dropdownContext';
+	import { useControllableOpen } from '@/use/controllableOpen';
 	import { makeDropdownProps } from '../GDropdown/types';
 
 	const props = defineProps(makeDropdownProps());
@@ -13,14 +14,11 @@
 			activatorRef: (el: MaybeElement<ReferenceElement> | null) => void;
 		}) => unknown;
 	}>();
-	const emit = defineEmits(['update:modelValue']);
+	const emit = defineEmits<{
+		'update:modelValue': [value: boolean];
+	}>();
 
-	const open = ref(props.modelValue ?? false);
-	watch(open, (v) => emit('update:modelValue', v));
-	watch(
-		() => props.modelValue,
-		(v) => (open.value = v)
-	);
+	const { open } = useControllableOpen(props, emit);
 
 	const { triggerAttrs: activatorAttrs, floatingAttrs } = useTriggerFactory(
 		open,

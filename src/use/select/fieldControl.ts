@@ -14,12 +14,14 @@ export interface UseSelectFieldControlOptions<TModel> {
 	modelValue: MaybeRefOrGetter<TModel>;
 	rules: MaybeRefOrGetter<ValidationRule<TModel>[] | undefined>;
 	message: MaybeRefOrGetter<string | undefined>;
+	hideMessage?: MaybeRefOrGetter<boolean | undefined>;
 	disabled?: MaybeRefOrGetter<boolean | undefined>;
 	label?: MaybeRefOrGetter<string | undefined>;
 	color?: MaybeRefOrGetter<GColor | undefined>;
 	variant?: MaybeRefOrGetter<GFieldVariant | undefined>;
 	backdropBlur?: MaybeRefOrGetter<GlassProps['backdropBlur']>;
 	borderWidth?: MaybeRefOrGetter<StringeredNumber | undefined>;
+	rounded?: MaybeRefOrGetter<boolean | undefined>;
 	state?: MaybeRefOrGetter<GGradienStates | undefined>;
 	clearable?: MaybeRefOrGetter<boolean | undefined>;
 	size?: MaybeRefOrGetter<Sizes | undefined>;
@@ -46,6 +48,7 @@ export function useSelectFieldControl<TModel>(
 		variant: toValue(options.variant),
 		backdropBlur: toValue(options.backdropBlur),
 		borderWidth: toValue(options.borderWidth),
+		rounded: toValue(options.rounded),
 		state: control.hasValidationError.value
 			? 'error'
 			: toValue(options.state),
@@ -54,6 +57,7 @@ export function useSelectFieldControl<TModel>(
 		size: toValue(options.size),
 		focused: control.focused.value || Boolean(toValue(options.focused)),
 		message: control.computedMessage.value,
+		hideMessage: toValue(options.hideMessage),
 		prependIcon: toValue(options.prependIcon),
 		appendIcon: toValue(options.appendIcon),
 		hasValue: toValue(options.hasValue),

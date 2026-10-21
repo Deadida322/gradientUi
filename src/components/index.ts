@@ -50,6 +50,7 @@ export { GDrawer } from '@/components/ui/GDrawer';
 export { default as GExpansion } from '@/components/ui/GExpansion/GExpansion.vue';
 export { default as GExpansionGroup } from '@/components/ui/GExpansionGroup/GExpansionGroup.vue';
 export { default as GTooltip } from '@/components/ui/GTooltip/GTooltip.vue';
+export { GDropdown } from '@/components/ui/GDropdown';
 export { GMenu } from '@/components/ui/GMenu';
 export { default as GDropdownGroup } from '@/components/ui/GDropdownGroup';
 export { BaseOverlay } from '@/components/ui/BaseOverlay';

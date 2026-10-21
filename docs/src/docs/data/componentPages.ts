@@ -2,6 +2,19 @@ import type { DocsComponentPageMeta, DocsLiveExample } from '@docs/types';
 
 const componentPages: DocsComponentPageMeta[] = [
 	{
+		id: 'navbar',
+		usage: {
+			title: 'Usage',
+			description:
+				'Compose GNavbar with GNavbarItem, GNavbarMenu and GNavbarSubItem. Use v-model for selection and prepend/append slots for branding and actions.'
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Navigation with dropdowns, density presets, disabled items and large logos with independent item height.'
+		}
+	},
+	{
 		id: 'avatar',
 		usage: {
 			title: 'Usage',
@@ -142,6 +155,19 @@ const componentPages: DocsComponentPageMeta[] = [
 			title: 'Examples',
 			description:
 				'Drawer examples cover edge placements, footer actions, scrollable content, responsive sizing and custom slots.'
+		}
+	},
+	{
+		id: 'dropdown',
+		usage: {
+			title: 'Usage',
+			description:
+				'GDropdown places custom content beside an activator. Bind the activator slot props to a focusable control, then compose the content with GMenu, actions or any other surface.'
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Dropdown examples cover menu composition, floating placement, hover activation and controlled open state.'
 		}
 	},
 	{
@@ -412,6 +438,7 @@ type ExamplesModule = Record<
 >;
 
 const exampleLoaders: Record<string, () => Promise<ExamplesModule>> = {
+	navbar: () => import('@docs/examples/navbar'),
 	alert: () => import('@docs/examples/alert'),
 	avatar: () => import('@docs/examples/avatar'),
 	'avatar-group': () => import('@docs/examples/avatar'),
@@ -430,6 +457,7 @@ const exampleLoaders: Record<string, () => Promise<ExamplesModule>> = {
 	form: () => import('@docs/examples/form'),
 	input: () => import('@docs/examples/input'),
 	loading: () => import('@docs/examples/loading'),
+	dropdown: () => import('@docs/examples/dropdown'),
 	menu: () => import('@docs/examples/menu'),
 	modal: () => import('@docs/examples/modal'),
 	progress: () => import('@docs/examples/progress'),
