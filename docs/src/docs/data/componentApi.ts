@@ -158,6 +158,14 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		to: '/docs/components/drawer'
 	},
 	{
+		id: 'dropdown',
+		title: 'GDropdown',
+		group: 'containment',
+		description:
+			'Floating surface that connects an activator with menus, actions and custom contextual content.',
+		to: '/docs/components/dropdown'
+	},
+	{
 		id: 'menu',
 		title: 'GMenu',
 		group: 'containment',
@@ -175,7 +183,8 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		id: 'navbar',
 		title: 'GNavbar',
 		group: 'navigation',
-		description: 'Top navigation shell with groups and dropdown items.'
+		description: 'Top navigation shell with groups and dropdown items.',
+		to: '/docs/components/navbar'
 	},
 	{
 		id: 'aside',
@@ -1296,7 +1305,14 @@ export const componentApiCssVariables: Record<string, DocsPropRow[]> = {
 		{
 			name: '--g-navbar-height',
 			type: 'CSS length',
-			description: 'Height used by sticky layout calculations.'
+			description:
+				'Minimum shell height, independent of navigation item height.'
+		},
+		{
+			name: '--g-navbar-item-height',
+			type: 'CSS length',
+			description:
+				'Navigation item height. Defaults to 48px, 56px or 68px according to density.'
 		},
 		{
 			name: '--g-navbar-z-index',
@@ -1386,6 +1402,84 @@ const materialFrameApiProps: DocsPropRow[] = [
 ];
 
 export const componentApi: DocsComponentApi[] = [
+	{
+		id: 'navbar',
+		title: 'GNavbar',
+		group: 'navigation',
+		description:
+			'Sticky navigation with selection, dropdown groups, branding and independent item sizing.',
+		props: [
+			{
+				name: 'modelValue',
+				type: 'NavbarValue',
+				description: 'Selected item value for v-model.'
+			},
+			{
+				name: 'defaultValue',
+				type: 'NavbarValue',
+				description: 'Initial selection for uncontrolled usage.'
+			},
+			{
+				name: 'density',
+				type: "'compact' | 'comfortable' | 'prominent'",
+				defaultValue: "'comfortable'",
+				description:
+					'Default shell and item height: 48px, 56px or 68px.'
+			},
+			{
+				name: 'color',
+				type: 'GColor',
+				defaultValue: "'primary'",
+				description: 'Navigation accent color.'
+			},
+			{
+				name: 'activeColor',
+				type: 'GColor',
+				description: 'Accent color for selected items.'
+			},
+			{
+				name: 'hideOnScroll',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Hides on downward window scrolling and reveals on upward scrolling.'
+			},
+			{
+				name: 'elevated',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Adds shell elevation.'
+			},
+			{
+				name: 'ariaLabel',
+				type: 'string',
+				defaultValue: "'Primary navigation'",
+				description: 'Accessible navigation label.'
+			}
+		],
+		slots: [
+			{
+				name: 'default',
+				type: 'slot',
+				scope: '{ modelValue, select }',
+				description:
+					'GNavbarItem and GNavbarMenu children. Items accept value, label, disabled, href and icon props. Menus expose a dropdown slot for GNavbarSubItem children.'
+			},
+			{
+				name: 'prepend',
+				type: 'slot',
+				scope: '{ modelValue, select }',
+				description: 'Brand or logo before navigation.'
+			},
+			{
+				name: 'append',
+				type: 'slot',
+				scope: '{ modelValue, select }',
+				description: 'Actions after navigation.'
+			}
+		],
+		examples: []
+	},
 	{
 		id: 'avatar',
 		title: 'GAvatar',
@@ -2895,6 +2989,20 @@ export const componentApi: DocsComponentApi[] = [
 			'Text field with shared field behavior, validation state and slots for icons or messages.',
 		props: [
 			{
+				name: 'hideMessage',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Hides helper text, validation messages and the message slot, removing their reserved space. Validation still runs.'
+			},
+			{
+				name: 'rounded',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Uses pill-shaped corners for the field surface and gradient frame.'
+			},
+			{
 				name: 'modelValue',
 				type: 'string',
 				description: 'Controlled field value.'
@@ -3065,6 +3173,20 @@ export const componentApi: DocsComponentApi[] = [
 		description:
 			'Multiline text field with the same validation, icon and message behavior as GInput.',
 		props: [
+			{
+				name: 'hideMessage',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Hides the message area and removes its reserved space. Validation still runs.'
+			},
+			{
+				name: 'rounded',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Uses pill-shaped corners for the field surface and gradient frame.'
+			},
 			{
 				name: 'modelValue',
 				type: 'string',
@@ -4572,6 +4694,162 @@ export const componentApi: DocsComponentApi[] = [
 	<g-drawer title="Drawer">
 		Drawer content
 	</g-drawer>
+</template>`
+			}
+		]
+	},
+	{
+		id: 'dropdown',
+		title: 'GDropdown',
+		group: 'containment',
+		description:
+			'Composable floating surface for action menus and contextual content.',
+		props: [
+			{
+				name: 'modelValue',
+				type: 'boolean',
+				description: 'Controlled open state used by v-model.'
+			},
+			{
+				name: 'defaultOpen',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Initial open state when the dropdown is not controlled.'
+			},
+			{
+				name: 'placement',
+				type: 'FloatingPlacement',
+				defaultValue: "'bottom'",
+				description:
+					'Preferred floating position, including start and end variations.'
+			},
+			{
+				name: 'strategy',
+				type: "'absolute' | 'fixed'",
+				defaultValue: "'absolute'",
+				description:
+					'CSS positioning strategy for the floating surface.'
+			},
+			{
+				name: 'offset',
+				type: 'number',
+				defaultValue: '8',
+				description:
+					'Distance in pixels between the activator and content.'
+			},
+			{
+				name: 'shift',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Keeps content within the visible clipping boundary.'
+			},
+			{
+				name: 'flip',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Uses the opposite placement when the preferred position lacks room.'
+			},
+			{
+				name: 'sameWidth',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Matches the floating surface width to its activator.'
+			},
+			{
+				name: 'closeOnContentClick',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Closes the dropdown after a click inside its content.'
+			},
+			{
+				name: 'openOnClick',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Toggles the dropdown when the activator is clicked.'
+			},
+			{
+				name: 'openOnHover',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Opens the dropdown while the activator is hovered.'
+			},
+			{
+				name: 'openOnFocus',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Opens the dropdown when the activator receives focus.'
+			},
+			{
+				name: 'activatorFullWidth',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Makes the activator wrapper fill the available width.'
+			},
+			{
+				name: 'appendTo',
+				type: 'string',
+				defaultValue: "''",
+				description:
+					'CSS selector for a teleport target; omit it to render beside the activator.'
+			}
+		],
+		slots: [
+			{
+				name: 'activator',
+				type: 'slot',
+				scope: '{ activatorAttrs, activatorRef }',
+				description:
+					'Activator control. Bind both values to preserve positioning and trigger behavior.'
+			},
+			{
+				name: 'default',
+				type: 'slot',
+				scope: '-',
+				description:
+					'Content rendered inside the floating dropdown surface.'
+			}
+		],
+		emits: [
+			{
+				name: 'update:modelValue',
+				type: 'boolean',
+				description: 'Emitted whenever the open state changes.'
+			}
+		],
+		cssVariables: [
+			{
+				name: '--g-dropdown-max-height',
+				type: 'string',
+				defaultValue: '640px',
+				description:
+					'Maximum height of the scrollable dropdown content.'
+			}
+		],
+		examples: [
+			{
+				id: 'dropdown-basic',
+				label: 'Basic',
+				code: `
+<template>
+	<g-dropdown close-on-content-click>
+		<template #activator="{ activatorAttrs, activatorRef }">
+			<g-button
+				:ref="activatorRef"
+				v-bind="activatorAttrs"
+				label="Open menu" />
+		</template>
+
+		<g-menu :items="items" />
+	</g-dropdown>
 </template>`
 			}
 		]

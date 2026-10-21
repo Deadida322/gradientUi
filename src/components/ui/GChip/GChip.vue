@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import GGradient from '../GGradient/GGradient.vue';
-	import GIcon from '@/components/ui/GIcon.vue';
+	import GIcon from '@/components/ui/GIcon/GIcon.vue';
 	import type { PLASlots } from '@/types/CommonTypes';
 	import { useActionSurface } from '@/use/actionSurface';
 	import usePx from '@/use/px';

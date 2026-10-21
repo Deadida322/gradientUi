@@ -173,7 +173,10 @@
 		flex: 0 0 auto;
 		align-items: stretch;
 
-		height: var(--g-navbar-height, 56px);
+		height: var(
+			--g-navbar-item-height,
+			var(--g-navbar-density-height, 56px)
+		);
 
 		color: var(--g-token-color-on-surface);
 		list-style: none;

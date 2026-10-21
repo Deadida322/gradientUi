@@ -4,6 +4,7 @@ import type { ValidationRule } from 'gib-validate';
 import { makeColorProps } from '@/use/color';
 import { makeGlassProps } from '@/use/glass';
 import { makeSizeProps } from '@/use/size';
+import { makeRoundedProps } from '@/use/rounded';
 import type { GVariant } from '@/use/variant';
 import { propsFactory } from '@/utils/propsFactory';
 import type { PropType } from 'vue';
@@ -19,6 +20,7 @@ export const makeFieldVariantProps = propsFactory({
 });
 
 export const makeFieldFrameProps = propsFactory({
+	...makeRoundedProps(),
 	borderWidth: [Number, String] as PropType<StringeredNumber>
 });
 
@@ -33,6 +35,7 @@ export const makePLAFieldProps = propsFactory({
 });
 
 export const makeFieldStateProps = propsFactory({
+	hideMessage: Boolean,
 	state: String as PropType<GGradienStates>,
 	message: String
 });

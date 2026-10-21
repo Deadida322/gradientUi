@@ -344,7 +344,10 @@
 			align-items: center;
 
 			max-width: 100%;
-			min-height: var(--g-navbar-height, 56px);
+			min-height: var(
+				--g-navbar-height,
+				var(--g-navbar-density-height, 56px)
+			);
 			padding: 0 var(--g-token-space-4);
 		}
 
@@ -415,15 +418,15 @@
 		}
 
 		&_compact {
-			--g-navbar-height: 48px;
+			--g-navbar-density-height: 48px;
 		}
 
 		&_comfortable {
-			--g-navbar-height: 56px;
+			--g-navbar-density-height: 56px;
 		}
 
 		&_prominent {
-			--g-navbar-height: 68px;
+			--g-navbar-density-height: 68px;
 		}
 	}
 </style>

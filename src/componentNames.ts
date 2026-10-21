@@ -15,6 +15,7 @@ export const componentNames = [
 	'GChip',
 	'GDivider',
 	'GDrawer',
+	'GDropdown',
 	'GDropdownGroup',
 	'GExpansion',
 	'GExpansionGroup',
