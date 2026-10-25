@@ -23,6 +23,20 @@ export { default as GButton } from '@/components/ui/GButton/GButton.vue';
 export { GCard } from '@/components/ui/GCard';
 export { default as GChip } from '@/components/ui/GChip/GChip.vue';
 export { GDivider } from '@/components/ui/GDivider';
+export { GSpacer } from '@/components/ui/GSpacer';
+export type {
+	GBottomNavigationProps,
+	GBottomNavigationItemProps,
+	GBottomNavigationEmits,
+	GBottomNavigationSlots,
+	GBottomNavigationItemSlots,
+	BottomNavigationValue,
+	BottomNavigationVariant
+} from '@/components/ui/GBottomNavigation';
+export {
+	GBottomNavigation,
+	GBottomNavigationItem
+} from '@/components/ui/GBottomNavigation';
 export { default as GCheckbox } from '@/components/ui/GCheckbox/GCheckbox.vue';
 export { default as GCheckboxGroup } from '@/components/ui/GCheckboxGroup/GCheckboxGroup.vue';
 export { default as GSquircle } from '@/components/ui/GSquircle/GSquircle.vue';
@@ -167,3 +181,15 @@ export type {
 export { default as GTextarea } from '@/components/ui/GTextarea/GTextarea.vue';
 export { default as GSelect } from '@/components/ui/GSelect/GSelect.vue';
 export { default as GSwitch } from '@/components/ui/GSwitch/GSwitch.vue';
+
+export { GFileInput } from '@/components/ui/GFileInput';
+export type { GFileInputProps } from '@/components/ui/GFileInput';
+
+export { GImageInput } from '@/components/ui/GImageInput';
+export type { GImageInputProps } from '@/components/ui/GImageInput';
+
+export { GFileDropzone } from '@/components/ui/GFileDropzone';
+export type { GFileDropzoneProps } from '@/components/ui/GFileDropzone';
+
+export { GImageDropzone } from '@/components/ui/GImageDropzone';
+export type { GImageDropzoneProps } from '@/components/ui/GImageDropzone';

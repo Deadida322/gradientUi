@@ -182,7 +182,13 @@ export const useMaterial = (options: UseMaterialOptions = {}) => {
 	const materialClasses = computed(() => [`${baseClass.value}_surface`]);
 	const materialStyles = computed<CSSProperties | undefined>(() => {
 		const styles: CSSProperties = {
-			...(gradientMaterialStyles.value ?? {})
+			...(gradientMaterialStyles.value ?? {}),
+			'--g-material-content-text-shadow': morphEnabled.value
+				? 'var(--g-material-morph-text-shadow, var(--g-gradient-material-morph-text-shadow))'
+				: 'none',
+			'--g-material-content-text-shadow-current': morphEnabled.value
+				? 'var(--g-material-morph-text-shadow, var(--g-token-material-morph-text-shadow-current))'
+				: 'none'
 		};
 
 		if (borderRadius.value) {
@@ -199,6 +205,7 @@ export const useMaterial = (options: UseMaterialOptions = {}) => {
 	return {
 		getMorphBlobStyle,
 		gradientMaterial,
+		gradientMaterialStyles,
 		materialClasses,
 		materialContentClasses,
 		materialGlowBaseClasses,

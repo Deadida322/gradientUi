@@ -40,6 +40,9 @@ jobs:
             - name: Type check
               run: npm run type-check
 
+            - name: Check independent release tooling
+              run: npm run test:release
+
             - name: Lint TypeScript and Vue
               run: npm run eslint
 

@@ -3,6 +3,15 @@ name: Release Package
 on:
     workflow_dispatch:
         inputs:
+            package:
+                description: Package to release independently
+                required: true
+                default: core
+                type: choice
+                options:
+                    - core
+                    - gradient-engine
+                    - nuxt
             resume-version:
                 description: Existing release version to resume without bumping (leave empty for a new release)
                 required: false
@@ -54,6 +63,7 @@ jobs:
             tag: ${{ steps.bump.outputs.tag }}
             version: ${{ steps.bump.outputs.version }}
             is_prerelease: ${{ steps.bump.outputs.is_prerelease }}
+            package_name: ${{ steps.package.outputs.name }}
         permissions:
             contents: write
         timeout-minutes: 45
@@ -94,15 +104,28 @@ jobs:
             - name: Install
               run: npm ci
 
-            - name: Validate package metadata
+            - name: Select release package
+              id: package
               shell: bash
+              env:
+                  RELEASE_PACKAGE: ${{ inputs.package }}
               run: |
-                  PACKAGE_NAME="$(node -p "require('./package.json').name")"
-
-                  if [ "$PACKAGE_NAME" != "@gradient-ui/core" ]; then
-                    echo "Expected package name @gradient-ui/core, got $PACKAGE_NAME"
+                  case "$RELEASE_PACKAGE" in
+                    core) PACKAGE_PATH=package.json; TAG_PREFIX=v ;;
+                    gradient-engine) PACKAGE_PATH=packages/gradient-engine/package.json; TAG_PREFIX=gradient-engine-v ;;
+                    nuxt) PACKAGE_PATH=packages/nuxt/package.json; TAG_PREFIX=nuxt-v ;;
+                    *) echo "Unknown release package: $RELEASE_PACKAGE"; exit 1 ;;
+                  esac
+                  PACKAGE_NAME="$(node -p "require('./${PACKAGE_PATH}').name")"
+                  if [ "$PACKAGE_NAME" != "@gradient-ui/${RELEASE_PACKAGE}" ]; then
+                    echo "Unexpected package name: $PACKAGE_NAME"
                     exit 1
                   fi
+                  {
+                    echo "path=$PACKAGE_PATH"
+                    echo "name=$PACKAGE_NAME"
+                    echo "prefix=$TAG_PREFIX"
+                  } >> "$GITHUB_OUTPUT"
 
             - name: Bump version
               id: bump
@@ -112,25 +135,33 @@ jobs:
                   PRE_RELEASE_ID: ${{ inputs.prerelease-id }}
                   NPM_TAG: ${{ inputs.npm-tag }}
                   RESUME_VERSION: ${{ inputs.resume-version }}
+                  PACKAGE_PATH: ${{ steps.package.outputs.path }}
+                  PACKAGE_NAME: ${{ steps.package.outputs.name }}
+                  TAG_PREFIX: ${{ steps.package.outputs.prefix }}
+                  RELEASE_PACKAGE: ${{ inputs.package }}
               run: |
+                  WORKSPACE_ARGS=()
+                  if [ "$RELEASE_PACKAGE" != "core" ]; then
+                    WORKSPACE_ARGS=(--workspace "$PACKAGE_NAME")
+                  fi
                   if [ -n "$RESUME_VERSION" ]; then
-                    CURRENT_VERSION="$(node -p "require('./package.json').version")"
+                    CURRENT_VERSION="$(node -p "require('./${PACKAGE_PATH}').version")"
                     if [ "$RESUME_VERSION" != "$CURRENT_VERSION" ]; then
                       echo "Resume version must match the checked-out package version: $CURRENT_VERSION"
                       exit 1
                     fi
-                    git rev-parse --verify "refs/tags/v${RESUME_VERSION}"
-                    git diff --exit-code "v${RESUME_VERSION}" HEAD -- package.json package-lock.json packages/gradient-engine/package.json packages/nuxt/package.json
+                    git rev-parse --verify "refs/tags/${TAG_PREFIX}${RESUME_VERSION}"
+                    git diff --exit-code "${TAG_PREFIX}${RESUME_VERSION}" HEAD -- "$PACKAGE_PATH"
                   elif [[ "$RELEASE_BUMP" == pre* ]]; then
-                    npm version "$RELEASE_BUMP" --preid "$PRE_RELEASE_ID" --no-git-tag-version
+                    npm version "$RELEASE_BUMP" --preid "$PRE_RELEASE_ID" --no-git-tag-version "${WORKSPACE_ARGS[@]}"
                   elif [ "$RELEASE_BUMP" = "prerelease" ]; then
-                    npm version prerelease --preid "$PRE_RELEASE_ID" --no-git-tag-version
+                    npm version prerelease --preid "$PRE_RELEASE_ID" --no-git-tag-version "${WORKSPACE_ARGS[@]}"
                   else
-                    npm version "$RELEASE_BUMP" --no-git-tag-version
+                    npm version "$RELEASE_BUMP" --no-git-tag-version "${WORKSPACE_ARGS[@]}"
                   fi
 
-                  VERSION="$(node -p "require('./package.json').version")"
-                  IS_PRERELEASE="$(node -p "require('./package.json').version.includes('-') ? 'true' : 'false'")"
+                  VERSION="$(node -p "require('./${PACKAGE_PATH}').version")"
+                  IS_PRERELEASE="$(node -p "require('./${PACKAGE_PATH}').version.includes('-') ? 'true' : 'false'")"
 
                   if [ "$IS_PRERELEASE" = "true" ] && [ "$NPM_TAG" = "latest" ]; then
                     echo "Prerelease versions must be published with a non-latest npm tag."
@@ -139,11 +170,11 @@ jobs:
 
                   {
                     echo "version=${VERSION}"
-                    echo "tag=v${VERSION}"
+                    echo "tag=${TAG_PREFIX}${VERSION}"
                     echo "is_prerelease=${IS_PRERELEASE}"
                   } >> "$GITHUB_OUTPUT"
 
-            - name: Sync workspace package versions
+            - name: Sync lockfile metadata and check workspace compatibility
               run: npm run version:sync && npm run version:check
 
             - name: Install hydration browser
@@ -153,16 +184,18 @@ jobs:
               run: npm run release:ssr:check
 
             - name: Validate npm publish lifecycles
-              run: npm run release:publish -- "${{ inputs.npm-tag }}" --dry-run
+              run: npm run release:publish -- "${{ inputs.npm-tag }}" --package "${{ inputs.package }}" --dry-run
 
-            - name: Commit and tag synchronized versions
+            - name: Commit and tag selected package version
               if: inputs.resume-version == ''
               env:
                   TAG: ${{ steps.bump.outputs.tag }}
                   VERSION: ${{ steps.bump.outputs.version }}
+                  PACKAGE_PATH: ${{ steps.package.outputs.path }}
+                  PACKAGE_NAME: ${{ steps.package.outputs.name }}
               run: |
-                  git add package.json package-lock.json packages/gradient-engine/package.json packages/nuxt/package.json packages/figma-plugin/package.json
-                  git commit -m "release: ${VERSION}"
+                  git add "$PACKAGE_PATH" package-lock.json
+                  git commit -m "release: ${PACKAGE_NAME}@${VERSION}"
                   git tag "$TAG"
                   git push --atomic origin "HEAD:refs/heads/${DEFAULT_BRANCH}" "refs/tags/${TAG}"
 
@@ -196,7 +229,7 @@ jobs:
             - name: Install
               run: npm ci
 
-            - name: Verify synchronized package versions
+            - name: Verify workspace compatibility
               run: npm run version:check
 
             - name: Build local workspace dependencies
@@ -210,10 +243,11 @@ jobs:
                   sparse-checkout: scripts/publish-workspaces.mjs
                   sparse-checkout-cone-mode: false
 
-            - name: Publish gradient engine, core and Nuxt module
+            - name: Publish selected package
               env:
                   NPM_TAG: ${{ inputs.npm-tag }}
-              run: node .release-publisher/scripts/publish-workspaces.mjs "$NPM_TAG"
+                  RELEASE_PACKAGE: ${{ inputs.package }}
+              run: node .release-publisher/scripts/publish-workspaces.mjs "$NPM_TAG" --package "$RELEASE_PACKAGE"
 
     announce:
         name: Create GitHub Release
@@ -228,6 +262,7 @@ jobs:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             TAG: ${{ needs.release.outputs.tag }}
             VERSION: ${{ needs.release.outputs.version }}
+            PACKAGE_NAME: ${{ needs.release.outputs.package_name }}
             IS_PRERELEASE: ${{ needs.release.outputs.is_prerelease }}
             NOTES_PATH: ${{ inputs.upgrade-notes-path }}
 
@@ -246,7 +281,7 @@ jobs:
                     RELEASE_FLAGS+=(--prerelease)
                   fi
 
-                  NOTES_FLAGS=(--notes "Release @gradient-ui/core ${VERSION}")
+                  NOTES_FLAGS=(--notes "Release ${PACKAGE_NAME} ${VERSION}")
                   if [ -n "$NOTES_PATH" ] && [ -f "$NOTES_PATH" ]; then
                     NOTES_FLAGS=(--notes-file "$NOTES_PATH")
                   fi

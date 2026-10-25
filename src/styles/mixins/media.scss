@@ -1,0 +1,74 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'sass:list';
+
+// stylelint-disable annotation-no-unknown -- Sass module configuration.
+$breakpoints: (
+	sm: 600px,
+	md: 900px,
+	lg: 1200px,
+	xl: 1536px
+) !default;
+// stylelint-enable annotation-no-unknown
+
+@function _breakpoint($target) {
+	$value: $target;
+
+	@if meta.type-of($target) == 'string' {
+		@if not map.has-key($breakpoints, $target) {
+			@error 'Unknown breakpoint: #{$target}. Available: #{map.keys($breakpoints)}.';
+		}
+
+		$value: map.get($breakpoints, $target);
+	}
+
+	@if meta.type-of($value) != 'number' {
+		@error 'A breakpoint must be a name or a CSS length (px, em or rem).';
+	}
+
+	@if $value != 0 and not list.index(('px', 'em', 'rem'), math.unit($value)) {
+		@error 'A breakpoint must use px, em or rem.';
+	}
+
+	@if $value < 0 {
+		@error 'A breakpoint cannot be negative.';
+	}
+
+	@return $value;
+}
+
+// stylelint-disable media-query-no-invalid -- Sass resolves query values at compilation.
+@mixin up($target) {
+	$width: _breakpoint($target);
+
+	@media (width >= #{$width}) {
+		@content;
+	}
+}
+
+@mixin down($target) {
+	$width: _breakpoint($target);
+
+	@media (width <= #{$width}) {
+		@content;
+	}
+}
+
+@mixin between($min, $max) {
+	$min-width: _breakpoint($min);
+	$max-width: _breakpoint($max);
+
+	@if not math.compatible($min-width, $max-width) {
+		@error 'Range boundaries must use compatible units.';
+	}
+
+	@if $min-width > $max-width {
+		@error 'The minimum breakpoint cannot exceed the maximum.';
+	}
+
+	@media (#{$min-width} <= width <= #{$max-width}) {
+		@content;
+	}
+}
+// stylelint-enable media-query-no-invalid

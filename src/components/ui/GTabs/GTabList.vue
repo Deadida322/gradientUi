@@ -1,10 +1,18 @@
 <script setup lang="ts">
-	import { computed } from 'vue';
+	import { computed, ref } from 'vue';
+	import GNavigationIndicator from '@/components/shared/GNavigationIndicator.vue';
+	import { useNavigationIndicator } from '@/use/navigation/indicator';
 	import { makeTabListProps } from './types';
 	import { useTabsInject } from './context';
 
 	const props = defineProps(makeTabListProps());
 	const tabs = useTabsInject();
+	const root = ref<HTMLElement | null>(null);
+	const { indicator } = useNavigationIndicator(
+		root,
+		() => tabs?.modelValue.value,
+		() => tabs?.registeredTabs.value ?? []
+	);
 
 	const listClasses = computed(() => ({
 		[`g-tab-list_${tabs?.orientation.value ?? 'horizontal'}`]: true,
@@ -14,12 +22,18 @@
 
 <template>
 	<div
+		ref="root"
 		class="g-tab-list"
 		:class="listClasses"
 		role="tablist"
 		:aria-label="props.ariaLabel"
 		:aria-orientation="tabs?.orientation.value">
 		<slot />
+		<g-navigation-indicator
+			v-if="tabs?.variant.value === 'line'"
+			v-bind="indicator"
+			:vertical="tabs?.orientation.value === 'vertical'"
+			class="g-tab-list__indicator" />
 	</div>
 </template>
 
@@ -28,6 +42,8 @@
 
 	.g-tab-list {
 		--g-tab-list-radius: var(--g-token-radius-md);
+
+		position: relative;
 
 		overflow: auto hidden;
 		display: inline-flex;
@@ -41,12 +57,9 @@
 
 		background: rgba(var(--g-theme-on-surface), 0.04);
 
-		@include scrollbar.tonal-scrollbar(
-			4px,
-			var(--g-color, var(--g-token-color-primary)),
-			24%,
-			38%
-		);
+		&__indicator {
+			background: var(--g-tabs-indicator-gradient, var(--g-color));
+		}
 
 		&_vertical {
 			overflow: hidden auto;
@@ -57,5 +70,12 @@
 			display: flex;
 			width: 100%;
 		}
+
+		@include scrollbar.tonal-scrollbar(
+			4px,
+			var(--g-color, var(--g-token-color-primary)),
+			24%,
+			38%
+		);
 	}
 </style>

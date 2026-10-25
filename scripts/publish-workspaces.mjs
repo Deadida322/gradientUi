@@ -11,18 +11,34 @@ const npm = npmCli
 		};
 const arguments_ = process.argv.slice(2);
 const tag =
-	arguments_.find((argument) => !argument.startsWith('--')) ?? 'latest';
+	arguments_[0] && !arguments_[0].startsWith('--') ? arguments_[0] : 'latest';
+const packageFlag = arguments_.indexOf('--package');
+const selectedPackage =
+	packageFlag === -1 ? 'core' : arguments_[packageFlag + 1];
 const preflightOnly = arguments_.includes('--dry-run');
-const rootPackage = JSON.parse(await readFile('package.json', 'utf8'));
-const version = rootPackage.version;
 const packages = [
 	{
+		id: 'gradient-engine',
+		path: 'packages/gradient-engine/package.json',
 		name: '@gradient-ui/gradient-engine',
 		workspace: '@gradient-ui/gradient-engine'
 	},
-	{ name: '@gradient-ui/core' },
-	{ name: '@gradient-ui/nuxt', workspace: '@gradient-ui/nuxt' }
+	{ id: 'core', name: '@gradient-ui/core', path: 'package.json' },
+	{
+		id: 'nuxt',
+		name: '@gradient-ui/nuxt',
+		path: 'packages/nuxt/package.json',
+		workspace: '@gradient-ui/nuxt'
+	}
 ];
+const selected = packages.find(
+	(pkg) => pkg.id === selectedPackage || pkg.name === selectedPackage
+);
+if (!selected) throw new Error(`Unknown release package: ${selectedPackage}`);
+const { version } = JSON.parse(await readFile(selected.path, 'utf8'));
+if (version.includes('-') && tag === 'latest') {
+	throw new Error('Prereleases require a non-latest npm tag');
+}
 
 const run = (args, stdio = 'inherit') =>
 	spawnSync(npm.command, [...npm.prefix, ...args], {
@@ -45,7 +61,7 @@ const publishArgs = (packageToPublish, dryRun = false) => [
 	...(dryRun ? ['--dry-run'] : [])
 ];
 
-const unpublished = packages.filter((packageToPublish) => {
+const unpublished = [selected].filter((packageToPublish) => {
 	const specifier = `${packageToPublish.name}@${version}`;
 	const result = run(['view', specifier, 'version', '--json'], 'pipe');
 	if (result.error) throw result.error;

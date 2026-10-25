@@ -28,7 +28,6 @@
 				variant="tonal"
 				color="cyan"
 				texture="noise" />
-			<span class="docs-component-detail__badge">0.6.0</span>
 		</span>
 	</div>
 </template>

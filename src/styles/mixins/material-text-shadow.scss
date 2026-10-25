@@ -1,0 +1,10 @@
+@mixin material-text-shadow() {
+	text-shadow: var(--g-material-content-text-shadow, none);
+
+	@supports (color: rgb(from currentcolor r g b)) {
+		text-shadow: var(
+			--g-material-content-text-shadow-current,
+			var(--g-material-content-text-shadow, none)
+		);
+	}
+}

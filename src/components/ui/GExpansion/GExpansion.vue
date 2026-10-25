@@ -317,7 +317,8 @@
 					type="button"
 					@click="onHeaderClick">
 					<span class="g-expansion__heading">
-						<span
+						<component
+							:is="props.titleTag"
 							v-if="slots.title || props.title"
 							class="g-expansion__title">
 							<slot
@@ -325,7 +326,7 @@
 								v-bind="slotProps">
 								{{ props.title }}
 							</slot>
-						</span>
+						</component>
 
 						<span
 							v-if="slots.text || props.text"

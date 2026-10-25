@@ -21,3 +21,6 @@ export * from '../ssr/use';
 export * from './stateIcon';
 export * from './stepper';
 export * from './tagName';
+
+export * from './file';
+export * from './form/fieldControl';

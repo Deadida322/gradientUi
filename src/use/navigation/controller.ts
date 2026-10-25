@@ -6,6 +6,10 @@ import type {
 	UseNavigationControllerOptions
 } from './types';
 
+const DOCUMENT_POSITION_DISCONNECTED = 1;
+const DOCUMENT_POSITION_PRECEDING = 2;
+const DOCUMENT_POSITION_FOLLOWING = 4;
+
 const valueKey = (value: unknown) =>
 	String(value ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '-');
 
@@ -48,11 +52,10 @@ export function useNavigationController<T = GNavigationValue>(
 	}
 
 	function registerItem(registration: GNavigationRegistration<T>) {
-		const next = registeredItems.value.filter(
-			(item) => item.el !== registration.el
-		);
-
-		next.push(registration);
+		const next = [...registeredItems.value];
+		const index = next.findIndex((item) => item.el === registration.el);
+		if (index === -1) next.push(registration);
+		else next[index] = registration;
 		registeredItems.value = next;
 
 		if (
@@ -72,9 +75,15 @@ export function useNavigationController<T = GNavigationValue>(
 	}
 
 	function getEnabledItems() {
-		return registeredItems.value.filter(
-			(item) => !item.disabled && item.value !== undefined
-		);
+		return registeredItems.value
+			.filter((item) => !item.disabled && item.value !== undefined)
+			.sort((first, second) => {
+				const position = first.el.compareDocumentPosition(second.el);
+				if (position & DOCUMENT_POSITION_DISCONNECTED) return 0;
+				if (position & DOCUMENT_POSITION_FOLLOWING) return -1;
+				if (position & DOCUMENT_POSITION_PRECEDING) return 1;
+				return 0;
+			});
 	}
 
 	function focusItem(index: number, event: KeyboardEvent) {

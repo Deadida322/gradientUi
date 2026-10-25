@@ -8,6 +8,7 @@
 		type GFormSlots
 	} from './types';
 	import { provideFormContext } from '@/use/form/context';
+	import { createFormPendingTasks } from '@/use/form/pending';
 
 	defineOptions({ inheritAttrs: false });
 
@@ -16,10 +17,12 @@
 	const emit = defineEmits<GFormEmits>();
 	const attrs = useAttrs();
 	const formRef = ref<HTMLFormElement>();
+	const pendingTasks = createFormPendingTasks();
 
 	provideFormContext({
 		disabled: toRef(props, 'disabled'),
-		validateOn: toRef(props, 'validateOn')
+		validateOn: toRef(props, 'validateOn'),
+		registerPending: pendingTasks.registerPending
 	});
 
 	const validation = useValidation<Record<string, Validatable>>(
@@ -34,7 +37,7 @@
 		$v: validation.value,
 		valid: validation.value.$valid,
 		invalid: validation.value.$invalid,
-		pending: validation.value.$pending,
+		pending: validation.value.$pending || pendingTasks.pending.value,
 		dirty: validation.value.$dirty,
 		error: validation.value.$error,
 		errors: errors.value,
@@ -90,6 +93,7 @@
 	}
 
 	async function validate() {
+		await pendingTasks.waitForPending();
 		return validation.value.$validate();
 	}
 

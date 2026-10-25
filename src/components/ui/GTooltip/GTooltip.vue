@@ -8,7 +8,7 @@
 
 	const open = ref(false);
 	const tooltipTransition = computed(
-		() => props.transition ?? { name: 'scale-only', scale: 0.96 }
+		() => props.transition ?? { name: 'scale', scale: 0.96 }
 	);
 
 	const { triggerAttrs, floatingAttrs } = useTriggerFactory(open, {

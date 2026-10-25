@@ -1,2 +1,6 @@
 export { default as GQuickActions } from './GQuickActions.vue';
-export type { GQuickActionsOption, GQuickActionsProps } from './types';
+export type {
+	GQuickActionsEmits,
+	GQuickActionsOption,
+	GQuickActionsProps
+} from './types';

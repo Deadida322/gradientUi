@@ -15,6 +15,7 @@ export interface GTabRegistration<T = GTabValue> {
 }
 
 export interface GTabsContext<T = GTabValue> {
+	registeredTabs: Ref<GTabRegistration<T>[]>;
 	modelValue: Ref<T | undefined>;
 	color: ComputedRef<GColor | undefined>;
 	activeColor: ComputedRef<GColor | undefined>;

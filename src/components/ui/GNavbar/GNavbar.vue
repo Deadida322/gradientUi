@@ -1,14 +1,14 @@
 <script setup lang="ts" generic="T extends NavbarValue = NavbarValue">
 	import {
 		computed,
-		nextTick,
 		onBeforeUnmount,
 		onMounted,
 		ref,
 		toRef,
-		watch,
 		type CSSProperties
 	} from 'vue';
+	import GNavigationIndicator from '@/components/shared/GNavigationIndicator.vue';
+	import { useNavigationIndicator } from '@/use/navigation/indicator';
 	import { useSurfaceColor } from '@/use/surfaceColor';
 	import { provideNavbar } from './context';
 	import {
@@ -31,14 +31,6 @@
 	const scrollThreshold = 8;
 	const topRevealOffset = 16;
 	let scrollRaf = 0;
-	let indicatorRaf = 0;
-	let resizeObserver: ResizeObserver | undefined;
-	const registry = new Map<T | undefined, Set<HTMLElement>>();
-	const indicator = ref({
-		left: 0,
-		width: 0,
-		visible: false
-	});
 
 	const isControlled = computed(() => props.modelValue !== undefined);
 	const model = computed<T | undefined>({
@@ -88,51 +80,14 @@
 		return value !== undefined && Object.is(model.value, value);
 	}
 
-	function isElementSelected(el: HTMLElement | null | undefined) {
-		const value = model.value;
-
-		if (value === undefined || !el) return false;
-
-		return registry.get(value)?.has(el) ?? false;
-	}
-
-	function register(value: T | undefined, el: HTMLElement) {
-		if (value === undefined) return;
-
-		const bucket = registry.get(value) ?? new Set<HTMLElement>();
-		bucket.add(el);
-		registry.set(value, bucket);
-		resizeObserver?.observe(el);
-		queueIndicatorRefresh();
-	}
-
-	function unregister(value: T | undefined, el: HTMLElement) {
-		const bucket = registry.get(value);
-
-		if (!bucket) return;
-
-		bucket.delete(el);
-		resizeObserver?.unobserve(el);
-
-		if (!bucket.size) {
-			registry.delete(value);
-		}
-
-		queueIndicatorRefresh();
-	}
-
-	function unregisterElement(el: HTMLElement) {
-		for (const [value, bucket] of registry) {
-			bucket.delete(el);
-			resizeObserver?.unobserve(el);
-
-			if (!bucket.size) {
-				registry.delete(value);
-			}
-		}
-
-		queueIndicatorRefresh();
-	}
+	const {
+		indicator,
+		register,
+		unregister,
+		unregisterElement,
+		isElementSelected,
+		refreshIndicator: queueIndicatorRefresh
+	} = useNavigationIndicator<T>(itemsRef, model);
 
 	function select(value: T | undefined, event?: Event) {
 		if (value === undefined) return;
@@ -140,46 +95,6 @@
 		model.value = value;
 		emit('select', value, event);
 		queueIndicatorRefresh();
-	}
-
-	function queueIndicatorRefresh() {
-		void nextTick(() => {
-			if (indicatorRaf) {
-				window.cancelAnimationFrame(indicatorRaf);
-			}
-
-			indicatorRaf = window.requestAnimationFrame(() => {
-				indicatorRaf = 0;
-				refreshIndicator();
-			});
-		});
-	}
-
-	function refreshIndicator() {
-		const value = model.value;
-		const container = itemsRef.value;
-		const item =
-			value === undefined
-				? undefined
-				: registry.get(value)?.values().next().value;
-
-		if (!container || !item) {
-			indicator.value = {
-				left: 0,
-				width: 0,
-				visible: false
-			};
-			return;
-		}
-
-		const containerRect = container.getBoundingClientRect();
-		const itemRect = item.getBoundingClientRect();
-
-		indicator.value = {
-			left: itemRect.left - containerRect.left + container.scrollLeft,
-			width: itemRect.width,
-			visible: true
-		};
 	}
 
 	function updateScrollState() {
@@ -225,29 +140,8 @@
 		refreshIndicator: queueIndicatorRefresh
 	});
 
-	watch(
-		() => model.value,
-		() => queueIndicatorRefresh()
-	);
-
 	onMounted(() => {
 		lastScrollY.value = window.scrollY;
-		resizeObserver = new ResizeObserver(queueIndicatorRefresh);
-		if (itemsRef.value) {
-			resizeObserver.observe(itemsRef.value);
-		}
-
-		for (const bucket of registry.values()) {
-			for (const item of bucket) {
-				resizeObserver.observe(item);
-			}
-		}
-
-		queueIndicatorRefresh();
-		window.setTimeout(queueIndicatorRefresh, 60);
-		window.setTimeout(queueIndicatorRefresh, 240);
-		void document.fonts?.ready.then(queueIndicatorRefresh);
-		window.addEventListener('resize', queueIndicatorRefresh);
 		window.addEventListener('scroll', onScroll, { passive: true });
 	});
 
@@ -255,13 +149,6 @@
 		if (scrollRaf) {
 			window.cancelAnimationFrame(scrollRaf);
 		}
-		if (indicatorRaf) {
-			window.cancelAnimationFrame(indicatorRaf);
-		}
-
-		resizeObserver?.disconnect();
-
-		window.removeEventListener('resize', queueIndicatorRefresh);
 		window.removeEventListener('scroll', onScroll);
 	});
 </script>
@@ -286,9 +173,11 @@
 			<ul
 				ref="itemsRef"
 				class="g-navbar__items">
-				<li
-					aria-hidden="true"
-					class="g-navbar__indicator"></li>
+				<g-navigation-indicator
+					tag="li"
+					class="g-navbar__indicator"
+					v-bind="indicator"
+					gradient="var(--g-navbar-indicator-gradient)" />
 				<slot v-bind="slotProps" />
 			</ul>
 
@@ -384,37 +273,6 @@
 
 		&__append {
 			margin-left: auto;
-		}
-
-		&__indicator {
-			pointer-events: none;
-
-			position: absolute;
-			z-index: 2;
-			bottom: 0;
-			left: 0;
-			transform: translateX(var(--g-navbar-indicator-left));
-
-			display: block;
-
-			width: var(--g-navbar-indicator-width);
-			height: 3px;
-			border-radius: var(--g-token-radius-pill);
-
-			opacity: 0;
-			background: var(--g-navbar-indicator-gradient);
-
-			transition:
-				transform var(--g-token-duration-base)
-					var(--g-token-easing-emphasized),
-				width var(--g-token-duration-base)
-					var(--g-token-easing-emphasized),
-				opacity var(--g-token-duration-fast)
-					var(--g-token-easing-standard);
-		}
-
-		&_indicator-visible &__indicator {
-			opacity: 1;
 		}
 
 		&_compact {

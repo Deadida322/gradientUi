@@ -6,7 +6,7 @@
 	import { makeButtonProps } from './types';
 	import { useActionSurface } from '@/use/actionSurface';
 	import usePx from '@/use/px';
-	import { useTagName } from '@/use/tagName';
+	import { useLinkTagName } from '@/use/routerLink';
 
 	defineOptions({ inheritAttrs: false });
 
@@ -40,7 +40,11 @@
 
 		return props.ripple;
 	});
-	const { tagName, tagAttrs } = useTagName(props, 'button');
+	const { tagName, tagAttrs } = useLinkTagName(props, 'button');
+	const gradientProps = computed(() => {
+		const { to: _to, ...surfaceProps } = props;
+		return surfaceProps;
+	});
 	const {
 		actionSurfaceClasses,
 		resolvedColor,
@@ -66,7 +70,7 @@
 		v-gradient-icon
 		class="g-gradient"
 		v-bind="{
-			...props,
+			...gradientProps,
 			color: resolvedColor,
 			state: resolvedState
 		}"
@@ -197,9 +201,21 @@
 		}
 
 		&__label {
+			min-width: 0;
 			line-height: var(--g-token-line-height-md);
+		}
 
+		&:not(.g-button_icon) &__label {
 			@include truncate.truncate;
+		}
+
+		&_icon &__label {
+			display: inline-flex;
+			flex: 0 0 auto;
+			align-items: center;
+			justify-content: center;
+
+			line-height: 1;
 		}
 	}
 

@@ -88,25 +88,37 @@ Recommended release flow:
 1. Push all changes to the default branch.
 2. Open GitHub Actions.
 3. Run `Release Package` manually.
-4. Choose `patch`, `minor`, `major` or `prerelease`.
+4. Choose the package: `core` (default), `gradient-engine` or `nuxt`.
+5. Choose `patch`, `minor`, `major` or `prerelease`.
 
 The release workflow will:
 
 - validate package metadata
-- run `npm version`
-- synchronize all publishable workspace versions
+- run `npm version` for the selected package only
+- synchronize lockfile metadata with each manifest and validate semver compatibility
 - run the complete SSR release gate
-- push the synchronized version commit
-- push the matching `vX.Y.Z` tag
-- publish gradient-engine, core and the Nuxt module in dependency order
-- create a GitHub Release after all npm publishes succeed
+- push the selected package's version commit
+- push `vX.Y.Z` for core, `gradient-engine-vX.Y.Z` for engine or `nuxt-vX.Y.Z` for Nuxt
+- publish only the selected package using its own version
+- create a GitHub Release after publication succeeds
+
+Package versions are independent. For example, core `1.2.0` can depend on engine
+`^1.0.1`, while Nuxt `1.0.1` accepts core `^1.0.1`. Dependency ranges are
+compatibility contracts: update them explicitly when an API requirement changes.
+Publish a required new dependency version before publishing its consumer.
+`npm run version:check` checks compatibility and each package's lockfile metadata;
+`npm run version:sync` updates lockfile metadata without changing any manifest
+version or dependency range.
 
 Publishing is idempotent and runs in a separate release job, so a failed publish
 job can be retried without creating another version commit or tag:
 
 ```bash
-npm run release:publish -- latest
+npm run release:publish -- latest --package core
+npm run release:publish -- latest --package gradient-engine
+npm run release:publish -- latest --package nuxt
 ```
 
 Manual releases should be started from `Release Package`; it creates the
 matching version tag, release and npm publish.
+For a retry, select the same package and set `resume-version` to its version.

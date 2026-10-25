@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use './mixins/media';
 
 $display-values: (
 	none: none,
@@ -63,12 +64,7 @@ $background-values: (
 	surface: var(--g-token-color-surface)
 );
 
-$breakpoints: (
-	sm: 600px,
-	md: 900px,
-	lg: 1200px,
-	xl: 1536px
-);
+$breakpoints: media.$breakpoints;
 
 $spacing-scale: (
 	0: 0,

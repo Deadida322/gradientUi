@@ -61,6 +61,7 @@
 	}));
 
 	provideTabs<T>({
+		registeredTabs: navigation.registeredItems,
 		modelValue: navigation.model,
 		color: computed(() => props.color),
 		activeColor: resolvedActiveColor,

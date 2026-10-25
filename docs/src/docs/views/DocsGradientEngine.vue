@@ -1,8 +1,6 @@
 <script setup lang="ts">
 	import DocsCode from '@docs/components/DocsCode.vue';
 	import DocsPropsTable from '@docs/components/DocsPropsTable.vue';
-	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
-	import { docsNextReleaseBadge } from '@docs/data/releaseBadges';
 	import PlaygroundGradientEngine from '@playground/PlaygroundGradientEngine.vue';
 	import { GGradientMaterial } from '@/components';
 	import type { DocsPropRow } from '@docs/types';
@@ -390,7 +388,6 @@ const criticalCss = surfaceMaterial.cssText;`;
 			<p class="docs-page__eyebrow">Gradient engine</p>
 			<div class="docs-gradient-engine__heading">
 				<h1>Gradient engine</h1>
-				<docs-release-badge :badge="docsNextReleaseBadge" />
 			</div>
 			<p>
 				The gradient engine turns one seed or a small color set into CSS

@@ -32,11 +32,12 @@
 		"test:ssr:compat": "npm run build:lib && npm run build:nuxt && npm run test:ssr:nuxt:run",
 		"test:ssg:run": "nuxt generate tests/fixtures/nuxt && nuxt generate tests/fixtures/nuxt-csp && vitest run --config vitest.ssg.config.ts",
 		"test:ssg": "npm run build:lib && npm run build:nuxt && npm run test:ssg:run",
-		"test:package:run": "publint packages/gradient-engine --pack npm && publint --pack npm && publint packages/nuxt --pack npm && attw --pack packages/gradient-engine && attw --pack . --exclude-entrypoints ./style.css ./styles && attw --pack packages/nuxt --profile esm-only",
+		"test:package:run": "publint packages/gradient-engine --pack npm && publint --pack npm && publint packages/nuxt --pack npm && attw --pack packages/gradient-engine && attw --pack . --exclude-entrypoints ./style.css ./styles ./styles/media && attw --pack packages/nuxt --profile esm-only",
 		"test:package": "npm run build:lib && npm run build:nuxt && npm run test:package:run",
 		"test:ssr:all": "npm run build:lib && npm run build:nuxt && npm run test:ssr:core:run && npm run test:ssr:nuxt:run && npm run test:ssg:run && npm run test:package:run",
 		"version:sync": "node scripts/workspace-versions.mjs sync",
 		"version:check": "node scripts/workspace-versions.mjs check",
+		"test:release": "node --test tests/release/workspace-releases.test.mjs",
 		"release:publish": "node scripts/publish-workspaces.mjs",
 		"release:ssr:check": "npm run eslint && npm run type-check && npm run lint:css && npm run test:ssr:all",
 		"release:gradient-engine:check": "npm run type-check:gradient-engine && npm run build:gradient-engine",
@@ -75,6 +76,7 @@
 		"prettier": "^3.3.3",
 		"publint": "^0.3.24",
 		"sass-embedded": "^1.83.4",
+		"semver": "^7.8.5",
 		"stylelint": "^16.14.0",
 		"stylelint-color-format": "^1.1.0",
 		"stylelint-config-clean-order": "^7.0.0",
@@ -260,6 +262,16 @@
 				"default": "./dist/components/GNavItem.cjs"
 			}
 		},
+		"./components/GBottomNavigationItem": {
+			"import": {
+				"types": "./dist/types/components/ui/GBottomNavigation/GBottomNavigationItem.vue.d.ts",
+				"default": "./dist/components/GBottomNavigationItem.mjs"
+			},
+			"require": {
+				"types": "./dist/types-cjs/components/ui/GBottomNavigation/GBottomNavigationItem.vue.d.cts",
+				"default": "./dist/components/GBottomNavigationItem.cjs"
+			}
+		},
 		"./components/GStepPanel": {
 			"import": {
 				"types": "./dist/types/components/ui/GStepper/GStepPanel.vue.d.ts",
@@ -412,6 +424,7 @@
 		},
 		"./style.css": "./dist/style.css",
 		"./styles": "./dist/style.css",
+		"./styles/media": "./dist/styles/media.scss",
 		"./package.json": "./package.json"
 	},
 	"typesVersions": {
@@ -448,6 +461,9 @@
 			],
 			"components/GNavItem": [
 				"dist/types/components/ui/GNavList/GNavItem.vue.d.ts"
+			],
+			"components/GBottomNavigationItem": [
+				"dist/types/components/ui/GBottomNavigation/GBottomNavigationItem.vue.d.ts"
 			],
 			"components/GStepPanel": [
 				"dist/types/components/ui/GStepper/GStepPanel.vue.d.ts"

@@ -1,6 +1,34 @@
+import { fileComponentPages } from './fileComponents';
 import type { DocsComponentPageMeta, DocsLiveExample } from '@docs/types';
 
 const componentPages: DocsComponentPageMeta[] = [
+	{
+		id: 'spacer',
+		usage: {
+			title: 'Usage',
+			description:
+				'GSpacer fills the remaining space in a flex row or column. It has no props or slots and is hidden from assistive technology.'
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'Use it between actions to separate leading and trailing content. A column needs available height for the spacer to grow.'
+		}
+	},
+	{
+		id: 'bottom-navigation',
+		usage: {
+			title: 'Usage',
+			description:
+				'Compose GBottomNavigation with GBottomNavigationItem. Use v-model or defaultValue for selection. Items support native href links and optional Vue Router to links without requiring Nuxt.'
+		},
+		examples: {
+			title: 'Examples',
+			description:
+				'The same material surface hooks as cards: tonal, glass, gradient, recipes, shadow and morph. Static positioning is the default; sticky and fixed are opt-in. Fixed navigation overlays content: reserve its height in your app layout. Bottom safe-area padding is included. ArrowLeft/ArrowRight, Home and End move focus; Enter/Space activate native buttons. Tab traverses native links. The moving indicator is shared with GNavbar and line GTabs.'
+		}
+	},
+	...fileComponentPages,
 	{
 		id: 'navbar',
 		usage: {
@@ -438,7 +466,13 @@ type ExamplesModule = Record<
 >;
 
 const exampleLoaders: Record<string, () => Promise<ExamplesModule>> = {
+	'file-input': () => import('@docs/examples/file-input'),
+	'image-input': () => import('@docs/examples/image-input'),
+	'file-dropzone': () => import('@docs/examples/file-dropzone'),
+	'image-dropzone': () => import('@docs/examples/image-dropzone'),
 	navbar: () => import('@docs/examples/navbar'),
+	spacer: () => import('@docs/examples/spacer'),
+	'bottom-navigation': () => import('@docs/examples/bottom-navigation'),
 	alert: () => import('@docs/examples/alert'),
 	avatar: () => import('@docs/examples/avatar'),
 	'avatar-group': () => import('@docs/examples/avatar'),

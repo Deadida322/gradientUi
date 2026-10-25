@@ -4,6 +4,7 @@
 @use './components/expansion' as expansion;
 @use './components/overlay' as overlay;
 @use './components/typography' as typography;
+@use './components/material' as material;
 
 @mixin register-component-tokens() {
 	@include action.register-action-component-tokens();
@@ -12,4 +13,5 @@
 	@include expansion.register-expansion-component-tokens();
 	@include overlay.register-overlay-component-tokens();
 	@include typography.register-typography-component-tokens();
+	@include material.register-material-component-tokens();
 }

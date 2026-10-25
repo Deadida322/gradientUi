@@ -109,12 +109,16 @@
 
 <style scoped lang="scss">
 	.dropdown-activators__button {
+		cursor: pointer;
+
 		display: inline-flex;
+
 		padding: 0;
 		border: 0;
 		border-radius: var(--g-token-radius-pill);
+
 		color: inherit;
-		cursor: pointer;
+
 		background: transparent;
 
 		&:focus-visible {

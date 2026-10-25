@@ -9,6 +9,8 @@ export const componentNames = [
 	'GAvatarGroup',
 	'GBadge',
 	'GButton',
+	'GBottomNavigation',
+	'GBottomNavigationItem',
 	'GCard',
 	'GCheckbox',
 	'GCheckboxGroup',
@@ -21,6 +23,10 @@ export const componentNames = [
 	'GExpansionGroup',
 	'GFAB',
 	'GForm',
+	'GFileInput',
+	'GImageInput',
+	'GFileDropzone',
+	'GImageDropzone',
 	'GGradient',
 	'GIcon',
 	'GImg',
@@ -40,6 +46,7 @@ export const componentNames = [
 	'GRadio',
 	'GSelect',
 	'GSnackbar',
+	'GSpacer',
 	'GSquircle',
 	'GStepPanel',
 	'GStepper',
@@ -67,6 +74,7 @@ export type GradientUIComponentName = (typeof componentNames)[number];
 export const componentEntryDirectories: Partial<
 	Record<GradientUIComponentName, string>
 > = {
+	GBottomNavigationItem: 'GBottomNavigation',
 	GAsideGroup: 'GAside',
 	GAsideItem: 'GAside',
 	GAvatarGroup: 'GAvatar',
