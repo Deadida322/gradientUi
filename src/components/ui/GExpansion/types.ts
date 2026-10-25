@@ -53,6 +53,10 @@ export const makeExpansionProps = propsFactory({
 	...makeMaterialSurfaceProps(),
 	...makeTransitionProps(),
 	title: String,
+	titleTag: {
+		type: String as PropType<keyof HTMLElementTagNameMap>,
+		default: 'span'
+	},
 	text: String,
 	modelValue: {
 		type: Boolean as PropType<boolean | undefined>,

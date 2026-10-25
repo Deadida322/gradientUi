@@ -22,7 +22,6 @@ import Gradient from './gradient.vue';
 import gradientCode from './gradient.vue?raw';
 import CustomRecipe from './custom-recipe.vue';
 import customRecipeCode from './custom-recipe.vue?raw';
-import { docsNextReleaseBadge } from '@docs/data/releaseBadges';
 import type { DocsLiveExample } from '@docs/types';
 import { toPublicExampleCode } from '@docs/utils/code';
 
@@ -98,7 +97,6 @@ export const buttonExamples: DocsLiveExample[] = [
 		id: 'custom-recipe',
 		label: 'Custom recipe',
 		component: CustomRecipe,
-		code: toPublicExampleCode(customRecipeCode),
-		badge: docsNextReleaseBadge
+		code: toPublicExampleCode(customRecipeCode)
 	}
 ];

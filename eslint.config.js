@@ -17,6 +17,7 @@ export default tseslint.config(
 			'node_modules/**',
 			'**/.nuxt/**',
 			'**/.output/**',
+			'**/*.local/**',
 			'dist/**',
 			'packages/*/dist/**',
 			'dist-docs/**',

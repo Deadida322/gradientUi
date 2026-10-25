@@ -5,6 +5,7 @@
 	import { useBodyScrollLock } from '@/use/bodyScrollLock';
 	import { useControllableOpen } from '@/use/controllableOpen';
 	import { useLayerStack } from '@/use/layerStack';
+	import { useTransitionPresence } from '@/use/transition';
 	import { makeBaseOverlayProps } from './types';
 	import { onClientMounted } from '@/ssr/use';
 
@@ -16,11 +17,13 @@
 	const rootRef = ref<HTMLElement | null>(null);
 	const contentRef = ref<HTMLElement | null>(null);
 	const { open } = useControllableOpen(props, emit);
+	const { present, onBeforeLeave, onAfterLeave, onLeaveCancelled } =
+		useTransitionPresence(open);
 	const { hasAppendTarget, appendTarget } = useAppendTarget(
 		() => props.appendTo
 	);
 	const { zIndex, isTopOverlay, bringToFront } = useLayerStack({
-		open,
+		open: present,
 		base: props.zIndexBase,
 		kind: 'overlay'
 	});
@@ -38,7 +41,7 @@
 		zIndex: zIndex.value != null ? zIndex.value + 1 : undefined
 	}));
 
-	useBodyScrollLock(open, lockScrollEnabled);
+	useBodyScrollLock(present, lockScrollEnabled);
 
 	function close() {
 		open.value = false;
@@ -85,7 +88,10 @@
 		<g-transition
 			:transition="props.transition"
 			name="overlay"
-			appear>
+			appear
+			@before-leave="onBeforeLeave"
+			@after-leave="onAfterLeave"
+			@leave-cancelled="onLeaveCancelled">
 			<div
 				v-if="open"
 				ref="rootRef"
@@ -115,7 +121,10 @@
 		v-else
 		:transition="props.transition"
 		name="overlay"
-		appear>
+		appear
+		@before-leave="onBeforeLeave"
+		@after-leave="onAfterLeave"
+		@leave-cancelled="onLeaveCancelled">
 		<div
 			v-if="open"
 			ref="rootRef"

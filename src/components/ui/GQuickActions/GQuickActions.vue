@@ -1,5 +1,9 @@
 <script setup lang="ts">
-	import { computed, ref } from 'vue';
+	import { computed, ref, watch } from 'vue';
+	import { useControllableOpen } from '@/use/controllableOpen';
+	import { useTriggerFactory } from '@/use/floatingTrigger';
+	import { useDismiss } from '@/use/floatingDismiss';
+	import { makeQuickActionsProps } from './types';
 	import { useSsrTeleport } from '@/ssr/use';
 	import GFAB from '../GFAB/GFAB.vue';
 	import GIcon from '../GIcon/GIcon.vue';
@@ -7,22 +11,19 @@
 	import type { GFABLabelPlacement } from '../GFAB/types';
 	import GTransition from '@/components/transitions/GTransition.vue';
 	import TransitionRotate from '@/components/transitions/TransitionRotate.vue';
-	import type { GQuickActionsDirection, GQuickActionsProps } from './types';
+	import type {
+		GQuickActionsDirection,
+		GQuickActionsEmits,
+		GQuickActionsOption,
+		GQuickActionsProps
+	} from './types';
 
-	const props = withDefaults(defineProps<GQuickActionsProps>(), {
-		options: () => [],
-		contained: false,
-		position: 'fixed',
-		location: 'bottom-right',
-		direction: undefined,
-		transition: undefined,
-		offset: 24,
-		labelPlacement: undefined
-	});
+	const props = defineProps(makeQuickActionsProps());
 	const slots = defineSlots<{
 		trigger?: (slotProps: {
 			isOpened: boolean;
 			toggle: () => void;
+			activatorAttrs: Record<string, unknown>;
 		}) => unknown;
 		action?: (slotProps: {
 			option: NonNullable<GQuickActionsProps['options']>[number];
@@ -30,7 +31,29 @@
 			labelPlacement: GFABLabelPlacement;
 		}) => unknown;
 	}>();
-	const isOpened = ref(false);
+	const emit = defineEmits<GQuickActionsEmits>();
+	const { open } = useControllableOpen(props, emit);
+	const isOpened = computed({
+		get: () => open.value,
+		set: (value: boolean) => {
+			if (value !== open.value) open.value = value;
+		}
+	});
+	const reference = ref<HTMLElement | null>(null);
+	const floating = ref<HTMLElement | null>(null);
+	const { triggerAttrs: activatorAttrs, floatingAttrs } = useTriggerFactory(
+		isOpened,
+		{
+			click: props.openOnClick,
+			hover: props.openOnHover,
+			focus: props.openOnFocus
+		}
+	);
+	useDismiss({ open: isOpened, reference, floating });
+	watch(isOpened, (value) => {
+		if (value) emit('open');
+		else emit('close');
+	});
 	const { disabled: teleportDisabled } = useSsrTeleport(
 		'body',
 		() => props.contained
@@ -74,6 +97,20 @@
 	const toggle = () => {
 		isOpened.value = !isOpened.value;
 	};
+	const onSelect = (
+		option: GQuickActionsOption,
+		index: number,
+		event: MouseEvent
+	) => {
+		if (option.disabled) return;
+		emit('select', option, index, event);
+		if (props.closeOnSelect) isOpened.value = false;
+	};
+	defineExpose({
+		open: isOpened,
+		show: () => (isOpened.value = true),
+		hide: () => (isOpened.value = false)
+	});
 </script>
 
 <template>
@@ -96,6 +133,8 @@
 						:duration="320">
 						<div
 							v-if="isOpened"
+							ref="floating"
+							v-bind="floatingAttrs"
 							class="g-quick-actions__list"
 							:class="[
 								`g-quick-actions__list_${alignment}`,
@@ -109,10 +148,12 @@
 									'--g-quick-actions-item-index': index
 								}"
 								:icon="option.icon"
+								:disabled="option.disabled"
 								size="s"
 								extended
 								:label="option.label"
-								:label-placement="optionLabelPlacement">
+								:label-placement="optionLabelPlacement"
+								@click="onSelect(option, index, $event)">
 								<template
 									v-if="slots.action"
 									#default>
@@ -129,15 +170,18 @@
 					</g-transition>
 
 					<div
+						ref="reference"
 						class="g-quick-actions__trigger"
 						:class="`g-quick-actions__trigger_${alignment}`">
 						<slot
 							name="trigger"
 							:is-opened="isOpened"
-							:toggle="toggle">
+							:toggle="toggle"
+							:activator-attrs="activatorAttrs">
 							<g-f-a-b
 								icon="menu"
-								@click="toggle">
+								:aria-expanded="isOpened"
+								v-bind="activatorAttrs">
 								<template #icon>
 									<transition-rotate>
 										<g-icon

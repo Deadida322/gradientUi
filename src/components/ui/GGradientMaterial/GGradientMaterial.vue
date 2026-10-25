@@ -95,6 +95,7 @@
 
 <style lang="scss">
 	@use '@/styles/mixins/glass' as glass;
+	@use '@/styles/mixins/material-text-shadow' as materialTextShadow;
 
 	.g-gradient-material {
 		position: relative;
@@ -175,6 +176,13 @@
 		z-index: 2;
 		display: inherit;
 		flex-direction: inherit;
+	}
+
+	:where(
+		.g-gradient-material_gradient .g-gradient-material__content,
+		.g-gradient-material_gradient .g-gradient-material__content *
+	) {
+		@include materialTextShadow.material-text-shadow();
 	}
 
 	@keyframes g-gradient-morph-drift {

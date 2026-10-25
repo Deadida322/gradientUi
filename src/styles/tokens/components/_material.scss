@@ -1,0 +1,11 @@
+@mixin register-material-component-tokens() {
+	$shadow-channel: 'clamp(0, calc((128 - (r * 0.2126 + g * 0.7152 + b * 0.0722)) * 255), 255)';
+
+	--g-token-material-morph-text-shadow-dark: 0 1px 2px rgb(0 0 0 / 24%);
+	--g-token-material-morph-text-shadow-light: 0 1px 2px rgb(255 255 255 / 36%);
+	--g-token-material-morph-text-shadow-current: 0 1px 2px
+		rgb(
+			from currentColor #{$shadow-channel} #{$shadow-channel}
+				#{$shadow-channel} / 28%
+		);
+}

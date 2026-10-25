@@ -75,6 +75,51 @@ Nuxt application/request and offers component auto-imports. For request-aware
 responsive rendering, color mode, CSP and services outside component setup, see
 the [Nuxt and SSR guide](https://gradient-ui-docs.netlify.app/docs/ssr-nuxt).
 
+## Components and responsive SCSS
+
+The upcoming `1.2.0` release adds these public components:
+
+| Components                                                                                                                                                                     | Purpose                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| [`GBottomNavigation`, `GBottomNavigationItem`](https://gradient-ui-docs.netlify.app/docs/components/bottom-navigation)                                                         | Destination navigation with `v-model`, native/optional router links, material variants and morph. |
+| [`GFileInput`](https://gradient-ui-docs.netlify.app/docs/components/file-input), [`GImageInput`](https://gradient-ui-docs.netlify.app/docs/components/image-input)             | Standard fields for local files and images.                                                       |
+| [`GFileDropzone`](https://gradient-ui-docs.netlify.app/docs/components/file-dropzone), [`GImageDropzone`](https://gradient-ui-docs.netlify.app/docs/components/image-dropzone) | Drag-and-drop selection with shared validation, rejection messages and image previews.            |
+| [`GSpacer`](https://gradient-ui-docs.netlify.app/docs/components/spacer)                                                                                                       | Flexible space between items in a flex layout.                                                    |
+
+File components select local `File` values; the application owns server upload.
+They share field validation and disabled state with `GForm`. Image checks expose
+`pending`; form validation waits for these checks before reporting a valid submit.
+
+Bottom navigation supports `tonal`, `glass`, `gradient`, `default` and `outlined`
+surfaces, gradient recipes and morph options. Its moving indicator is shared with
+`GNavbar` and horizontal/vertical line tabs. Use `position="fixed"` only when the
+application reserves space for the navigation bar; the default is `static`.
+
+`GButton` supports `to` with optional Vue Router integration and a native anchor
+fallback for string destinations. Nuxt is not required. `GQuickActions` supports
+controlled open state, selection events and closing after selection.
+
+For responsive styles, import the Sass module independently from the compiled CSS:
+
+```scss
+@use '@gradient-ui/core/styles/media';
+
+.catalog {
+	@include media.up(md) {
+		display: grid;
+	}
+
+	@include media.between(sm, lg) {
+		gap: var(--g-token-space-4);
+	}
+}
+```
+
+`up`, `down` and `between` use inclusive boundaries. Defaults match CSS helpers
+and `useBreakpoints`: `sm: 600px`, `md: 900px`, `lg: 1200px`, `xl: 1536px`.
+See [CSS helpers and SCSS media mixins](https://gradient-ui-docs.netlify.app/docs/css-helpers#scss-media)
+for custom breakpoint maps and the Sass Node package importer.
+
 ## Gradient engine
 
 The engine is independent from Vue and can power other renderers or design
@@ -119,9 +164,10 @@ npm run build
 ## Releases
 
 Releases are created through the `Release Package` GitHub Actions workflow. It
-synchronizes the publishable workspace versions, runs the SSR release gate,
-publishes `gradient-engine`, `core` and `nuxt` in dependency order, then creates
-the GitHub release. See [DEPLOYMENT.md](DEPLOYMENT.md) for the release and
+releases the selected package (`core`, `gradient-engine` or `nuxt`) independently,
+runs the SSR release gate and creates its GitHub release. Dependency ranges
+describe compatibility and are updated explicitly when required; releasing core
+does not bump engine or Nuxt. See [DEPLOYMENT.md](DEPLOYMENT.md) for the release and
 trusted-publishing setup.
 
 ## License

@@ -1,5 +1,9 @@
 import { computed, onBeforeUnmount, onMounted, toValue, watch } from 'vue';
-import type { GNavigationValue, UseNavigationItemOptions } from './types';
+import type {
+	GNavigationRegistration,
+	GNavigationValue,
+	UseNavigationItemOptions
+} from './types';
 
 export function useNavigationItem<T = GNavigationValue>(
 	options: UseNavigationItemOptions<T>
@@ -9,44 +13,61 @@ export function useNavigationItem<T = GNavigationValue>(
 		Boolean(toValue(options.disabled) || toValue(options.parentDisabled))
 	);
 	const selected = computed(() => Boolean(options.isSelected?.(value.value)));
+	let mounted = false;
+	let registration: GNavigationRegistration<T> | undefined;
 
-	function register() {
-		if (!options.rootRef.value) return;
+	const unregister = () => {
+		if (!registration) return;
+		options.unregisterItem?.(registration.el);
+		registration = undefined;
+	};
+	const syncRegistration = () => {
+		if (!mounted) return;
+		const el = options.rootRef.value;
+		if (
+			registration &&
+			registration.el === el &&
+			Object.is(registration.value, value.value) &&
+			registration.disabled === disabled.value
+		)
+			return;
+		if (registration && registration.el !== el) unregister();
+		if (!el) return;
+		registration = { el, value: value.value, disabled: disabled.value };
+		options.registerItem?.(registration);
+	};
 
-		options.registerItem?.({
-			value: value.value,
-			el: options.rootRef.value,
-			disabled: disabled.value
-		});
-	}
-
-	function unregister() {
-		if (!options.rootRef.value) return;
-
-		options.unregisterItem?.(options.rootRef.value);
-	}
-
-	function select(nextValue: T | undefined, event?: Event) {
+	const select = (nextValue: T | undefined, event?: Event) => {
 		options.select?.(nextValue, event);
-	}
+	};
 
-	function onClick(event: MouseEvent) {
-		if (disabled.value) return;
+	const onClick = (event: MouseEvent) => {
+		if (disabled.value) {
+			event.preventDefault();
+			return;
+		}
 
 		select(value.value, event);
 		options.onClick?.(event);
-	}
+	};
 
-	function onKeydown(event: KeyboardEvent) {
+	const onKeydown = (event: KeyboardEvent) => {
 		options.onItemKeydown?.(event, value.value);
-	}
+	};
 
-	onMounted(register);
-	onBeforeUnmount(unregister);
+	onMounted(() => {
+		mounted = true;
+		syncRegistration();
+	});
+	onBeforeUnmount(() => {
+		mounted = false;
+		unregister();
+	});
 
 	watch(
-		() => [value.value, disabled.value],
-		() => register()
+		() => [options.rootRef.value, value.value, disabled.value] as const,
+		syncRegistration,
+		{ flush: 'post' }
 	);
 
 	return {

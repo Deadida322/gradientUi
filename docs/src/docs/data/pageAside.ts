@@ -72,6 +72,7 @@ export const docsPageAside: Record<string, DocsPageAsideItem[]> = {
 		{ label: 'Spacing', href: '#spacing' },
 		{ label: 'Text and color', href: '#text-and-color' },
 		{ label: 'Responsive', href: '#responsive' },
+		{ label: 'SCSS media mixins', href: '#scss-media' },
 		{ label: 'Breakpoints', href: '#breakpoints' },
 		{ label: 'API', href: '#api' }
 	],

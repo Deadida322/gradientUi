@@ -10,6 +10,7 @@ import type { GGradienStates } from '../GGradient/types';
 import type { GGradientSurfaceFill } from '@/use/gradientSurface';
 import type { PropType } from 'vue';
 import type { GlassProps } from '@/use/glass';
+import { makeRouterLinkProps, type RouterTo } from '@/use/routerLink';
 
 export interface GButtonProps extends GlassProps {
 	variant?: GButtonVariants;
@@ -22,6 +23,7 @@ export interface GButtonProps extends GlassProps {
 	label?: string;
 	tag?: string;
 	href?: string;
+	to?: RouterTo;
 	target?: string;
 	rel?: string;
 	disabled?: boolean;
@@ -48,6 +50,7 @@ export const makeButtonProps = propsFactory({
 	...makePLAProps(),
 	...makeGradientProps(),
 	...makeTagNameProps(),
+	...makeRouterLinkProps(),
 	isIconButton: Boolean as PropType<boolean>,
 	iconButton: String as PropType<MdiIcon>,
 	ripple: {

@@ -1,13 +1,11 @@
+import { fileComponentApi, fileComponentCatalog } from './fileComponents';
 import type {
 	DocsExampleTab,
 	DocsPropRow,
 	DocsReleaseBadgeMeta,
 	DocsSlotRow
 } from '@docs/types';
-import {
-	docsNextReleaseBadge,
-	docsUpcomingReleaseBadge
-} from './releaseBadges';
+import { docsNextReleaseBadge } from './releaseBadges';
 
 export interface DocsComponentApi {
 	id: string;
@@ -71,13 +69,30 @@ export interface DocsComponentCatalogItem {
 
 export const componentCatalog: DocsComponentCatalogItem[] = [
 	{
+		id: 'spacer',
+		title: 'GSpacer',
+		group: 'containment',
+		description: 'Flexible space between layout items.',
+		to: '/docs/components/spacer',
+		badge: docsNextReleaseBadge
+	},
+	{
+		id: 'bottom-navigation',
+		badge: docsNextReleaseBadge,
+		title: 'GBottomNavigation',
+		group: 'navigation',
+		description:
+			'Bottom destination navigation with shared material surfaces and a moving indicator.',
+		to: '/docs/components/bottom-navigation'
+	},
+	...fileComponentCatalog,
+	{
 		id: 'avatar',
 		title: 'GAvatar',
 		group: 'containment',
 		description:
 			'Identity surface for initials, icons, images and squircle profiles.',
-		to: '/docs/components/avatar',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/avatar'
 	},
 	{
 		id: 'avatar-group',
@@ -85,8 +100,7 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		group: 'containment',
 		description:
 			'Stacked identity cluster with overlap, overflow count and slot composition.',
-		to: '/docs/components/avatar-group',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/avatar-group'
 	},
 	{
 		id: 'button',
@@ -101,8 +115,7 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		group: 'containment',
 		description:
 			'Content surface with material variants, media anatomy and layout presets.',
-		to: '/docs/components/card',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/card'
 	},
 	{
 		id: 'divider',
@@ -110,8 +123,7 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		group: 'containment',
 		description:
 			'Separator primitive with labels, vertical layout and gradient-aware line effects.',
-		to: '/docs/components/divider',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/divider'
 	},
 	{
 		id: 'chip',
@@ -197,16 +209,14 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		title: 'GTabs',
 		group: 'navigation',
 		description: 'Accessible tablist, tabs and panels for related views.',
-		to: '/docs/components/tabs',
-		badge: docsNextReleaseBadge
+		to: '/docs/components/tabs'
 	},
 	{
 		id: 'stepper',
 		title: 'GStepper',
 		group: 'navigation',
 		description: 'Ordered flow navigation with panels and actions.',
-		to: '/docs/components/stepper',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/stepper'
 	},
 	{
 		id: 'table',
@@ -250,8 +260,7 @@ export const componentCatalog: DocsComponentCatalogItem[] = [
 		group: 'form',
 		description:
 			'Editable select for searchable options and user-added values.',
-		to: '/docs/components/combobox',
-		badge: docsUpcomingReleaseBadge
+		to: '/docs/components/combobox'
 	},
 	{
 		id: 'checkbox',
@@ -609,6 +618,28 @@ const overlayEmits: DocsPropRow[] = [
 ];
 
 export const componentApiEmits: Record<string, DocsPropRow[]> = {
+	'quick-actions': [
+		{
+			name: 'update:modelValue',
+			type: '(value: boolean) => void',
+			description: 'Requests an open state change, as in GDropdown.'
+		},
+		{
+			name: 'select',
+			type: '(option: GQuickActionsOption, index: number, event: MouseEvent) => void',
+			description: 'Emitted when an enabled action is activated.'
+		},
+		{
+			name: 'open',
+			type: '() => void',
+			description: 'Emitted when the cluster opens.'
+		},
+		{
+			name: 'close',
+			type: '() => void',
+			description: 'Emitted when the cluster closes.'
+		}
+	],
 	avatar: [
 		{
 			name: 'click',
@@ -1403,6 +1434,138 @@ const materialFrameApiProps: DocsPropRow[] = [
 
 export const componentApi: DocsComponentApi[] = [
 	{
+		id: 'spacer',
+		title: 'GSpacer',
+		group: 'containment',
+		description:
+			'Fills available space in a flex row or column with flex: 1 1 auto. No props or slots.',
+		props: [],
+		examples: [
+			{
+				id: 'spacer-basic',
+				label: 'Usage',
+				code: '<div class="d-flex"><g-button>Cancel</g-button><g-spacer /><g-button>Save</g-button></div>'
+			}
+		]
+	},
+	{
+		id: 'bottom-navigation',
+		title: 'GBottomNavigation',
+		group: 'navigation',
+		description:
+			'Destination navigation using native links and buttons, shared selection hooks and material surfaces.',
+		props: [
+			{
+				name: 'modelValue / defaultValue',
+				type: 'BottomNavigationValue',
+				description:
+					'Controlled or initial selection; match each GBottomNavigationItem value.'
+			},
+			{
+				name: 'variant',
+				type: "'default' | 'tonal' | 'glass' | 'gradient' | 'outlined'",
+				defaultValue: 'tonal',
+				description: 'Uses the existing material surface composable.'
+			},
+			{
+				name: 'color / activeColor',
+				type: 'GColor',
+				defaultValue: 'primary',
+				description:
+					'Surface/item color and selected item/indicator color.'
+			},
+			{
+				name: 'gradientRecipe / materialKind',
+				type: 'gradient material options',
+				description:
+					'Shared gradient-engine material options, as on GCard.'
+			},
+			{
+				name: 'morph / morphOptions / animationOptions',
+				type: 'shared material options',
+				description:
+					'Morph blobs and gradient animation options with shared reduced-motion handling.'
+			},
+			{
+				name: 'shadow / dropShadow / shadowOptions / dropShadowOptions',
+				type: 'shared material options',
+				description: 'Material elevation and shadow configuration.'
+			},
+			{
+				name: 'backdropBlur',
+				type: 'shared glass options',
+				description: 'Glass surface customization.'
+			},
+			{
+				name: 'position',
+				type: "'static' | 'sticky' | 'fixed'",
+				defaultValue: 'static',
+				description:
+					'Fixed overlays content; reserve its height in the application. Includes safe-area padding.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Disables all destinations and selection.'
+			},
+			{
+				name: 'showLabels',
+				type: 'boolean',
+				defaultValue: 'true',
+				description:
+					'Show visual labels; hidden labels remain accessible through aria-label.'
+			},
+			{
+				name: 'ariaLabel',
+				type: 'string',
+				defaultValue: 'Bottom navigation',
+				description: 'Accessible navigation landmark name.'
+			},
+			{
+				name: 'GBottomNavigationItem: value / label / icon / disabled',
+				type: 'item props',
+				description:
+					'Destination identity, accessible label, icon and availability.'
+			},
+			{
+				name: 'GBottomNavigationItem: href / to / target / rel',
+				type: 'link props',
+				description:
+					'Native href or optional Vue Router destination. Nuxt is not required.'
+			}
+		],
+		emits: [
+			{
+				name: 'update:modelValue',
+				type: '(value) => void',
+				description: 'Requests selection.'
+			},
+			{
+				name: 'select',
+				type: '(value, event?) => void',
+				description:
+					'Selected destination and original activation event.'
+			}
+		],
+		slots: [
+			{
+				name: 'default',
+				scope: '{ modelValue, select }',
+				type: 'slot',
+				description: 'GBottomNavigationItem components.'
+			},
+			{
+				name: 'GBottomNavigationItem: default / icon',
+				scope: '{ selected, disabled }',
+				type: 'slot',
+				description: 'Custom label or icon content.'
+			}
+		],
+		examples: []
+	},
+	...fileComponentApi,
+	{
 		id: 'navbar',
 		title: 'GNavbar',
 		group: 'navigation',
@@ -1558,8 +1721,7 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'none' | 'noise'",
 				defaultValue: "'none'",
 				description:
-					'Adds a material texture layer above the avatar surface.',
-				badge: docsUpcomingReleaseBadge
+					'Adds a material texture layer above the avatar surface.'
 			},
 			{
 				name: 'disabled',
@@ -1741,6 +1903,12 @@ export const componentApi: DocsComponentApi[] = [
 			'Action surface for primary, secondary and icon actions with gradient-aware states.',
 		props: [
 			{
+				name: 'to',
+				type: 'RouterTo (string | route object)',
+				description:
+					'Uses the registered RouterLink when available, including in Nuxt. Without a router, string destinations become native links; route objects require a router or an href fallback. An explicit tag overrides RouterLink.'
+			},
+			{
 				name: 'label',
 				type: 'string',
 				description:
@@ -1819,8 +1987,7 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'none' | 'noise'",
 				defaultValue: "'none'",
 				description:
-					'Adds a subtle material texture layer above the surface color.',
-				badge: docsUpcomingReleaseBadge
+					'Adds a subtle material texture layer above the surface color.'
 			},
 			{
 				name: 'shadow',
@@ -2021,8 +2188,7 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'none' | 'noise'",
 				defaultValue: "'none'",
 				description:
-					'Adds a material texture layer above the card surface.',
-				badge: docsUpcomingReleaseBadge
+					'Adds a material texture layer above the card surface.'
 			},
 			{
 				name: 'shadow',
@@ -2269,8 +2435,7 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'none' | 'noise'",
 				defaultValue: "'none'",
 				description:
-					'Adds a material texture layer above the divider line.',
-				badge: docsUpcomingReleaseBadge
+					'Adds a material texture layer above the divider line.'
 			},
 			...materialFrameApiProps,
 			{
@@ -2608,6 +2773,13 @@ export const componentApi: DocsComponentApi[] = [
 				type: 'string',
 				description:
 					'Header title rendered when the title slot is not provided.'
+			},
+			{
+				name: 'titleTag',
+				type: 'keyof HTMLElementTagNameMap',
+				defaultValue: "'span'",
+				description:
+					'HTML tag of the title wrapper, including custom title-slot content. Use a tag valid inside the header button.'
 			},
 			{
 				name: 'text',
@@ -3841,8 +4013,7 @@ export const componentApi: DocsComponentApi[] = [
 				name: 'GStepperItem.state',
 				type: "'warning' | 'success' | 'error'",
 				description:
-					'Explicit semantic visual state for a single step. It controls text, indicator and hover/selected surface color independently from completed progress.',
-				badge: docsUpcomingReleaseBadge
+					'Explicit semantic visual state for a single step. It controls text, indicator and hover/selected surface color independently from completed progress.'
 			},
 			{
 				name: 'modelValue',
@@ -3908,8 +4079,7 @@ export const componentApi: DocsComponentApi[] = [
 				name: 'dividerOptions',
 				type: "{ variant?: 'solid' | 'dashed' | 'dotted' | 'gradient'; thickness?: number | string; length?: number | string; color?: GColor; activeColor?: GColor }",
 				description:
-					'Style options for connector dividers. Color defaults to the stepper color; activeColor defaults to activeColor or color.',
-				badge: docsUpcomingReleaseBadge
+					'Style options for connector dividers. Color defaults to the stepper color; activeColor defaults to activeColor or color.'
 			},
 			{
 				name: 'size',
@@ -5449,6 +5619,32 @@ export const componentApi: DocsComponentApi[] = [
 			'Speed-dial style cluster for related floating actions built from GFAB.',
 		props: [
 			{
+				name: 'modelValue',
+				type: 'boolean',
+				defaultValue: 'undefined',
+				description:
+					'Controlled open state via v-model, as in GDropdown.'
+			},
+			{
+				name: 'defaultOpen',
+				type: 'boolean',
+				defaultValue: 'false',
+				description: 'Initial open state when uncontrolled.'
+			},
+			{
+				name: 'openOnClick / openOnHover / openOnFocus',
+				type: 'boolean',
+				defaultValue: 'true / false / false',
+				description: 'Configures the shared dropdown trigger handlers.'
+			},
+			{
+				name: 'closeOnSelect',
+				type: 'boolean',
+				defaultValue: 'false',
+				description:
+					'Closes the cluster after an enabled action is selected.'
+			},
+			{
 				name: 'options',
 				type: 'GQuickActionsOption[]',
 				defaultValue: '[]',
@@ -5517,9 +5713,9 @@ export const componentApi: DocsComponentApi[] = [
 			{
 				name: 'trigger',
 				type: 'slot',
-				scope: '{ isOpened: boolean; toggle: () => void }',
+				scope: '{ isOpened: boolean; toggle: () => void; activatorAttrs: Record<string, unknown> }',
 				description:
-					'Custom trigger control. Use the provided toggle function to open or close the cluster.'
+					'Custom trigger control. Bind activatorAttrs to use the shared trigger handlers, or call toggle manually.'
 			},
 			{
 				name: 'action',
@@ -5590,8 +5786,7 @@ export const componentApi: DocsComponentApi[] = [
 				type: "'none' | 'noise'",
 				defaultValue: "'none'",
 				description:
-					'Adds a material texture layer above the alert surface.',
-				badge: docsNextReleaseBadge
+					'Adds a material texture layer above the alert surface.'
 			}
 		],
 		slots: [

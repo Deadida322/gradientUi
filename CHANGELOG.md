@@ -1,9 +1,23 @@
 # Changelog
 
-## 1.1.0 - Unreleased
+## 1.2.0 2026-10-25
 
 ### Added
 
+- Added `GBottomNavigation` and `GBottomNavigationItem` with controlled/default
+  selection, keyboard navigation, native links and optional Vue Router links,
+  material variants, gradient recipes, morph and safe-area support.
+- Added `GFileInput`, `GImageInput`, `GFileDropzone` and `GImageDropzone` with
+  shared selection/validation composables, cancellation of stale image checks,
+  local previews, file limits, typed events and customizable rejection output.
+- Added the public `GSpacer` flex-layout utility.
+- Added public Sass media mixins at `@gradient-ui/core/styles/media`, including
+  configurable breakpoints and inclusive `up`, `down` and `between` queries.
+- Added `to` to `GButton`, with optional Vue Router integration and native
+  anchor fallback for string destinations without requiring Nuxt.
+- Added typed `select`, `open` and `close` events and `closeOnSelect` to
+  `GQuickActions`, alongside controlled open state through `v-model`.
+- Added `GExpansion.titleTag` to customize the title wrapper tag.
 - Added `GDropdown` to the public component exports and Nuxt auto-import list.
 - Added `rounded` and `hide-message` props to `GInput`, `GTextarea`, `GSelect`
   and `GCombobox`.
@@ -13,6 +27,21 @@
 
 ### Changed
 
+- Decoupled package releases: the release workflow selects core, engine or Nuxt,
+  bumps and publishes only that package, and uses separate tag namespaces.
+- Replaced forced workspace version/range synchronization with semver
+  compatibility and per-manifest lockfile checks.
+- Shared the moving navigation indicator between `GNavbar`, BottomNavigation
+  and horizontal/vertical line `GTabs`; shared navigation now follows DOM order
+  and tracks replacement of native and router-link elements.
+- Centralized navigation props and material resolution, including `state`,
+  `activeColor` and indicator gradient recipes.
+- Unified file and select field behavior through shared field-control hooks;
+  `GForm` waits for pending file checks before validation and valid submission.
+- Added common morph text contrast shadows that follow the final text color,
+  with a foreground-based fallback for browsers without relative colors.
+- Added documentation, examples and `1.2.0` release badges for new components;
+  removed obsolete `0.6.0`/`0.8.0` badges from current documentation.
 - Decoupled `GNavbarItem` and `GNavbarMenu` height from the navbar shell. Use
   `--g-navbar-height` for the shell and `--g-navbar-item-height` for navigation
   items.
@@ -24,6 +53,18 @@
 
 ### Fixed
 
+- Reset native styles for Gradient UI polymorphic tags and lists inside
+  dropdowns/menus without overriding component-specific styles.
+- Fixed icon buttons clipping GitHub, npm and custom icon content while
+  retaining ellipsis for long text labels.
+- Fixed file rejection callback ordering, cancellation on constraint changes
+  and image count limits being checked before expensive decoding.
+- Fixed native file `FormData` association for external forms and reparenting.
+- Fixed oversized image previews with compact shared file items, centered
+  cover images, themed overlays and separated rejection rows.
+- Fixed abrupt tooltip closing by combining opacity and scale; overlay and
+  floating resources now remain active until leave finishes, including modal
+  stacking and body scroll locks.
 - Fixed controlled `GDropdown` state synchronization.
 - Fixed dropdown activators opening and immediately closing on their first
   pointer click when both click and focus activation are enabled.
@@ -40,7 +81,8 @@
 ### Package Notes
 
 - `@gradient-ui/core`, `@gradient-ui/gradient-engine` and `@gradient-ui/nuxt`
-  are released as a synchronized `1.1.0` version set.
+  are versioned and released independently. The `1.2.0` release targets core;
+  engine and Nuxt keep their current versions and compatible dependency ranges.
 - `@gradient-ui/gradient-engine` and `@gradient-ui/nuxt` have no direct
   implementation changes in this release.
 

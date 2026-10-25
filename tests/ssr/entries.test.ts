@@ -20,6 +20,9 @@ const publicEntries = [
 ] as const;
 
 describe('published core entries', () => {
+	it('keeps the shared file item internal', () => {
+		expect(core).not.toHaveProperty('GFileItem');
+	});
 	it('imports and requires every executable public entry', async () => {
 		for (const entry of publicEntries) {
 			const specifier =
