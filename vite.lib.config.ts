@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
+import { readFileSync } from 'node:fs';
 import { peerDependencies, dependencies } from './package.json';
 import {
 	componentEntryDirectories,
@@ -30,7 +31,22 @@ const external = [
 ];
 
 export default defineConfig({
-	plugins: [vue()],
+	plugins: [
+		vue(),
+		{
+			name: 'gradient-ui-scss-media',
+			generateBundle() {
+				this.emitFile({
+					type: 'asset',
+					fileName: 'styles/media.scss',
+					source: readFileSync(
+						resolve(__dirname, 'src/styles/mixins/media.scss'),
+						'utf8'
+					)
+				});
+			}
+		}
+	],
 	esbuild: {
 		// Published ESM is parsed and bundled again by consumers such as Nuxt.
 		minifyIdentifiers: false

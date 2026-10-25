@@ -1,17 +1,13 @@
 import type { MdiIcon } from '@/types/CommonTypes';
-import type { GColor } from '@/use/color';
-import { makeColorProps } from '@/use/color';
-import { makeDisabledProps } from '@/use/disabled';
+import {
+	makeNavigationProps,
+	makeNavigationItemProps
+} from '@/use/navigation/props';
+import type { GNavigationValue } from '@/use/navigation/types';
 import { propsFactory } from '@/utils/propsFactory';
 import type { ExtractPropTypes, PropType } from 'vue';
 
-export type NavbarValue =
-	| string
-	| number
-	| boolean
-	| symbol
-	| Record<string, unknown>
-	| unknown[];
+export type NavbarValue = GNavigationValue;
 
 export type NavbarDensity = 'comfortable' | 'compact' | 'prominent';
 
@@ -52,23 +48,7 @@ export type GNavbarEmits<T = NavbarValue> = {
 };
 
 export const makeNavbarProps = propsFactory({
-	...makeColorProps(),
-	modelValue: {
-		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<
-			NavbarValue | undefined
-		>,
-		default: undefined
-	},
-	defaultValue: {
-		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<
-			NavbarValue | undefined
-		>,
-		default: undefined
-	},
-	activeColor: {
-		type: String as PropType<GColor | undefined>,
-		default: undefined
-	},
+	...makeNavigationProps(),
 	hideOnScroll: Boolean,
 	density: {
 		type: String as PropType<NavbarDensity>,
@@ -79,14 +59,7 @@ export const makeNavbarProps = propsFactory({
 });
 
 export const makeNavbarItemProps = propsFactory({
-	...makeDisabledProps(),
-	label: String,
-	value: {
-		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<
-			NavbarValue | undefined
-		>,
-		default: undefined
-	},
+	...makeNavigationItemProps(),
 	href: String,
 	target: String,
 	rel: String,
@@ -112,14 +85,7 @@ export const makeNavbarMenuProps = propsFactory({
 });
 
 export const makeNavbarSubItemProps = propsFactory({
-	...makeDisabledProps(),
-	label: String,
-	value: {
-		type: [String, Number, Boolean, Object, Array, Symbol] as PropType<
-			NavbarValue | undefined
-		>,
-		default: undefined
-	},
+	...makeNavigationItemProps(),
 	href: String,
 	target: String,
 	rel: String,

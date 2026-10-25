@@ -1,0 +1,75 @@
+// Normalize native tags inside Gradient UI without overriding component styles.
+:where([class^='g-'], [class*=' g-']) {
+	&:where(
+		a,
+		button,
+		input,
+		textarea,
+		select,
+		option,
+		summary,
+		fieldset,
+		legend,
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p,
+		ul,
+		ol,
+		li,
+		dl,
+		dt,
+		dd,
+		figure,
+		figcaption,
+		blockquote,
+		pre,
+		address,
+		hr
+	) {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+
+		font: inherit;
+		color: inherit;
+		text-align: inherit;
+		text-decoration: none;
+		text-transform: none;
+		letter-spacing: inherit;
+
+		background: transparent;
+	}
+
+	&:where(button, summary) {
+		appearance: none;
+	}
+
+	&:where(ul, ol, li) {
+		list-style: none;
+	}
+
+	&:where(fieldset) {
+		min-inline-size: 0;
+	}
+
+	&:where(summary)::marker {
+		content: '';
+	}
+
+	&:where(summary)::-webkit-details-marker {
+		display: none;
+	}
+}
+
+// Dropdown slots can contain native lists without Gradient UI classes.
+:where(.g-dropdown, .g-menu, .g-dropdown-group__items) :where(ul, ol, li) {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}

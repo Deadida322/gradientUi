@@ -226,15 +226,20 @@ const createMaterialVars = (
 	const dropShadow = material.effects?.dropShadow?.cssVar;
 	const morph = material.effects?.morph?.cssVar;
 	const animation = material.animation?.cssVar;
+	const foreground = getGradientForeground(
+		material,
+		resolveOnColorValue(color)
+	);
 
 	return {
 		...material.cssVars,
 		'--g-gradient-material-background': `var(${material.gradient.cssVar})`,
 		'--g-gradient-material-color': resolveColorValue(color),
-		'--g-gradient-material-foreground': getGradientForeground(
-			material,
-			resolveOnColorValue(color)
-		),
+		'--g-gradient-material-foreground': foreground,
+		'--g-gradient-material-morph-text-shadow':
+			foreground === LIGHT_FOREGROUND
+				? 'var(--g-token-material-morph-text-shadow-dark)'
+				: 'var(--g-token-material-morph-text-shadow-light)',
 		'--g-gradient-material-shadow':
 			effects && shadow ? `var(${shadow})` : EMPTY_SHADOW,
 		'--g-gradient-material-drop-shadow':

@@ -4,6 +4,41 @@
 	import type { DocsPropRow } from '@docs/types';
 
 	const scriptCloseTag = '<' + '/script>';
+	const mediaCode = `@use '@gradient-ui/core/styles/media';
+
+.catalog {
+	display: grid;
+	grid-template-columns: 1fr;
+
+	@include media.up(md) {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	@include media.down(sm) {
+		gap: 8px;
+	}
+
+	@include media.between(sm, lg) {
+		padding-inline: 16px;
+	}
+
+	@include media.up(1600px) {
+		max-width: 1440px;
+	}
+}`;
+	const mediaConfigCode = `@use '@gradient-ui/core/styles/media' with (
+	$breakpoints: (
+		phone: 0,
+		tablet: 768px,
+		desktop: 1200px
+	)
+);
+
+.catalog {
+	@include media.up(tablet) {
+		display: grid;
+	}
+}`;
 
 	const spacingCode = `<template>
 	<section class="d-grid gap-4 p-5 rounded-md elevation-1">
@@ -236,6 +271,47 @@ ${scriptCloseTag}`;
 			<docs-code
 				:code="responsiveCode"
 				title="Responsive composition" />
+		</section>
+
+		<section class="docs-page__section">
+			<span
+				id="scss-media"
+				class="docs-page__anchor"></span>
+			<h2>SCSS media mixins</h2>
+			<p>
+				Import <code>@gradient-ui/core/styles/media</code> in SCSS to
+				use <code>media.up(target)</code>,
+				<code>media.down(target)</code> and
+				<code>media.between(min, max)</code>. The module emits no CSS
+				until a mixin is included. A Sass compiler is required. The
+				examples use the Vue/Vite package resolver. With Sass’s Node
+				package importer, use
+				<code>pkg:@gradient-ui/core/styles/media</code> instead.
+			</p>
+			<p>
+				Defaults match CSS helpers and <code>useBreakpoints</code>:
+				<code>sm: 600px</code>, <code>md: 900px</code>,
+				<code>lg: 1200px</code>, <code>xl: 1536px</code>. All boundaries
+				are inclusive: up(md) means width ≥ 900px, down(md) means width
+				≤ 900px. Both match at exactly 900px. Targets accept names or
+				nonnegative px, em and rem lengths. A range must use compatible
+				units and min ≤ max.
+			</p>
+			<docs-code
+				:code="mediaCode"
+				language="scss"
+				title="Responsive SCSS" />
+			<p>
+				Configure the map on the first Sass module load with
+				<code>@use ... with</code>. Configuration replaces the map for
+				that Sass compilation. It does not change the library’s prebuilt
+				CSS helpers or the JavaScript breakpoint defaults; pass a
+				matching map to <code>useBreakpoints</code> when needed.
+			</p>
+			<docs-code
+				:code="mediaConfigCode"
+				language="scss"
+				title="Custom SCSS breakpoints" />
 		</section>
 
 		<section class="docs-page__section">

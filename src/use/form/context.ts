@@ -5,6 +5,7 @@ export type GFormValidateOn = 'blur' | 'input' | 'submit' | 'lazy';
 export interface GFormContext {
 	disabled: Readonly<Ref<boolean>>;
 	validateOn: Readonly<Ref<GFormValidateOn>>;
+	registerPending?: (pending: Readonly<Ref<boolean>>) => () => void;
 }
 
 const formContextKey: InjectionKey<GFormContext> = Symbol('GradientUiForm');

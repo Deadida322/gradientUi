@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { computed, ref, toRef, watch } from 'vue';
+	import { computed, toRef, watch } from 'vue';
 
 	import { makeFloatingProps } from '@/use/floating';
 	import { useFloatingLayer } from '@/use/floatingLayer';
@@ -8,6 +8,7 @@
 	import { useControllableOpen } from '@/use/controllableOpen';
 	import { useDismiss } from '@/use/floatingDismiss';
 	import { useLayerStack } from '@/use/layerStack';
+	import { useTransitionPresence } from '@/use/transition';
 	import { GTransition } from '@/components/transitions';
 	import type { MaybeElement, ReferenceElement } from '@floating-ui/vue';
 	import { isClientHTMLElement } from '@/ssr/utils';
@@ -21,8 +22,8 @@
 	const { hasAppendTarget, appendTarget } = useAppendTarget(
 		() => props.appendTo
 	);
-	const leaving = ref(false);
-	const layerOpen = computed(() => open.value || leaving.value);
+	const { present, onBeforeLeave, onAfterLeave, onLeaveCancelled } =
+		useTransitionPresence(open);
 
 	const { reference, floating, x, y, strategy, update } =
 		useFloatingLayer(props);
@@ -30,7 +31,7 @@
 	useDismiss({ open, reference, floating });
 
 	const { zIndex } = useLayerStack({
-		open: layerOpen,
+		open: present,
 		base: props.zIndexBase,
 		kind: 'floating'
 	});
@@ -53,18 +54,6 @@
 			reference.value = props.reference;
 			update();
 		}
-	}
-
-	function onBeforeLeave() {
-		leaving.value = true;
-	}
-
-	function onAfterLeave() {
-		leaving.value = false;
-	}
-
-	function onLeaveCancelled() {
-		leaving.value = false;
 	}
 
 	watch(

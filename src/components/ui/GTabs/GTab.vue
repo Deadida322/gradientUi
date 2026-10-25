@@ -158,24 +158,6 @@
 			box-shadow var(--g-token-duration-hover)
 				var(--g-token-easing-standard);
 
-		&::after {
-			content: '';
-
-			position: absolute;
-			right: var(--g-token-space-2);
-			bottom: 0;
-			left: var(--g-token-space-2);
-
-			height: 2px;
-			border-radius: var(--g-token-radius-pill);
-
-			opacity: 0;
-			background: var(--g-tabs-indicator-gradient, var(--g-color));
-
-			transition: opacity var(--g-token-duration-fast)
-				var(--g-token-easing-standard);
-		}
-
 		&:hover {
 			color: var(--g-color);
 			background: color-mix(in srgb, var(--g-color) 8%, transparent);
@@ -191,18 +173,9 @@
 			color: var(--g-color);
 		}
 
-		&_selected::after {
-			opacity: 1;
-		}
-
 		&_pill.g-tab_selected,
 		&_tonal.g-tab_selected {
 			background: color-mix(in srgb, var(--g-color) 12%, transparent);
-		}
-
-		&_pill::after,
-		&_tonal::after {
-			display: none;
 		}
 
 		&_pill.g-tab_selected {

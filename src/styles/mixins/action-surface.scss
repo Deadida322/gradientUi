@@ -1,3 +1,5 @@
+@use './material-text-shadow' as materialTextShadow;
+
 @mixin action-surface-layers($prefix, $clip: false) {
 	.#{$prefix} {
 		position: relative;
@@ -162,6 +164,10 @@
 		@if $clip {
 			overflow: hidden;
 		}
+	}
+
+	:where(.#{$prefix}__surface-content, .#{$prefix}__surface-content *) {
+		@include materialTextShadow.material-text-shadow();
 	}
 }
 

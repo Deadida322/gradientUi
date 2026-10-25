@@ -1,4 +1,4 @@
-import { ref, type PropType } from 'vue';
+import { ref, watch, watchEffect, type PropType, type Ref } from 'vue';
 import { onClientMounted } from '@/ssr/use';
 import { propsFactory } from '@/utils/propsFactory';
 
@@ -41,6 +41,39 @@ export type GTransitionValue =
 	| GTransitionPreset
 	| string
 	| GTransitionOptions;
+
+export const useTransitionPresence = (open: Readonly<Ref<boolean>>) => {
+	const present = ref(open.value);
+	const leaving = new Set<Element>();
+	watch(
+		open,
+		(value) => {
+			if (value) present.value = true;
+		},
+		{ flush: 'sync' }
+	);
+	// An open/close within one render may never start a leave transition.
+	watchEffect(
+		() => {
+			if (!open.value && !leaving.size) present.value = false;
+		},
+		{ flush: 'post' }
+	);
+	const onBeforeLeave = (el: Element) => {
+		leaving.add(el);
+		present.value = true;
+	};
+	const onAfterLeave = (el: Element) => {
+		leaving.delete(el);
+		if (!open.value && !leaving.size) present.value = false;
+	};
+	const onLeaveCancelled = (el: Element) => {
+		leaving.delete(el);
+		present.value = open.value || leaving.size > 0;
+	};
+
+	return { present, onBeforeLeave, onAfterLeave, onLeaveCancelled };
+};
 
 export const transitionPresetNames: Record<GTransitionPreset, string> = {
 	fade: 'g-fade-transition',

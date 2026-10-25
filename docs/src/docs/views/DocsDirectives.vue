@@ -2,8 +2,6 @@
 	import DocsCode from '@docs/components/DocsCode.vue';
 	import DocsLiveExampleTabs from '@docs/components/DocsLiveExampleTabs.vue';
 	import DocsPropsTable from '@docs/components/DocsPropsTable.vue';
-	import DocsReleaseBadge from '@docs/components/DocsReleaseBadge.vue';
-	import { docsNextReleaseBadge } from '@docs/data/releaseBadges';
 	import {
 		gradientDirectiveExamples,
 		loadingDirectiveExamples,
@@ -84,8 +82,7 @@ app.mount('#app');`;
 			type: 'boolean | GColor | SpecularOptions',
 			defaultValue: 'material color → currentColor',
 			description:
-				'Adds a cursor-following specular highlight that inherits the host material color. Object syntax supports color, disabled, duration, easing, opacity and size.',
-			badge: docsNextReleaseBadge
+				'Adds a cursor-following specular highlight that inherits the host material color. Object syntax supports color, disabled, duration, easing, opacity and size.'
 		}
 	];
 </script>
@@ -249,7 +246,6 @@ app.mount('#app');`;
 				class="docs-page__anchor"></span>
 			<div class="docs-directives__heading">
 				<h2>Specular highlight</h2>
-				<docs-release-badge :badge="docsNextReleaseBadge" />
 			</div>
 			<p>
 				<code>v-specular</code> adds a soft cursor-following highlight

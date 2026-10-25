@@ -1,5 +1,4 @@
 import type { DocsReleaseBadgeMeta } from '@docs/types';
-import { docsNextReleaseBadge } from './releaseBadges';
 
 export interface DocsNavigationGroup {
 	title: string;
@@ -19,8 +18,7 @@ export const docsNavigation: DocsNavigationGroup[] = [
 			{ label: 'Design tokens', to: '/docs/design-tokens' },
 			{
 				label: 'Gradient engine',
-				to: '/docs/gradient-engine',
-				badge: docsNextReleaseBadge
+				to: '/docs/gradient-engine'
 			}
 		]
 	},
