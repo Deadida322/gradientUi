@@ -28,7 +28,7 @@ export interface FileChange<Multiple extends boolean = boolean> {
 	value: FileValue<Multiple>;
 	source: 'picker' | 'drop' | 'remove' | 'clear';
 }
-export interface GFileEmits<Multiple extends boolean = boolean> {
+export type GFileEmits<Multiple extends boolean = boolean> = {
 	'update:modelValue': [value: FileValue<Multiple>];
 	change: [change: FileChange<Multiple>];
 	reject: [rejections: FileRejection[]];
@@ -36,7 +36,7 @@ export interface GFileEmits<Multiple extends boolean = boolean> {
 	clear: [];
 	focus: [event: FocusEvent];
 	blur: [event: FocusEvent];
-}
+};
 export interface FilePreview {
 	file: File;
 	url: string;

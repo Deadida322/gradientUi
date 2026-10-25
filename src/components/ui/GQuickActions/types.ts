@@ -14,12 +14,12 @@ export interface GQuickActionsOption extends option {
 	disabled?: boolean;
 }
 
-export interface GQuickActionsEmits {
+export type GQuickActionsEmits = {
 	'update:modelValue': [value: boolean];
 	select: [option: GQuickActionsOption, index: number, event: MouseEvent];
 	open: [];
 	close: [];
-}
+};
 
 export type GQuickActionsDirection = 'top' | 'right' | 'bottom' | 'left';
 
