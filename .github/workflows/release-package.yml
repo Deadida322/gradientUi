@@ -121,9 +121,11 @@ jobs:
                     echo "Unexpected package name: $PACKAGE_NAME"
                     exit 1
                   fi
-                  echo "path=$PACKAGE_PATH" >> "$GITHUB_OUTPUT"
-                  echo "name=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
-                  echo "prefix=$TAG_PREFIX" >> "$GITHUB_OUTPUT"
+                  {
+                    echo "path=$PACKAGE_PATH"
+                    echo "name=$PACKAGE_NAME"
+                    echo "prefix=$TAG_PREFIX"
+                  } >> "$GITHUB_OUTPUT"
 
             - name: Bump version
               id: bump
