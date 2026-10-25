@@ -15,6 +15,6 @@ export const makeFileItemProps = propsFactory({
 export type GFileItemProps = ExtractPublicPropTypes<
 	ReturnType<typeof makeFileItemProps>
 >;
-export interface GFileItemEmits {
+export type GFileItemEmits = {
 	remove: [file: File];
-}
+};

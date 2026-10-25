@@ -1,4 +1,7 @@
 import { fileURLToPath } from 'node:url';
+import { copyFile, mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { compileString, NodePackageImporter } from 'sass-embedded';
 import { describe, expect, it } from 'vitest';
 import { defaultBreakpoints } from '../../dist/use.mjs';
@@ -9,18 +12,30 @@ const loadPaths = [
 const compile = (source: string) => compileString(source, { loadPaths }).css;
 
 describe('SCSS media mixins', () => {
-	it('resolves the published package subpath through Sass', () => {
-		const css = compileString(
-			"@use 'pkg:@gradient-ui/core/styles/media'; .test { @include media.up(md) { display: grid; } }",
-			{
-				importers: [
-					new NodePackageImporter(
-						fileURLToPath(new URL('../../', import.meta.url))
-					)
-				]
-			}
-		).css;
-		expect(css).toContain('(width >= 900px)');
+	it('resolves the published package subpath through Sass', async () => {
+		const consumer = await mkdtemp(join(tmpdir(), 'gradient-ui-sass-'));
+		try {
+			// Sass resolves installed packages, rather than Node's package self-reference.
+			const installed = join(consumer, 'node_modules/@gradient-ui/core');
+			await mkdir(join(installed, 'dist/styles'), { recursive: true });
+			await copyFile(
+				fileURLToPath(new URL('../../package.json', import.meta.url)),
+				join(installed, 'package.json')
+			);
+			await copyFile(
+				fileURLToPath(
+					new URL('../../dist/styles/media.scss', import.meta.url)
+				),
+				join(installed, 'dist/styles/media.scss')
+			);
+			const css = compileString(
+				"@use 'pkg:@gradient-ui/core/styles/media'; .test { @include media.up(md) { display: grid; } }",
+				{ importers: [new NodePackageImporter(consumer)] }
+			).css;
+			expect(css).toContain('(width >= 900px)');
+		} finally {
+			await rm(consumer, { recursive: true, force: true });
+		}
 	});
 
 	it('emits no CSS on import', () => {
